@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/product-dna.schema.json",
+  "version": "1.0.0",
+  "signatures": [
+    {
+      "id": "persistent_biography",
+      "label": "Persistente Biografie"
+    },
+    {
+      "id": "shared_bunker_world",
+      "label": "Gemeinsame Bunkerwelt"
+    },
+    {
+      "id": "hidden_causality",
+      "label": "Verdeckte Kausalität"
+    }
+  ],
+  "feature_admission_rule": {
+    "minimum_signatures_touched": 2,
+    "exception_requires_adr": true
+  },
+  "negative_patterns": [
+    "generic_city_builder_copy",
+    "quest_marker_dependency",
+    "pure_numeric_grind_without_world_consequence"
+  ]
+}

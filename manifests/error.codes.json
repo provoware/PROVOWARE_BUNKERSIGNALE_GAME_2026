@@ -1,0 +1,65 @@
+{
+  "$schema": "../schemas/error-codes.schema.json",
+  "version": "1.0.0",
+  "codes": [
+    {
+      "code": "SSI-ENV-0001",
+      "severity": "FATAL",
+      "meaning": "Python 3.12 oder neuer fehlt."
+    },
+    {
+      "code": "SSI-VAL-0001",
+      "severity": "ERROR",
+      "meaning": "Pflichtdatei fehlt."
+    },
+    {
+      "code": "SSI-VAL-0002",
+      "severity": "ERROR",
+      "meaning": "JSON ist ungültig."
+    },
+    {
+      "code": "SSI-VAL-0003",
+      "severity": "ERROR",
+      "meaning": "Versionen sind inkonsistent."
+    },
+    {
+      "code": "SSI-VAL-0004",
+      "severity": "ERROR",
+      "meaning": "Verbotener Entwicklungsmarker in Code oder Maschinenkonfiguration."
+    },
+    {
+      "code": "SSI-ARCH-0001",
+      "severity": "ERROR",
+      "meaning": "Verbotener Schichtimport."
+    },
+    {
+      "code": "SSI-ARCH-0002",
+      "severity": "ERROR",
+      "meaning": "Agenten-Merge-Hoheit ist inkonsistent."
+    },
+    {
+      "code": "SSI-INT-0001",
+      "severity": "ERROR",
+      "meaning": "Fingerprint oder governte Datei ist inkonsistent."
+    },
+    {
+      "code": "SSI-REG-0001",
+      "severity": "ERROR",
+      "meaning": "Regressionstest fehlgeschlagen."
+    },
+    {
+      "code": "SSI-INTL-0001",
+      "severity": "FATAL",
+      "meaning": "Unerwarteter interner Toolfehler."
+    }
+  ],
+  "process_exit_codes": {
+    "success": 0,
+    "validation": 2,
+    "architecture": 3,
+    "integrity": 4,
+    "environment": 5,
+    "regression": 6,
+    "internal": 70
+  }
+}

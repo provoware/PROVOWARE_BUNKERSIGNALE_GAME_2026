@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sound-system-iker.local/schema/evidence-report/1.0.0",
+  "type": "object",
+  "required": [
+    "checkpoint",
+    "generated_at_utc",
+    "status",
+    "fingerprint_sha256",
+    "checks",
+    "file_hashes",
+    "review_mode",
+    "reviews"
+  ],
+  "properties": {
+    "checkpoint": {
+      "const": "I00"
+    },
+    "generated_at_utc": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "GREEN",
+        "RED"
+      ]
+    },
+    "fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "checks": {
+      "type": "array"
+    },
+    "file_hashes": {
+      "type": "object"
+    },
+    "review_mode": {
+      "const": "sequential_role_review_no_parallel_agent_runtime"
+    },
+    "reviews": {
+      "type": "array",
+      "minItems": 8
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "../schemas/toolchain.schema.json",
+  "version": "1.0.0",
+  "python": {
+    "minimum": "3.12",
+    "runtime_dependencies": []
+  },
+  "browser_runtime": {
+    "build_step_required": false,
+    "package_manager_required": false
+  },
+  "validation_entrypoint": "tools/run_i00_checks.py",
+  "linux_convenience_entrypoint": "run_i00.sh",
+  "external_runtime_dependencies_at_i00": []
+}

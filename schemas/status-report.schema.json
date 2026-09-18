@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sound-system-iker.local/schema/status-report/1.0.0",
+  "type": "object",
+  "required": [
+    "checkpoint",
+    "product_version",
+    "generated_at_utc",
+    "overall_status",
+    "gates",
+    "fingerprint_sha256",
+    "tests",
+    "reviews",
+    "review_mode"
+  ],
+  "properties": {
+    "checkpoint": {
+      "const": "I00"
+    },
+    "product_version": {
+      "type": "string"
+    },
+    "generated_at_utc": {
+      "type": "string"
+    },
+    "overall_status": {
+      "enum": [
+        "GREEN",
+        "RED"
+      ]
+    },
+    "gates": {
+      "type": "object"
+    },
+    "fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "tests": {
+      "type": "object"
+    },
+    "reviews": {
+      "type": "array",
+      "minItems": 8
+    },
+    "review_mode": {
+      "const": "sequential_role_review_no_parallel_agent_runtime"
+    }
+  },
+  "additionalProperties": false
+}

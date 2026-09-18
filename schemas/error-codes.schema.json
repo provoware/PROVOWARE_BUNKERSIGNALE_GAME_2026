@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sound-system-iker.local/schema/error-codes/1.0.0",
+  "type": "object",
+  "required": [
+    "version",
+    "codes",
+    "process_exit_codes"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "codes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "severity",
+          "meaning"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "process_exit_codes": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

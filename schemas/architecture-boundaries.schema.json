@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sound-system-iker.local/schema/architecture-boundaries/1.0.0",
+  "type": "object",
+  "required": [
+    "version",
+    "root",
+    "layers",
+    "rule",
+    "violation_code"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "root": {
+      "const": "app"
+    },
+    "layers": {
+      "type": "object",
+      "required": [
+        "ui",
+        "application",
+        "domain",
+        "infrastructure",
+        "bootstrap"
+      ],
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "rule": {
+      "const": "local_relative_imports_must_follow_layer_allowlist"
+    },
+    "violation_code": {
+      "const": "SSI-ARCH-0001"
+    }
+  },
+  "additionalProperties": false
+}

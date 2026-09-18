@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sound-system-iker.local/schema/product-dna/1.0.0",
+  "type": "object",
+  "required": [
+    "version",
+    "signatures",
+    "feature_admission_rule",
+    "negative_patterns"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "feature_admission_rule": {
+      "type": "object",
+      "required": [
+        "minimum_signatures_touched",
+        "exception_requires_adr"
+      ],
+      "additionalProperties": false
+    },
+    "negative_patterns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "../schemas/repository-layout.schema.json",
+  "version": "1.0.0",
+  "areas": [
+    {
+      "path": "app",
+      "owner": "implementation",
+      "first_write_checkpoint": "I01",
+      "purpose": "Browser-Runtime und App-Schichten"
+    },
+    {
+      "path": "content",
+      "owner": "content_canon",
+      "first_write_checkpoint": "I16",
+      "purpose": "Versionierte Inhaltsdaten"
+    },
+    {
+      "path": "data",
+      "owner": "orchestrator",
+      "first_write_checkpoint": "I08",
+      "purpose": "Lokale Entwicklungsdaten außerhalb der Runtime-Persistenz"
+    },
+    {
+      "path": "docs",
+      "owner": "orchestrator",
+      "first_write_checkpoint": "I00",
+      "purpose": "Normative und erklärende Dokumentation"
+    },
+    {
+      "path": "manifests",
+      "owner": "architecture_guardian",
+      "first_write_checkpoint": "I00",
+      "purpose": "Maschinenlesbare Governance"
+    },
+    {
+      "path": "schemas",
+      "owner": "data_schema_auditor",
+      "first_write_checkpoint": "I00",
+      "purpose": "Governance-Schemas; Runtime-Schema-Registry folgt I02"
+    },
+    {
+      "path": "agents",
+      "owner": "orchestrator",
+      "first_write_checkpoint": "I00",
+      "purpose": "Fachrollen- und Merge-Regeln"
+    },
+    {
+      "path": "tools",
+      "owner": "qa_regression",
+      "first_write_checkpoint": "I00",
+      "purpose": "Lokale Validierung und Evidence"
+    },
+    {
+      "path": "tests",
+      "owner": "qa_regression",
+      "first_write_checkpoint": "I00",
+      "purpose": "Regression und Negativfixtures"
+    },
+    {
+      "path": "evidence",
+      "owner": "release_evidence",
+      "first_write_checkpoint": "I00",
+      "purpose": "Generierte Nachweise"
+    },
+    {
+      "path": "status",
+      "owner": "release_evidence",
+      "first_write_checkpoint": "I00",
+      "purpose": "Maschinenlesbarer Checkpointstatus"
+    },
+    {
+      "path": "changes",
+      "owner": "orchestrator",
+      "first_write_checkpoint": "I00",
+      "purpose": "Maschinenlesbare Change Records"
+    }
+  ]
+}

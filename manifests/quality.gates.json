@@ -1,0 +1,35 @@
+{
+  "$schema": "../schemas/quality-gates.schema.json",
+  "version": "1.0.0",
+  "checkpoint": "I00",
+  "required_gates": [
+    "G0",
+    "G1",
+    "G8"
+  ],
+  "supporting_gate_checks": [
+    "G6"
+  ],
+  "gates": [
+    {
+      "id": "G0",
+      "name": "Governance",
+      "blocking": true
+    },
+    {
+      "id": "G1",
+      "name": "Struktur und Architektur",
+      "blocking": true
+    },
+    {
+      "id": "G6",
+      "name": "Integrität und Datenverlustschutz",
+      "blocking": true
+    },
+    {
+      "id": "G8",
+      "name": "Dokumentation und Wartbarkeit",
+      "blocking": true
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260918-001",
+  "checkpoint": "I00",
+  "title": "Master-Baseline für Governance, Architektur und Regression etablieren",
+  "purpose": "I00 als reproduzierbare, maschinenprüfbare und rollbackfähige Projektbasis implementieren.",
+  "scope": [
+    "Repo-Vertrag und Ordnerhoheit",
+    "Globale Standards",
+    "Subagenten-/Fachrollenprotokoll",
+    "Fehler- und Exit-Code-System",
+    "Architekturgrenzen mit Positiv-/Negativfixture",
+    "Regressionstests und Evidence-Fingerprint"
+  ],
+  "non_goals": [
+    "Keine Spiellogik",
+    "Keine Browser-Shell",
+    "Keine Persistenz",
+    "Keine Content-Registry-Aktivierung",
+    "Keine Synchronisation"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Erste technische Baseline; keine frühere Runtime muss migriert werden.",
+  "security": "Keine Secrets oder Nutzerdaten. Eingabe-, Integritäts- und Fehlergrundregeln sind normativ festgelegt.",
+  "test_plan": [
+    "Pflichtdateien prüfen",
+    "Versionen und Standards prüfen",
+    "Architektur-Positivfixture akzeptieren",
+    "Architektur-Negativfixture ablehnen",
+    "Code-/JSON-Platzhaltermarker ablehnen",
+    "Python-Dateien kompilieren",
+    "Unit-Tests ausführen",
+    "Repository-Fingerprint bilden"
+  ],
+  "rollback": "Kompletter Rücksprung auf den vor I00 leeren Projektzustand oder Wiederherstellung anhand des letzten grünen SHA-256-Fingerprints; keine Runtime-Daten betroffen.",
+  "evidence": [
+    "evidence/I00_EVIDENCE.json",
+    "evidence/I00_EVIDENCE.txt",
+    "evidence/baseline.sha256",
+    "status/I00_STATUS.json"
+  ],
+  "result": "GREEN"
+}

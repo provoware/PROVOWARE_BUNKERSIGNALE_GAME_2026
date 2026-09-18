@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/project-manifest.schema.json",
+  "project_id": "sound-system-iker",
+  "title": "S.O.U.N.D. SYSTEM-IKER",
+  "subtitle": "Bunkersignale & Persönlichkeitsfraktale",
+  "product_version": "0.1.0-alpha.0",
+  "specification_baseline": "0.4.0",
+  "checkpoint": "I00",
+  "checkpoint_title": "Repo-Vertrag und Entwicklungsmanifest",
+  "status": "frozen_i00",
+  "runtime_strategy": "browser_local_first",
+  "tooling_python_min": "3.12",
+  "license_state": "UNLICENSED",
+  "canonical_encoding": "UTF-8",
+  "canonical_line_endings": "LF",
+  "next_checkpoint": "I01",
+  "normative_documents": [
+    "docs/ARCHITECTURE.md",
+    "docs/DEVELOPMENT_RULES.md",
+    "docs/GLOBAL_STANDARDS.md",
+    "docs/ERROR_HANDLING.md",
+    "docs/REGRESSION_POLICY.md",
+    "docs/SUBAGENT_PROTOCOL.md",
+    "docs/CHANGE_CONTROL.md",
+    "docs/QUALITY_GATES.md"
+  ]
+}
