@@ -1,0 +1,45 @@
+{
+  "checkpoint": "I01",
+  "generated_at_utc": "2026-09-18T23:53:16.662Z",
+  "status": "GREEN",
+  "fingerprint_sha256": "f7c658b97d470aee4ceff09889e5d4cbd39f858185399f2110e9c76e08e18a54",
+  "checks": [
+    {
+      "name": "i00_regression_ci",
+      "status": "PASS",
+      "detail": "GitHub Actions quality run 35407371579 completed successfully on Python 3.12.14."
+    },
+    {
+      "name": "local_regression",
+      "status": "PASS",
+      "detail": "17/17 I00+I01 unit/structure tests passed locally; JavaScript syntax checks passed."
+    },
+    {
+      "name": "chromium_boot_smoke",
+      "status": "PASS",
+      "detail": "GitHub Actions run 35407371603 used Google Chrome 152.0.7977.82 and observed ready marker, visible version/build ID, aria-busy=false, diagnostics navigation, and no startup fallback."
+    },
+    {
+      "name": "runtime_dependencies",
+      "status": "PASS",
+      "detail": "No runtime framework or package-manager dependency introduced."
+    },
+    {
+      "name": "write_safety",
+      "status": "PASS",
+      "detail": "I01 performs capability/status reads only; no persistent world-data writes, repair writes, sync, or content activation."
+    }
+  ],
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
+  "reviews": [
+    {"role":"orchestrator","status":"PASS","evidence":"Scope stayed limited to app shell, safe start and read-only health diagnostics."},
+    {"role":"architecture_guardian","status":"PASS","evidence":"Layer-boundary regression remains green; UI/Application/Infrastructure separation preserved."},
+    {"role":"data_schema_auditor","status":"PASS","evidence":"Change/evidence/status checkpoint schemas generalized without invalidating I00 records."},
+    {"role":"qa_regression","status":"PASS","evidence":"17 local tests plus GitHub quality and real Chromium smoke passed."},
+    {"role":"security_integrity","status":"PASS","evidence":"No persistence/import surface added; bootstrap failure remains fail-safe and user-readable."},
+    {"role":"ux_accessibility","status":"PASS","evidence":"Keyboard focus, responsive layout and prefers-reduced-motion guards are present; browser boot smoke renders the shell."},
+    {"role":"content_canon","status":"PASS","evidence":"No story or canon content introduced in I01."},
+    {"role":"release_evidence","status":"PASS","evidence":"Change record, changelog, CI run IDs and checkpoint status are present."}
+  ],
+  "file_hashes": {}
+}

@@ -8,6 +8,12 @@ on:
       - 'app/**'
       - 'tests/**'
       - '.github/workflows/i01-browser-smoke.yml'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'changes/**'
+      - 'schemas/**'
+      - 'evidence/I01_*'
+      - 'status/I01_*'
 
 jobs:
   chromium-smoke:
