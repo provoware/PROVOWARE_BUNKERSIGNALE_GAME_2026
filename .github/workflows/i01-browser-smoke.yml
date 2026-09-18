@@ -20,15 +20,81 @@ jobs:
           set -Eeuo pipefail
           browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
           test -n "$browser"
+          "$browser" --version
+
           python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i01-http.log" 2>&1 &
           server_pid=$!
-          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          for _ in {1..50}; do
-            curl -fsS http://127.0.0.1:8765/index.html >/dev/null && break
+          "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --remote-debugging-address=127.0.0.1 --remote-debugging-port=9222 about:blank >"$RUNNER_TEMP/i01-chromium.log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$server_pid" "$browser_pid" 2>/dev/null || true' EXIT
+
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:8765/index.html >/dev/null 2>&1 && \
+            curl -fsS http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break
             sleep 0.1
           done
-          timeout 30s "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=3000 --dump-dom http://127.0.0.1:8765/index.html >"$RUNNER_TEMP/i01-dom.html"
-          grep -q 'System bereit für I01' "$RUNNER_TEMP/i01-dom.html"
-          grep -q '0.1.0-alpha.0' "$RUNNER_TEMP/i01-dom.html"
-          grep -q 'Diagnose &amp; Recovery' "$RUNNER_TEMP/i01-dom.html"
-          ! grep -q 'Start nicht möglich' "$RUNNER_TEMP/i01-dom.html"
+
+          node <<'NODE'
+          const debugBase = 'http://127.0.0.1:9222';
+          const appUrl = 'http://127.0.0.1:8765/index.html';
+          const target = await fetch(`${debugBase}/json/new?${encodeURIComponent(appUrl)}`, { method: 'PUT' }).then(r => {
+            if (!r.ok) throw new Error(`create target HTTP ${r.status}`);
+            return r.json();
+          });
+
+          const ws = new WebSocket(target.webSocketDebuggerUrl);
+          await new Promise((resolve, reject) => {
+            ws.addEventListener('open', resolve, { once: true });
+            ws.addEventListener('error', reject, { once: true });
+          });
+
+          let seq = 0;
+          const pending = new Map();
+          const exceptions = [];
+          ws.addEventListener('message', event => {
+            const msg = JSON.parse(event.data);
+            if (msg.id && pending.has(msg.id)) {
+              const { resolve, reject } = pending.get(msg.id);
+              pending.delete(msg.id);
+              if (msg.error) reject(new Error(JSON.stringify(msg.error)));
+              else resolve(msg.result ?? {});
+            } else if (msg.method === 'Runtime.exceptionThrown') {
+              exceptions.push(msg.params);
+            }
+          });
+
+          const call = (method, params = {}) => new Promise((resolve, reject) => {
+            const id = ++seq;
+            pending.set(id, { resolve, reject });
+            ws.send(JSON.stringify({ id, method, params }));
+          });
+
+          await call('Runtime.enable');
+          const deadline = Date.now() + 10000;
+          let state = null;
+          while (Date.now() < deadline) {
+            const result = await call('Runtime.evaluate', {
+              expression: `(() => ({
+                title: document.title,
+                text: document.body?.innerText || '',
+                busy: document.querySelector('#app')?.getAttribute('aria-busy') || null
+              }))()`,
+              returnByValue: true
+            });
+            state = result.result?.value;
+            if (state?.text?.includes('System bereit für I01') && state.busy === 'false') break;
+            await new Promise(r => setTimeout(r, 100));
+          }
+
+          if (!state?.text?.includes('System bereit für I01')) throw new Error(`App ready marker missing: ${JSON.stringify(state)}`);
+          if (state.title !== 'S.O.U.N.D. SYSTEM-IKER') throw new Error(`Unexpected title: ${state.title}`);
+          if (state.busy !== 'false') throw new Error(`aria-busy not false: ${state.busy}`);
+          if (!state.text.includes('0.1.0-alpha.0')) throw new Error('Version not visible');
+          if (!state.text.includes('Diagnose & Recovery')) throw new Error('Diagnostics navigation missing');
+          if (state.text.includes('Start nicht möglich')) throw new Error('Safe-start fallback rendered unexpectedly');
+          if (exceptions.length) throw new Error(`Runtime exceptions: ${JSON.stringify(exceptions)}`);
+
+          console.log('I01 Chromium smoke: PASS');
+          console.log(JSON.stringify(state));
+          ws.close();
+          NODE
