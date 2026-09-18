@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sound-system-iker.local/schema/agent-registry/1.0.0",
+  "type": "object",
+  "required": [
+    "version",
+    "merge_policy",
+    "roles"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "merge_policy": {
+      "const": "single_orchestrator"
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "merge_authority",
+          "required_for",
+          "responsibilities",
+          "veto_domains"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

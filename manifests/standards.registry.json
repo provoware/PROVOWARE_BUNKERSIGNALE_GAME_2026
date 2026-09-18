@@ -1,0 +1,55 @@
+{
+  "$schema": "../schemas/standards-registry.schema.json",
+  "verified_on": "2026-09-18",
+  "standards": [
+    {
+      "id": "semver",
+      "name": "Semantic Versioning",
+      "version": "2.0.0",
+      "scope": "product_versions",
+      "status": "adopted"
+    },
+    {
+      "id": "conventional_commits",
+      "name": "Conventional Commits",
+      "version": "1.0.0",
+      "scope": "commit_messages",
+      "status": "adopted"
+    },
+    {
+      "id": "keep_a_changelog",
+      "name": "Keep a Changelog",
+      "version": "1.1.0",
+      "scope": "changelog",
+      "status": "adopted"
+    },
+    {
+      "id": "json_schema",
+      "name": "JSON Schema",
+      "version": "2020-12",
+      "scope": "machine_contracts",
+      "status": "adopted"
+    },
+    {
+      "id": "wcag",
+      "name": "WCAG",
+      "version": "2.2-AA-target",
+      "scope": "web_accessibility",
+      "status": "target_not_certified"
+    },
+    {
+      "id": "owasp_asvs",
+      "name": "OWASP ASVS",
+      "version": "5.0.0-reference",
+      "scope": "security_review",
+      "status": "reference_not_certified"
+    },
+    {
+      "id": "sha256",
+      "name": "SHA-256",
+      "version": "FIPS-180-4-family",
+      "scope": "evidence_hashing",
+      "status": "adopted"
+    }
+  ]
+}

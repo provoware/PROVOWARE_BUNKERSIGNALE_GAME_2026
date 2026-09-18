@@ -1,0 +1,131 @@
+{
+  "checkpoint": "I00",
+  "generated_at_utc": "2026-09-18T23:27:46.180457Z",
+  "status": "GREEN",
+  "fingerprint_sha256": "b4a13f2ecf17ac499e136b13696146f45d6371b9eadf9829a0838959696148a1",
+  "checks": [
+    {
+      "name": "environment",
+      "status": "PASS",
+      "detail": "Python 3.13.5 erfüllt Mindestversion 3.12."
+    },
+    {
+      "name": "repository_validation",
+      "status": "PASS",
+      "detail": "Pflichtdateien, Versionen, Standards, Marker und Architekturfixtures sind gültig."
+    },
+    {
+      "name": "python_compile",
+      "status": "PASS",
+      "detail": "Python-Werkzeuge und Tests sind kompilierbar."
+    },
+    {
+      "name": "unit_tests",
+      "status": "PASS",
+      "detail": "Unit- und Negativtests bestanden."
+    },
+    {
+      "name": "fingerprint",
+      "status": "PASS",
+      "detail": "53 governte Dateien in SHA-256-Fingerprint aufgenommen."
+    }
+  ],
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "Scope I00, Merge-Hoheit und Freeze-Regeln definiert."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "Importgrenzen plus Positiv-/Negativfixture validiert."
+    },
+    {
+      "role": "data_schema_auditor",
+      "status": "PASS",
+      "evidence": "Governance-Schemas nutzen Draft 2020-12; Versionsdimensionen getrennt."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Unit-Tests, Negativfixture, Marker- und Versionsprüfungen ausgeführt."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "Trust-Boundary-/Fehlerregeln definiert; SHA-256-Evidence aktiv."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "WCAG-2.2-AA-Ziel und nutzerverständliche Fehleranforderungen dokumentiert."
+    },
+    {
+      "role": "content_canon",
+      "status": "PASS",
+      "evidence": "Content bleibt außerhalb der Runtime-Logik; Kanonhoheit ist getrennt."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "SemVer, Changelog, Fingerprint, Status- und Evidence-Artefakte vorhanden."
+    }
+  ],
+  "file_hashes": {
+    ".editorconfig": "85bccbd23a9070becfe1dc0dbb9ad7305fb2bb98f92f54cb9856d7d6eca4ebfe",
+    ".gitattributes": "3c2e5261e4ae7f3c5a0fc719431273861c01415220966ecc8ee9840cc7bf72d6",
+    ".github/workflows/quality.yml": "b6cf755a8e2051e4458b94038647d2aabe15d460b28a28a392916d18a6745bfd",
+    ".gitignore": "622da777d7bc82bdd33056f994036b005fbd770199c90cc6f7aed2c6f14ec8e4",
+    "CHANGELOG.md": "ef8f6c5377ffb40540c9fb1b80bf37a295ff32025cd45686f5e91fb96bb407cf",
+    "README.md": "6ba9c9013d512cbac141669e9950ee947e9f9747dfd0da87b07dcdb8a38b1102",
+    "VERSION": "f7f29db8e09380162af23ef284c6565461be67f567d5f32d50e712b1a525c328",
+    "agents/registry.json": "24076d00111ed84839b8d236ad7f641798c4ddd1692fe6cde7757ae9d3bf6ab6",
+    "app/README.md": "b31f98d5598620d57c4de9da96bb316925c0c15ebedbd41e4e0dd3e01f483d31",
+    "changes/CHG-20260918-001.json": "b9775dfc0cedc4b2a3df62d4bf76a0837b365f57333a1dc78d7864bacedb3546",
+    "content/README.md": "ef664ece2886b7f82161d68276cf6c31c05408d79881e0def2a3746763afb3ad",
+    "data/README.md": "605e24d80fa8c483b0bce3fb85e0fa64886f1a2f7ffd46674187d519a91cc569",
+    "docs/ARCHITECTURE.md": "5c78e81eeafa3084edfba4bc5ef6ecbfad4da90f0efa8715b1601f35764c53a9",
+    "docs/CHANGE_CONTROL.md": "8d9448964bfe8e380ea9746732e1dce6d951a578beb2d2ac101033cc3c11b828",
+    "docs/DEVELOPMENT_RULES.md": "64b6bd536dd641108e7167f829e656e60524af83b3e60cfc12617316e67ebe86",
+    "docs/ERROR_HANDLING.md": "0389cbac4534fa87632bc345b40577f4678027cb596f68590c00cf743e650202",
+    "docs/GLOBAL_STANDARDS.md": "81c71cd83cf7cba457514d642698dbfe7cb43b76deb9052818b4dabc8e2d7721",
+    "docs/QUALITY_GATES.md": "e1b3ce380a541fbbfec3175492943e998a7d716c13d5092604d1bc22a5a49338",
+    "docs/REGRESSION_POLICY.md": "087d9cd4c9d79a510f957123789ccbd03e3bab49d42b936887b87f1e5be59eaa",
+    "docs/SUBAGENT_PROTOCOL.md": "1e812b925b88b21d3cf89916d3a831b8648bbb22cd64a26f6982fe6058e97794",
+    "docs/decisions/ADR-0001-baseline-architecture.md": "f3b05b9cb4e0f9c80fd4a589e162309960e94619a11e740a68e241463cea59c6",
+    "manifests/architecture.boundaries.json": "9ceda391edf0be3ebfcdbbf9a81206d516b9e09196cc9bce436436ac8dba062e",
+    "manifests/error.codes.json": "d3bdf343795a9ade2f4b466bd2be7fbd71937d69e35d756a3a406fe3789c1ba1",
+    "manifests/product.dna.json": "e9f7fbb180179ba550f691746a8cb50dfed1f0ad42fcc5fc86ac58c7ee101917",
+    "manifests/project.manifest.json": "a46f6698d722cfb8d5474de25336d2152d263b698fbdc3dd44476ac7cf48b147",
+    "manifests/quality.gates.json": "854512813e9a032d6ec681db606e6c61c974ec4043dcd273eb22cc471efdaf05",
+    "manifests/repository.layout.json": "395a56acce12436afdc73421164b7c5b7456289ba33c3ae7cd5f031884c01f60",
+    "manifests/standards.registry.json": "7e913833c27327a6268d137f7a3c72c08765d43e66a8d2bb0f9801e6b5f984bc",
+    "manifests/toolchain.json": "61dbddaefd17bdd5b7d7f5cad02c67053ebea6b84abe9918603ce93ec22d72f4",
+    "run_i00.sh": "f8933f5ede7794c44d419f91d50e61326f08408253b3c7abedf32269fac4305f",
+    "schemas/agent-registry.schema.json": "0dd93e32872287d33a6b18952f350953b4918c5ff67d04566e6ac27ba1899dc3",
+    "schemas/architecture-boundaries.schema.json": "dec5cda97b0fcbe11231c58c8054f1413efab8cd1a5e783894c31e4d23c002e0",
+    "schemas/change-record.schema.json": "956b24a99523e5faba34c18824456077f2f75b6f68da524309046b253aedb577",
+    "schemas/error-codes.schema.json": "871d87f69e97fbc13576cea82a644040be84abd4430bb804ccb52436e8228b75",
+    "schemas/evidence-report.schema.json": "1481a786ff6bd8ce4490150b86c2b752e750bdf72971f9120a37b92dbd8d1a22",
+    "schemas/product-dna.schema.json": "5573d3d4779d4b525e1baa379a9ed74a9bf69e21a4b6d60bcae0492ef3074613",
+    "schemas/project-manifest.schema.json": "48ee7196613d91297accefb09c4bec8772c922c32dd9aec3754bc2ac0f4e020f",
+    "schemas/quality-gates.schema.json": "7dcf7c3c916518ad09225c223f3287934d6af263e1c5a1e48d2f19189d7d21bc",
+    "schemas/repository-layout.schema.json": "c160a7548c00091a88a8cacd5f86fa4933c3312eb80fb07bcbbc0503fd9c6614",
+    "schemas/standards-registry.schema.json": "d764ca0faa1cf54bc8f404ea3ee3dd230761e6749a301aad351c68e2e53b09b1",
+    "schemas/status-report.schema.json": "dd210e18101824d3ad944497be4b2a8b4b58d59d1f33f732e4ca504070f9f167",
+    "schemas/toolchain.schema.json": "0ec5bc2b694182419e3b8e79eeb4069144160fa6218f71dea95c8adf113f01cd",
+    "tests/fixtures/architecture/negative/app/infrastructure/repository.js": "176ded56e8ed5710379c0ce0ee5a5024b25c94e34e4945665c2b6d9715c3988c",
+    "tests/fixtures/architecture/negative/app/ui/view.js": "d1c9bc088f4192b19a213ca779629a4cada0135475e635a80e664effa3020ae4",
+    "tests/fixtures/architecture/positive/app/application/session.js": "7c63de806cbf2a4e2480121225215669eac76cfa7f627a29ea28323fe18ea83c",
+    "tests/fixtures/architecture/positive/app/bootstrap/main.js": "148b439a2b5012f838fb092b105554b2776b10504dffb755e635e1816ff85b7c",
+    "tests/fixtures/architecture/positive/app/domain/model.js": "1e19db1ed4da2327f19fb90a3df89dfb97a8629f01848d5500894d3bb3c513e3",
+    "tests/fixtures/architecture/positive/app/infrastructure/repository.js": "50633fb251a26856740f165b56c30156ecdcf9d8815dc18dc2f1e9cebd27ac78",
+    "tests/fixtures/architecture/positive/app/ui/view.js": "139d2b2f1ed33945c4fe7f06f2d4ec9c29e9b096ab25a9a1e223ab773362100b",
+    "tests/test_i00.py": "ded1417251797f82498b7e76e37d73c92ccbb13065d833ab91df855dc333d44e",
+    "tools/run_i00_checks.py": "6b4437ce9371841a3b50bb8e6cb66e5e65775269ff9d2e0b9a2459240a7931fc",
+    "tools/ssi_common.py": "d0c263f12081b4d0f832f800ca087b6dcba0ccfe03d628b5a5064cbf240437d7",
+    "tools/validate_repo.py": "b61306c0d8ecf22b5cc1a1e676f7c0f9e6776a327889bc98be863d908686b179"
+  }
+}

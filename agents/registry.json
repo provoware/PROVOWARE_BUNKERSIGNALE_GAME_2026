@@ -1,0 +1,158 @@
+{
+  "$schema": "../schemas/agent-registry.schema.json",
+  "version": "1.0.0",
+  "merge_policy": "single_orchestrator",
+  "roles": [
+    {
+      "id": "orchestrator",
+      "title": "Lead Architect & Orchestrator",
+      "merge_authority": true,
+      "required_for": [
+        "all_changes"
+      ],
+      "responsibilities": [
+        "scope",
+        "sequencing",
+        "conflict_resolution",
+        "merge",
+        "freeze",
+        "evidence_acceptance"
+      ],
+      "veto_domains": [
+        "scope_integrity"
+      ]
+    },
+    {
+      "id": "architecture_guardian",
+      "title": "Architecture Guardian",
+      "merge_authority": false,
+      "required_for": [
+        "architecture",
+        "runtime_dependency",
+        "state_owner"
+      ],
+      "responsibilities": [
+        "layer_boundaries",
+        "state_ownership",
+        "adr_policy",
+        "dependency_direction"
+      ],
+      "veto_domains": [
+        "architecture_boundary"
+      ]
+    },
+    {
+      "id": "data_schema_auditor",
+      "title": "Data & Schema Auditor",
+      "merge_authority": false,
+      "required_for": [
+        "schema",
+        "persistent_data",
+        "migration"
+      ],
+      "responsibilities": [
+        "schema_contracts",
+        "ids",
+        "version_compatibility",
+        "migration_readiness"
+      ],
+      "veto_domains": [
+        "schema_integrity"
+      ]
+    },
+    {
+      "id": "qa_regression",
+      "title": "QA & Regression",
+      "merge_authority": false,
+      "required_for": [
+        "all_changes"
+      ],
+      "responsibilities": [
+        "positive_tests",
+        "negative_tests",
+        "recovery_tests",
+        "regression_suite"
+      ],
+      "veto_domains": [
+        "blocking_test_failure"
+      ]
+    },
+    {
+      "id": "security_integrity",
+      "title": "Security & Integrity",
+      "merge_authority": false,
+      "required_for": [
+        "input_boundary",
+        "crypto",
+        "import",
+        "sync",
+        "storage"
+      ],
+      "responsibilities": [
+        "trust_boundaries",
+        "input_validation",
+        "integrity",
+        "safe_errors"
+      ],
+      "veto_domains": [
+        "security_boundary"
+      ]
+    },
+    {
+      "id": "ux_accessibility",
+      "title": "UX & Accessibility",
+      "merge_authority": false,
+      "required_for": [
+        "user_visible_change"
+      ],
+      "responsibilities": [
+        "interaction_states",
+        "keyboard",
+        "zoom",
+        "motion",
+        "error_comprehension"
+      ],
+      "veto_domains": [
+        "critical_accessibility"
+      ]
+    },
+    {
+      "id": "content_canon",
+      "title": "Content & Canon",
+      "merge_authority": false,
+      "required_for": [
+        "story",
+        "character",
+        "content_package"
+      ],
+      "responsibilities": [
+        "canon_status",
+        "provenance",
+        "text_decoupling",
+        "story_consistency"
+      ],
+      "veto_domains": [
+        "canon_conflict"
+      ]
+    },
+    {
+      "id": "release_evidence",
+      "title": "Release & Evidence",
+      "merge_authority": false,
+      "required_for": [
+        "checkpoint_freeze",
+        "release"
+      ],
+      "responsibilities": [
+        "versioning",
+        "changelog",
+        "fingerprints",
+        "exit_criteria",
+        "release_pack"
+      ],
+      "veto_domains": [
+        "missing_evidence"
+      ]
+    }
+  ]
+}

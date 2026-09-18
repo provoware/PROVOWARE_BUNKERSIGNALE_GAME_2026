@@ -1,0 +1,42 @@
+{
+  "$schema": "../schemas/architecture-boundaries.schema.json",
+  "version": "1.0.0",
+  "root": "app",
+  "layers": {
+    "ui": {
+      "allowed_import_layers": [
+        "ui",
+        "application"
+      ]
+    },
+    "application": {
+      "allowed_import_layers": [
+        "application",
+        "domain"
+      ]
+    },
+    "domain": {
+      "allowed_import_layers": [
+        "domain"
+      ]
+    },
+    "infrastructure": {
+      "allowed_import_layers": [
+        "infrastructure",
+        "application",
+        "domain"
+      ]
+    },
+    "bootstrap": {
+      "allowed_import_layers": [
+        "bootstrap",
+        "ui",
+        "application",
+        "domain",
+        "infrastructure"
+      ]
+    }
+  },
+  "rule": "local_relative_imports_must_follow_layer_allowlist",
+  "violation_code": "SSI-ARCH-0001"
+}

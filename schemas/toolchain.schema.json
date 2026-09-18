@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sound-system-iker.local/schema/toolchain/1.0.0",
+  "type": "object",
+  "required": [
+    "version",
+    "python",
+    "browser_runtime",
+    "validation_entrypoint",
+    "linux_convenience_entrypoint",
+    "external_runtime_dependencies_at_i00"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "python": {
+      "type": "object"
+    },
+    "browser_runtime": {
+      "type": "object"
+    },
+    "validation_entrypoint": {
+      "const": "tools/run_i00_checks.py"
+    },
+    "linux_convenience_entrypoint": {
+      "const": "run_i00.sh"
+    },
+    "external_runtime_dependencies_at_i00": {
+      "type": "array",
+      "maxItems": 0
+    }
+  },
+  "additionalProperties": false
+}
