@@ -1,0 +1,53 @@
+:root {
+  --ssi-bg: #11151a;
+  --ssi-panel: #1a2028;
+  --ssi-text: #f4f7fa;
+  --ssi-muted: #b7c0ca;
+  --ssi-border: #3d4855;
+  --ssi-accent: #65d7ff;
+  --ssi-ok: #72e2a7;
+  --ssi-warning: #ffd166;
+  --ssi-error: #ff8c8c;
+  --ssi-radius: 0.75rem;
+  font-family: system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ssi-bg); color: var(--ssi-text); }
+button { font: inherit; }
+.ssi-skip-link { position: absolute; left: -9999px; }
+.ssi-skip-link:focus { left: 1rem; top: 1rem; z-index: 10; background: var(--ssi-text); color: var(--ssi-bg); padding: 0.75rem; }
+.ssi-app { width: min(70rem, calc(100% - 2rem)); margin: 0 auto; padding: 2rem 0 4rem; }
+.ssi-header { display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 1rem; }
+.ssi-kicker { color: var(--ssi-muted); margin: 0; font-size: 0.85rem; letter-spacing: 0.08em; }
+h1, h2 { line-height: 1.2; }
+h1 { margin: 0.25rem 0 0; }
+.ssi-card, .ssi-panel { background: var(--ssi-panel); border: 1px solid var(--ssi-border); border-radius: var(--ssi-radius); padding: 1.25rem; }
+.ssi-card--error { border-color: var(--ssi-error); }
+.ssi-tabs { display: flex; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap; }
+.ssi-tab, .ssi-button { min-height: 2.75rem; border: 1px solid var(--ssi-border); border-radius: 0.55rem; background: var(--ssi-panel); color: var(--ssi-text); padding: 0.6rem 0.9rem; cursor: pointer; }
+.ssi-tab[aria-pressed="true"] { border-color: var(--ssi-accent); box-shadow: inset 0 -0.2rem 0 var(--ssi-accent); }
+.ssi-tab:hover, .ssi-button:hover { border-color: var(--ssi-accent); }
+:focus-visible { outline: 0.2rem solid var(--ssi-accent); outline-offset: 0.2rem; }
+.ssi-status { display: inline-flex; align-items: center; min-height: 2rem; border: 1px solid currentColor; border-radius: 999px; padding: 0.25rem 0.65rem; font-weight: 700; }
+.ssi-status--ok { color: var(--ssi-ok); }
+.ssi-status--warning { color: var(--ssi-warning); }
+.ssi-status--info { color: var(--ssi-accent); }
+.ssi-meta { display: grid; grid-template-columns: minmax(8rem, 12rem) 1fr; gap: 0.65rem 1rem; }
+.ssi-meta dt { color: var(--ssi-muted); font-weight: 700; }
+.ssi-meta dd { margin: 0; overflow-wrap: anywhere; }
+.ssi-health-list { list-style: none; padding: 0; margin: 1rem 0; }
+.ssi-health-row { display: flex; gap: 1rem; justify-content: space-between; align-items: start; padding: 0.85rem 0; border-top: 1px solid var(--ssi-border); }
+.ssi-health-row p { color: var(--ssi-muted); margin: 0.3rem 0 0; }
+[hidden] { display: none !important; }
+
+@media (max-width: 42rem) {
+  .ssi-app { width: min(100% - 1rem, 70rem); padding-top: 1rem; }
+  .ssi-meta { grid-template-columns: 1fr; }
+  .ssi-meta dd { margin-bottom: 0.4rem; }
+  .ssi-health-row { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
+}
