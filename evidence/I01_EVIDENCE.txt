@@ -1,0 +1,23 @@
+S.O.U.N.D. SYSTEM-IKER - I01 Evidence Report
+Status: GREEN
+Checkpoint: I01 - Browser App Shell + Health/Recovery
+
+VALIDATION
+- Local I00+I01 tests: PASS (17/17)
+- JavaScript syntax: PASS
+- GitHub Actions quality run 35407371579: PASS
+- Quality environment: Ubuntu 24.04.5, Python 3.12.14
+- Candidate fingerprint: f7c658b97d470aee4ceff09889e5d4cbd39f858185399f2110e9c76e08e18a54
+- GitHub Actions Chromium run 35407371603: PASS
+- Browser: Google Chrome 152.0.7977.82
+- Observed: title correct, System bereit für I01 visible, version 0.1.0-alpha.0 visible, build ID +I01 visible, aria-busy=false, Diagnose & Recovery visible, startup fallback absent.
+
+SCOPE SAFETY
+- Runtime dependencies: 0 new packages/frameworks
+- Persistent world-data writes: none
+- Content activation: none
+- Sync/repair writes: none
+- Gameplay: intentionally not part of I01
+
+ENVIRONMENT NOTE
+The ChatGPT execution container blocked browser navigation by administrator policy. The mandatory real-browser gate was therefore executed on the GitHub-hosted Ubuntu runner and passed; the gate was not waived.

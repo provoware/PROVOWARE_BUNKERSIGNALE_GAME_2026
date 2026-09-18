@@ -5,6 +5,13 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 
 ## [Unreleased]
 
+### Added
+- I01 dependency-freie Browser-App-Shell mit sicherem Bootstrap-Fallback.
+- Read-only Health- und Recovery-Diagnose mit Browser-Capability-Detection.
+- Tastatur-/Fokus-Basis, responsive Darstellung und `prefers-reduced-motion`-Schutz.
+- I01-Strukturtests sowie realer Chromium-Boot-Smoke als Pull-Request-Gate.
+
+
 ## [0.1.0-alpha.0] - 2026-09-18
 
 ### Added

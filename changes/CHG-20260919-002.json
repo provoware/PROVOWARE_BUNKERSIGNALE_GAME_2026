@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-002",
+  "checkpoint": "I01",
+  "title": "Browser-App-Shell und read-only Health-Diagnose",
+  "purpose": "Einen dependency-freien, sicher fehlenden Browserstart mit laiengerechter technischer Diagnose als ersten Runtime-Checkpoint bereitstellen.",
+  "scope": [
+    "Browser-App-Shell und Bootstrap",
+    "Capability Detection ohne User-Agent-Hardcoding",
+    "read-only Health- und Recovery-Einstieg",
+    "zugängliche Basisnavigation und Reduced-Motion-Schutz",
+    "I01-Strukturtests und realer Chromium-Boot-Smoke"
+  ],
+  "non_goals": [
+    "Keine Spiellogik",
+    "Keine persistente Weltdatenbank",
+    "Keine Content Registry",
+    "Keine Sync- oder Reparaturschreibzugriffe",
+    "Keine neue Runtime-Abhängigkeit"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "Additiver erster Browser-Runtime-Checkpoint auf der gefreezten I00-Baseline; keine bestehenden Weltdaten vorhanden.",
+  "security": "Keine Persistenz oder Imports; Feature Detection ist read-only. Bootstrapfehler führen in einen sicheren, nutzerverständlichen Fallback.",
+  "test_plan": [
+    "I00-Regressionslauf",
+    "I01-Struktur- und Architekturtests",
+    "JavaScript-Syntaxprüfung",
+    "statischer HTTP-Ressourcencheck",
+    "realer Chromium-Boot-Smoke auf GitHub Actions"
+  ],
+  "rollback": "Squash-Commit des I01-Checkpoints revertieren; I00/R00 bleibt als letzte gefreezte Basis erhalten.",
+  "evidence": [
+    "evidence/I01_EVIDENCE.json",
+    "evidence/I01_EVIDENCE.txt",
+    "status/I01_STATUS.json",
+    ".github/workflows/i01-browser-smoke.yml"
+  ],
+  "result": "GREEN"
+}

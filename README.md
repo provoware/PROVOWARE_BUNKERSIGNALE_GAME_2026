@@ -32,7 +32,8 @@ Kein rotes Qualitätsgate wird durch Weiterentwicklung umgangen. Eine technische
 ## Projektstatus
 
 - Spezifikationsbasis: MASTER-Entwicklungsplan v0.4
-- Implementierter Checkpoint: I00
+- Gefreezte Governance-/Architekturbasis: I00
+- Aktueller implementierter Runtime-Checkpoint: I01
 - Produktversion: 0.1.0-alpha.0
-- Spiellogik: noch nicht Bestandteil von I00
-- Nächster freigabefähiger Checkpoint nach erfolgreichem Freeze: I01
+- Spiellogik: noch nicht Bestandteil von I01
+- Nächster Checkpoint: I02

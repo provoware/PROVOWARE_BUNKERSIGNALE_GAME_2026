@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>S.O.U.N.D. SYSTEM-IKER</title>
+  <link rel="stylesheet" href="./app/ui/styles.css">
+</head>
+<body>
+  <a class="ssi-skip-link" href="#app">Zum Inhalt</a>
+  <main id="app" class="ssi-app" tabindex="-1" aria-busy="true">
+    <section class="ssi-card" aria-live="polite">
+      <h1>S.O.U.N.D. SYSTEM-IKER</h1>
+      <p>Technische Basis wird geprüft …</p>
+    </section>
+  </main>
+  <noscript>
+    <p>JavaScript ist deaktiviert. Die Anwendung benötigt JavaScript im Browser.</p>
+  </noscript>
+  <script type="module">
+    const root = document.querySelector("#app");
+    import("./app/bootstrap/main.js")
+      .then(({ startApp }) => startApp(root))
+      .catch((error) => {
+        console.error("SSI-INTL-0001", error);
+        root.replaceChildren();
+        root.setAttribute("aria-busy", "false");
+        const section = document.createElement("section");
+        section.className = "ssi-card ssi-card--error";
+        const title = document.createElement("h1");
+        title.textContent = "Start nicht möglich";
+        const message = document.createElement("p");
+        message.textContent = "Die Anwendung konnte ihre technischen Grundlagen nicht laden. Deine vorhandenen Daten wurden dabei nicht verändert.";
+        const hint = document.createElement("p");
+        hint.textContent = "Fehlercode: SSI-INTL-0001. Lade die Seite neu. Bleibt der Fehler bestehen, nutze die technische Diagnose nach einem erfolgreichen Start.";
+        const reload = document.createElement("button");
+        reload.type = "button";
+        reload.className = "ssi-button";
+        reload.textContent = "Neu laden";
+        reload.addEventListener("click", () => location.reload());
+        section.append(title, message, hint, reload);
+        root.append(section);
+        root.focus();
+      });
+  </script>
+</body>
+</html>
