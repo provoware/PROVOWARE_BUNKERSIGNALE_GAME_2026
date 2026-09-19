@@ -14,6 +14,15 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 - Tastatur-/Fokus-Basis, responsive Darstellung und `prefers-reduced-motion`-Schutz.
 - I01-Strukturtests sowie realer Chromium-Boot-Smoke als Pull-Request-Gate.
 
+### Changed
+- Repository-Einstieg und Bereichs-READMEs auf den tatsächlichen I02-Stand ausgerichtet.
+- Projektmanifest auf `I02 -> I03` aktualisiert und Checkpoint-Schema zukunftsfähig gemacht.
+- Dokumentationsindex und klarer Referenzbereich für historische Arbeitsanweisungen ergänzt.
+- Eingefrorene I00-Evidence wird durch spätere Qualitätsläufe nicht mehr still überschrieben.
+- Change-Record-Prüfung von fest verdrahteten Dateinamen auf dynamische Historienprüfung umgestellt.
+
+### Repository
+- Historische Masteranweisung aus dem Repository-Root nach `docs/reference/` verschoben.
 
 ## [0.1.0-alpha.0] - 2026-09-18
 
