@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
@@ -89,6 +91,43 @@ class I04ContentInboxTests(unittest.TestCase):
         with self.assertRaises(ContentRegistryError):
             self.processor.process("addon.json", "feature.addon", "1.0.0")
         self.assertTrue(staged.is_file())
+
+    def test_activation_race_cannot_clobber_new_target(self) -> None:
+        staged = self.stage_addon()
+        destination = self.root / "packages/addon.json"
+        sentinel = b"external-writer\n"
+        real_link = os.link
+
+        def racing_link(source: Path, target: Path) -> None:
+            Path(target).write_bytes(sentinel)
+            real_link(source, target)
+
+        with patch("content_inbox.os.link", side_effect=racing_link):
+            with self.assertRaises(ContentRegistryError):
+                self.processor.process("addon.json", "feature.addon", "1.0.0")
+
+        self.assertTrue(staged.is_file())
+        self.assertEqual(destination.read_bytes(), sentinel)
+
+    def test_quarantine_race_cannot_clobber_new_target(self) -> None:
+        staged = self.stage_addon()
+        data = json.loads(staged.read_text(encoding="utf-8"))
+        data["payload"]["label"] = "Tampered"
+        staged.write_text(json.dumps(data) + "\n", encoding="utf-8")
+        destination = self.quarantine / "addon.json"
+        sentinel = b"external-quarantine-writer\n"
+        real_link = os.link
+
+        def racing_link(source: Path, target: Path) -> None:
+            Path(target).write_bytes(sentinel)
+            real_link(source, target)
+
+        with patch("content_inbox.os.link", side_effect=racing_link):
+            with self.assertRaises(ContentRegistryError):
+                self.processor.process("addon.json", "feature.addon", "1.0.0")
+
+        self.assertTrue(staged.is_file())
+        self.assertEqual(destination.read_bytes(), sentinel)
 
 
 if __name__ == "__main__":

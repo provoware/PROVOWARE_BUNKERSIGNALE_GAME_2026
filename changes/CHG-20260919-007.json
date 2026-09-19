@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-007",
+  "checkpoint": "I04",
+  "title": "REOPEN I04: No-Clobber- und Freeze-Integrität",
+  "purpose": "Den bereits eingefrorenen I04-Checkpoint nach konkretem Review-Befund minimal reparieren: vorhandene Ziele auch unter Race-Bedingungen niemals überschreiben und die I04-Implementierungs- sowie Evidence-Artefakte als Pflichtbestand des Repository-Gates erzwingen.",
+  "scope": [
+    "I04 formell wegen zweier belegter Integritätsbefunde wieder öffnen",
+    "Race-sichere No-Clobber-Veröffentlichung für Aktivierung und Quarantäne",
+    "Regressionstests für konkurrierend entstehende Aktivierungs- und Quarantäneziele",
+    "I04-Implementierung, Tests, Evidence und Status als Pflichtdateien validieren",
+    "I04-Regressionspolicy um expliziten Ziel-Race-Schutz ergänzen"
+  ],
+  "non_goals": [
+    "Keine I05-Funktion",
+    "Keine Persistenz oder Spiellogik",
+    "Keine produktiven Contentpakete",
+    "Keine Änderung an Registry- oder Lock-Verträgen",
+    "Keine neue Runtime- oder Python-Abhängigkeit"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "I04-Verträge bleiben fachlich gleich; die Implementierung erfüllt die bereits dokumentierte No-Clobber-Garantie nun auch unter Race-Bedingungen.",
+  "security": "os.link erzeugt das Ziel atomar nur bei Nichtvorhandensein. FileExistsError führt fail-closed zum stabilen CONTENT-Fehler; Cross-Filesystem- oder sonstige Linkfehler lassen die Quelle unverändert.",
+  "test_plan": [
+    "gezielte tests.test_i04 einschließlich Aktivierungs-Race und Quarantäne-Race",
+    "Repository-Gate muss beim Fehlen von tools/content_inbox.py oder tests/test_i04.py rot werden",
+    "vollständiger Repository-Qualitätslauf",
+    "I00-I03 Regression unverändert grün",
+    "finalen Repository-Fingerprint in erneuerter I04-Evidence dokumentieren"
+  ],
+  "rollback": "REOPEN-Fixcommit revertieren; I04 gilt dann wieder als nicht ausreichend bewiesen und I05 bleibt gesperrt.",
+  "evidence": [
+    "tools/content_inbox.py",
+    "tools/validate_repo.py",
+    "tests/test_i04.py",
+    "docs/REGRESSION_POLICY.md",
+    "evidence/I04_EVIDENCE.json",
+    "status/I04_STATUS.json"
+  ],
+  "result": "GREEN"
+}

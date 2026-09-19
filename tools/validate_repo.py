@@ -55,12 +55,17 @@ REQUIRED_FILES = [
     "schemas/change-record.schema.json",
     "tools/schema_registry.py",
     "tools/content_registry.py",
+    "tools/content_inbox.py",
     "tools/ssi_common.py",
     "tools/validate_repo.py",
     "tools/run_i00_checks.py",
     "tests/test_i00.py",
     "tests/test_i02.py",
     "tests/test_i03.py",
+    "tests/test_i04.py",
+    "evidence/I04_EVIDENCE.json",
+    "evidence/I04_EVIDENCE.txt",
+    "status/I04_STATUS.json",
     "run_i00.sh",
 ]
 
