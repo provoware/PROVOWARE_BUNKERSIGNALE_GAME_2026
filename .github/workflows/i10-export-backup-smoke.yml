@@ -159,6 +159,20 @@ jobs:
             try { validateWorldBackup(badOrder); } catch { orderRejected = true; }
             if (!orderRejected) throw new Error('non-deterministic event order was accepted');
 
+            const duplicateSequence = JSON.parse(first.text);
+            duplicateSequence.events[1].sequence = duplicateSequence.events[0].sequence;
+            let sequenceRejected = false;
+            try { validateWorldBackup(duplicateSequence); } catch { sequenceRejected = true; }
+            if (!sequenceRejected) throw new Error('non-replayable sequence was accepted');
+
+            const protoPayload = JSON.parse(first.text);
+            protoPayload.events[0].payload = JSON.parse('{"__proto__":null,"normal":1}');
+            const protoText = serializeWorldBackup(protoPayload);
+            const protoRoundtrip = JSON.parse(protoText);
+            if (!Object.hasOwn(protoRoundtrip.events[0].payload, '__proto__') || protoRoundtrip.events[0].payload.__proto__ !== null) {
+              throw new Error('__proto__ JSON key was not preserved');
+            }
+
             const maxElapsedMs = 5000;
             if (elapsedMs >= maxElapsedMs) throw new Error('1000-event repeat export exceeded budget: ' + elapsedMs.toFixed(1) + ' ms');
 
@@ -172,7 +186,9 @@ jobs:
               count_rejected:countRejected,
               extra_rejected:extraRejected,
               event_rejected:eventRejected,
-              order_rejected:orderRejected
+              order_rejected:orderRejected,
+              sequence_rejected:sequenceRejected,
+              proto_key_preserved:true
             };
           })()`;
 
