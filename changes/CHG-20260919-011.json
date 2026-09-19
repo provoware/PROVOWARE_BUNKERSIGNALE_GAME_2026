@@ -1,0 +1,36 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-011",
+  "checkpoint": "I06",
+  "title": "I06: Event Envelope v1",
+  "purpose": "Den kleinsten verbindlichen Event-Core-Vertrag auf Basis der reparierten I05-Identitätsprimitive implementieren.",
+  "scope": [
+    "Event Envelope v1 mit event_id, event_type, payload, author_id, sequence, lamport, ruleset_version und metadata definieren",
+    "command_id, correlation_id und causation_event_id als definierte optionale Felder unterstützen",
+    "Schema Registry um event-envelope@1.0.0 erweitern",
+    "Sequenz-, Lamport-, ID-, Typ- und Zusatzfeld-Invarianten fail-closed validieren",
+    "positive und negative Fixtures sowie fokussierte Regressionstests ergänzen",
+    "genau eine visuelle UX-Verbesserung: Panel-Fließtexte auf eine ruhige maximale Zeilenbreite begrenzen"
+  ],
+  "non_goals": [
+    "Kein Reducer und keine Zustandsprojektion",
+    "Kein IndexedDB- oder anderer persistenter Event Store",
+    "Kein Replay-, Sync-, Crypto- oder Hashketten-Core",
+    "Keine Änderung an I03-I05-Verträgen",
+    "Keine Plugin- oder Import/Export-Funktion"
+  ],
+  "affected_owners": ["orchestrator","architecture_guardian","data_schema_auditor","qa_regression","security_integrity","ux_accessibility","release_evidence"],
+  "compatibility": "Additiver Eventvertrag; bestehende Browser- und Contentpfade bleiben unverändert.",
+  "security": "Unbekannte Zusatzfelder, ungültige Identitäten, negative Logikzeit und unzulässige Sequenzen werden abgewiesen.",
+  "test_plan": [
+    "Event-Envelope-Schema auditieren",
+    "positive Canonical-Serialisierung prüfen",
+    "Negative Fixtures für sequence, lamport und unknown_field prüfen",
+    "optionale Trace-Felder und ID-Typen prüfen",
+    "vollständigen Repository-Quality-Lauf ausführen",
+    "realen Chromium-Smoke wegen der isolierten CSS-Lesbarkeitsänderung ausführen"
+  ],
+  "rollback": "I06-Commit revertieren; I05 bleibt letzter grüner Checkpoint.",
+  "evidence": ["schemas/event-envelope.schema.json","tools/event_envelope.py","tests/test_i06.py","app/ui/styles.css","evidence/I06_EVIDENCE.json","status/I06_STATUS.json"],
+  "result": "GREEN"
+}
