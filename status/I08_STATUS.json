@@ -1,0 +1,58 @@
+{
+  "checkpoint": "I08",
+  "product_version": "0.1.0-alpha.0",
+  "generated_at_utc": "2026-09-19T16:41:00Z",
+  "overall_status": "GREEN",
+  "gates": {
+    "G2": "GREEN",
+    "G4": "GREEN",
+    "G6": "GREEN"
+  },
+  "fingerprint_sha256": "92b5443d7894d4543ba5cf4a3b7d128e85dff646383aac19b86c268f5af60643",
+  "tests": {
+    "i08_contract_tests": "PASS",
+    "repository_quality_run_199": "PASS",
+    "repository_quality_run_200": "PASS",
+    "indexeddb_chromium_run_8": "PASS",
+    "browser_smoke_run_53": "PASS",
+    "abort_atomicity": "PASS",
+    "duplicate_rollback": "PASS",
+    "synchronous_queue_rollback": "PASS",
+    "reopen_readback": "PASS",
+    "envelope_contract_unchanged": "PASS",
+    "frozen_i07_predecessor": "UNCHANGED"
+  },
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "Expliziter I08-REOPEN nur für zwei post-merge P1-Integritätsfehler und README-Drift; I09 bleibt gesperrt."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "I06 Envelope bleibt unverändert; Weltzuordnung wird ausschließlich als Storage-Metadatum gespeichert."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Quality #199/#200, I08 Chromium #8 und Browser-Smoke #53 sind GREEN."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "Abort-, Duplicate- und synchroner Queue-/Clone-Fehler beweisen vollständigen Batch-Rollback."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "Exakt eine neue visuelle Änderung im REOPEN-Lauf: Kicker line-height 1.4."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "Reparierter I08-Fingerprint 92b5443d7894d4543ba5cf4a3b7d128e85dff646383aac19b86c268f5af60643 und beide I08 Change Records sind gebunden."
+    }
+  ],
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime"
+}
