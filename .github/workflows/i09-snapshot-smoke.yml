@@ -78,6 +78,16 @@ jobs:
             if (baselineMs > fixture.max_replay_ms) throw new Error('large-world replay budget exceeded');
 
             const cache = createIndexedDbSnapshotCache({ indexedDB, dbName });
+            const unavailableCache = createIndexedDbSnapshotCache({
+              indexedDB: { open() { throw new Error('cache unavailable'); } },
+              dbName: dbName + '-unavailable',
+            });
+            const storageFailure = await unavailableCache.resolveState({
+              worldId, eventFingerprint, rulesetVersion, eventCount: fixture.count, replay: fullReplay
+            });
+            if (storageFailure.source !== 'replay' || JSON.stringify(storageFailure.state) !== JSON.stringify(baseline)) {
+              throw new Error('cache storage failure did not fall back to full replay');
+            }
 
             const missing = await cache.resolveState({
               worldId, eventFingerprint, rulesetVersion, eventCount: fixture.count, replay: fullReplay
@@ -178,6 +188,7 @@ jobs:
               snapshot_ms: cached.elapsed_ms,
               wrong_fingerprint_replayed: wrongFingerprint.source === 'replay',
               corrupt_replayed: corrupt.source === 'replay',
+              storage_failure_replayed: storageFailure.source === 'replay',
               abort_preserved: aborted,
             };
           })()`;
