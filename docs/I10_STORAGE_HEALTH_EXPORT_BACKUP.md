@@ -167,7 +167,16 @@ I10 darf nur eingefroren werden, wenn:
 
 Verbindliche Gates: **G1, G4, G6, G7 und G8**.
 
+## Aktueller Umsetzungsstand
+
+- **I10-A Storage Health Foundation:** implementiert auf diesem Branch; read-only Estimate/Persistenzstatus, Grenzwertklassifikation, Diagnoseanzeige und Chromium-Gate.
+- **I10-B Export Backup:** Vertrag festgelegt, noch keine Produktimplementierung.
+- **I10-C Restore:** Vertrag festgelegt, noch keine Produktimplementierung.
+
+I10 bleibt deshalb **ACTIVE** und darf nach I10-A ausdrücklich noch nicht eingefroren werden.
+
 ## Restrisiko
+
 
 `navigator.storage.estimate()` liefert browserabhängige Origin-Schätzwerte und ersetzt keine Betriebssystem-Datenträgerdiagnose. Kryptografische Autoren-/Eventintegrität beginnt erst in I11/I12.
 
