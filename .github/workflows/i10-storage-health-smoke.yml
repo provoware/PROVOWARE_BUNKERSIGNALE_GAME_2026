@@ -94,9 +94,14 @@ jobs:
             if (unsupported.capacity_status !== 'unknown' || unsupported.persistence_status !== 'unsupported') throw new Error('unsupported contract failed');
 
             const estimateFailure = classifyStorageHealth(await readBrowserStorageHealth({
-              storageManager: { estimate: async () => { throw new Error('boom'); } }
+              storageManager: {
+                estimate: async () => { throw new Error('boom'); },
+                persisted: async () => true
+              }
             }));
-            if (estimateFailure.capacity_status !== 'unknown' || estimateFailure.error_code !== 'SSI-STO-1001') throw new Error('estimate failure contract failed');
+            if (estimateFailure.capacity_status !== 'unknown' || estimateFailure.persistence_status !== 'persistent' || estimateFailure.error_code !== 'SSI-STO-1001') {
+              throw new Error('estimate failure must preserve persistence status');
+            }
 
             const persistedFailure = classifyStorageHealth(await readBrowserStorageHealth({
               storageManager: {
