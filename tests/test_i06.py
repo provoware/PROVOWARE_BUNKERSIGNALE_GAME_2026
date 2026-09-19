@@ -10,7 +10,7 @@ TOOLS = ROOT / "tools"
 if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))
 
-from event_envelope import EventEnvelopeError, event_envelope_bytes, validate_event_envelope
+from event_envelope import (EventEnvelopeError, event_envelope_bytes, profile_event_envelope_readback, read_event_envelope_bytes, validate_event_envelope)
 
 
 class I06EventEnvelopeTests(unittest.TestCase):
@@ -52,6 +52,22 @@ class I06EventEnvelopeTests(unittest.TestCase):
         with self.assertRaises(EventEnvelopeError):
             validate_event_envelope(envelope)
         self.assertEqual(envelope["sequence"], 0)
+
+    def test_truncated_or_noncanonical_readback_is_rejected(self) -> None:
+        raw = event_envelope_bytes(self.positive)
+        with self.assertRaises(EventEnvelopeError):
+            read_event_envelope_bytes(raw[:-1])
+        with self.assertRaises(EventEnvelopeError):
+            read_event_envelope_bytes(b" " + raw)
+
+    def test_legacy_and_large_readback_profile(self) -> None:
+        legacy = json.loads((ROOT / "tests/fixtures/event/positive/legacy-envelope-v1.json").read_text(encoding="utf-8"))
+        self.assertEqual(read_event_envelope_bytes(event_envelope_bytes(legacy)), legacy)
+        profile = json.loads((ROOT / "tests/fixtures/event/readback-profile.json").read_text(encoding="utf-8"))
+        metrics = profile_event_envelope_readback(profile["count"], legacy)
+        self.assertEqual(metrics["count"], profile["count"])
+        self.assertGreater(metrics["bytes"], 0)
+        self.assertLess(metrics["elapsed_ms"], profile["max_elapsed_ms"])
 
 
 if __name__ == "__main__":
