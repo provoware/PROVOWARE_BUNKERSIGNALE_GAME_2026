@@ -1,0 +1,5 @@
+{
+  "count": 1000,
+  "max_elapsed_ms": 5000,
+  "description": "Deterministic I06 readback profile using a minimal v1 envelope template."
+}
