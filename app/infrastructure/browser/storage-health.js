@@ -10,6 +10,17 @@ function result(values) {
   return Object.freeze(values);
 }
 
+async function readPersisted(storageManager) {
+  if (typeof storageManager?.persisted !== "function") {
+    return { persisted: null, error_code: null };
+  }
+  try {
+    return { persisted: Boolean(await storageManager.persisted()), error_code: null };
+  } catch {
+    return { persisted: null, error_code: PERSISTED_FAILED };
+  }
+}
+
 export async function readBrowserStorageHealth({ storageManager = globalThis.navigator?.storage } = {}) {
   if (!storageManager || typeof storageManager.estimate !== "function") {
     return result({
@@ -21,6 +32,8 @@ export async function readBrowserStorageHealth({ storageManager = globalThis.nav
     });
   }
 
+  const persistence = await readPersisted(storageManager);
+
   let estimate;
   try {
     estimate = await storageManager.estimate();
@@ -29,7 +42,7 @@ export async function readBrowserStorageHealth({ storageManager = globalThis.nav
       supported: true,
       usage_bytes: null,
       quota_bytes: null,
-      persisted: null,
+      persisted: persistence.persisted,
       error_code: ESTIMATE_FAILED,
     });
   }
@@ -41,26 +54,16 @@ export async function readBrowserStorageHealth({ storageManager = globalThis.nav
       supported: true,
       usage_bytes: null,
       quota_bytes: null,
-      persisted: null,
+      persisted: persistence.persisted,
       error_code: INVALID_ESTIMATE,
     });
-  }
-
-  let persisted = null;
-  let errorCode = null;
-  if (typeof storageManager.persisted === "function") {
-    try {
-      persisted = Boolean(await storageManager.persisted());
-    } catch {
-      errorCode = PERSISTED_FAILED;
-    }
   }
 
   return result({
     supported: true,
     usage_bytes: usageBytes,
     quota_bytes: quotaBytes,
-    persisted,
-    error_code: errorCode,
+    persisted: persistence.persisted,
+    error_code: persistence.error_code,
   });
 }
