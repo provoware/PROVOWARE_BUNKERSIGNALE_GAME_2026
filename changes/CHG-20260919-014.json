@@ -1,0 +1,36 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-014",
+  "checkpoint": "I07",
+  "title": "I07 Pure Reducer Foundation",
+  "purpose": "Den kleinsten deterministischen Replay-/Reducer-Kern aus der verbindlichen I07-Masterplanung umsetzen, ohne I08-Persistenz oder Spiellogik vorzuziehen.",
+  "scope": [
+    "deterministischer Reducer aus Event-Envelopes und explizitem Ruleset",
+    "fail-closed Regeln für Sequenz, Lamport-Zeit und Ruleset-Version",
+    "Purity-Static-Guard und 1000-Event-Replay-Smoke",
+    "aktive I07-Checkpoint-Markierung im Projektmanifest",
+    "exakt eine visuelle UX-Änderung: aktiver Tab wird zusätzlich fett dargestellt"
+  ],
+  "non_goals": [
+    "Keine IndexedDB- oder sonstige produktive Persistenz",
+    "Keine Snapshots oder Migrationen",
+    "Keine fachliche Spiellogik oder Zufallslogik",
+    "Keine Änderung an I00-I06-Freeze-Evidence",
+    "Keine BUNKER-BLACKBOX-Vorwegnahme"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "ux_accessibility", "release_evidence"],
+  "compatibility": "I06 Event Envelope v1 bleibt unverändert; I07 konsumiert ausschließlich dessen bestehenden Vertrag. Unbekannte Event-Typen sind deterministische No-Ops.",
+  "security": "Reducer besitzt keine Zeit-, Zufalls-, Storage-/Datei- oder Netzwerkabhängigkeit und mutiert seine Eingaben nicht.",
+  "test_plan": [
+    "deterministischen Doppel-Replay und Input-Immutabilität prüfen",
+    "fehlgeschlagenen Replay ohne partiellen Rückgabestate prüfen",
+    "Sequenz-, Lamport- und Ruleset-Mismatch fail-closed prüfen",
+    "Static Guard gegen nichtdeterministische oder I/O-Abhängigkeiten prüfen",
+    "1000-Event-Replay-Smoke unter 5000 ms prüfen",
+    "Repository Quality ausführen",
+    "realen Chromium-Smoke ausführen"
+  ],
+  "rollback": "I07-Branch verwerfen; main und die eingefrorenen I00-I06-Artefakte bleiben unverändert.",
+  "evidence": ["tools/pure_reducer.py", "tests/test_i07.py", "docs/I07_PURE_REDUCER.md", "app/ui/styles.css"],
+  "result": "GREEN"
+}
