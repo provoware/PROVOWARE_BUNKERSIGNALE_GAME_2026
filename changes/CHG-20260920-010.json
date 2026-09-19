@@ -1,0 +1,16 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-010",
+  "checkpoint": "I10",
+  "title": "I10-C restore preflight core",
+  "purpose": "Kleinsten sicheren I10-C-Block implementieren: Backup und Content-Basis vollständig vor Mutation prüfen und nur eine atomare no-clobber Schreibfähigkeit akzeptieren.",
+  "scope": ["JSON-Parse fail-closed", "I10-B Backup-v1 Validator wiederverwenden", "Content-Lock vor Mutation prüfen", "atomare restoreIfEmpty Fähigkeit verlangen"],
+  "non_goals": ["Kein I08 REOPEN", "Keine Restore-UI/Dateiauswahl", "Kein I11+ Scope", "Kein I09 REOPEN"],
+  "affected_owners": ["application", "qa_regression", "architecture_guardian", "release_evidence"],
+  "compatibility": "I10-A/B bleiben unverändert; der neue Restore-Pfad ist noch nicht verdrahtet und verändert bestehendes Laufzeitverhalten nicht.",
+  "security": "Ungültiges JSON, ungültiger Backupvertrag und inkompatible Content-Basis scheitern vor dem ersten Write. Kein nicht-atomarer append-Fallback.",
+  "test_plan": ["Repository Quality", "tests/test_i10_restore.py", "finaler Scope-Diff"],
+  "rollback": "Branch verwerfen; main bleibt unverändert.",
+  "evidence": ["app/application/world-restore.js", "tests/test_i10_restore.py"],
+  "result": "PENDING_GATES"
+}
