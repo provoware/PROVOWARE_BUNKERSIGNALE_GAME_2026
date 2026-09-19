@@ -38,6 +38,14 @@ class I09SnapshotCacheTests(unittest.TestCase):
             with self.subTest(marker=marker):
                 self.assertIn(marker, source)
 
+    def test_resolve_state_replays_when_cache_storage_rejects(self) -> None:
+        source = CACHE.read_text(encoding="utf-8")
+        self.assertIn("assertReadRequest(worldId", source)
+        self.assertIn("try {", source)
+        self.assertIn('snapshot = await readValid(worldId', source)
+        self.assertIn("catch {", source)
+        self.assertIn("snapshot = null;", source)
+
     def test_snapshot_write_has_abort_path_and_does_not_enter_i10_scope(self) -> None:
         source = CACHE.read_text(encoding="utf-8")
         self.assertIn("transaction.abort()", source)
@@ -55,6 +63,7 @@ class I09SnapshotCacheTests(unittest.TestCase):
             "missing snapshot did not fall back to full replay",
             "wrong-fingerprint snapshot was not discarded",
             "corrupt snapshot did not fall back to full replay",
+            "cache storage failure did not fall back to full replay",
             "aborted snapshot write replaced the last valid snapshot",
             "max_cache_read_ms",
         ):
