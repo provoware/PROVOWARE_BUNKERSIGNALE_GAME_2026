@@ -43,8 +43,11 @@ Persistente Operationen müssen später atomar oder rückrollbar sein. Ein fehlg
 ## 10. Content Registry + Lockfile I03
 `manifests/content.registry.json` definiert ausschließlich exakt versionierte, lokale Contentpakete und deren Abhängigkeiten. `manifests/content.lock.json` pinnt Pfad und SHA-256 jedes registrierten Pakets. `tools/content_registry.py` löst Abhängigkeiten deterministisch und read-only auf, verbietet Repository-Escape-Pfade und prüft Datei-Hashes gegen das Lockfile. Registry und Lockfile besitzen zusätzlich einen gemeinsamen Drift-Fingerprint in `manifests/content.registry-lock.sha256`. I03 aktiviert oder importiert keine Pakete; Inbox, Quarantäne und atomare Aktivierung beginnen erst in I04.
 
-## 11. Erweiterungsregel
+## 11. Content Inbox + Quarantäne I04
+`tools/content_inbox.py` verarbeitet ausschließlich einfache Dateinamen innerhalb einer lokalen Inbox. Vor einer Aktivierung prüft `tools/content_registry.py` Paketidentität, exakte Version, Abhängigkeitsgraph und SHA-256-Lock-Pin. Gültige Kandidaten werden mit `os.replace` atomar an ein noch nicht existentes registriertes Ziel verschoben; ungültige JSON- oder Pin-Kandidaten werden mit stabilem Fehlercode quarantänisiert. Pfad-Escapes, fehlende Quellen sowie vorhandene Aktivierungs- oder Quarantäneziele schlagen ohne Überschreiben fehl.
+
+## 12. Erweiterungsregel
 Ein neues Modul wird nur aufgenommen, wenn Owner, Eingaben, Ausgaben, Fehlerpfad, Tests, Versionierungswirkung und Rückwärtskompatibilität definiert sind.
 
-## 12. Entscheidungshoheit
+## 13. Entscheidungshoheit
 Architekturänderungen benötigen eine ADR, eine Auswirkungsanalyse und einen vollständigen Qualitätslauf. Der Orchestrator ist alleinige Merge-Instanz; Fachrollen liefern prüfbare Empfehlungen und Vetos.

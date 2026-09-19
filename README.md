@@ -9,8 +9,8 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Bereich | Stand |
 | --- | --- |
 | Produktversion | `0.1.0-alpha.0` |
-| Aktueller Checkpoint | **I03 – Content Registry + Lockfile** |
-| Nächster Checkpoint | **I04** |
+| Aktueller Checkpoint | **I04 – Content Inbox + Quarantäne** |
+| Nächster Checkpoint | **I05** |
 | Runtime | Browser, local-first |
 | Buildschritt | nicht erforderlich |
 | Paketmanager | nicht erforderlich |
@@ -23,6 +23,7 @@ Bereits umgesetzt:
 - **I01** – dependency-freie Browser-Shell mit Safe-Start sowie read-only Health/Recovery-Diagnose.
 - **I02** – lokale Schema Registry mit exakter Versionsauflösung, Lifecycle-Regeln sowie Positiv-/Negativtests.
 - **I03** – read-only Content Registry + Lockfile mit exakter Paketauflösung, SHA-256-Pins, deterministischem Dependency-Resolver und gemeinsamer Drift-Erkennung.
+- **I04** – lokale Inbox mit Lock-Pin-Prüfung, Quarantäne ungültiger Kandidaten und atomarer Aktivierung in noch freie Paketziele.
 
 ## Schnellstart
 
@@ -75,9 +76,9 @@ Dokumentationsindex: **[docs/README.md](docs/README.md)**
 - Gefreezte Evidence wird nicht still neu geschrieben.
 - Runtime-Code importiert nur entlang der definierten Schichtgrenzen.
 - Schema- und Content-Auflösung sind lokal und versionsgenau; kein `latest`, keine Netzwerkauflösung.
-- I03 ist strikt read-only: keine Inbox-Aktivierung, kein Kopieren/Verschieben und keine produktiven Contentpakete.
+- I04 verarbeitet nur explizit benannte lokale Inbox-Kandidaten; Zielkonflikte schlagen ohne Überschreiben fehl.
 - Neue Runtime-Abhängigkeiten benötigen eine begründete Architekturentscheidung.
-- Persistenz, Content-Aktivierung und Spiellogik werden nicht vorgezogen.
+- Persistente Weltdaten, produktive Contentpakete und Spiellogik werden nicht vorgezogen.
 
 ## Lizenzstatus
 

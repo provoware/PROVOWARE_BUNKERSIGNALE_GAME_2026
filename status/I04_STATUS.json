@@ -1,0 +1,62 @@
+{
+  "checkpoint": "I04",
+  "product_version": "0.1.0-alpha.0",
+  "generated_at_utc": "2026-09-19T00:48:32Z",
+  "overall_status": "GREEN",
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
+  "gates": {
+    "G0": "GREEN",
+    "G1": "GREEN",
+    "G2": "GREEN",
+    "G6": "GREEN",
+    "G8": "GREEN"
+  },
+  "fingerprint_sha256": "e816c527b230b32e7c1d55efb1eef02853267ceb5f42e2f2bbaca3cd21f96f2f",
+  "tests": {
+    "targeted_i04": "PASS",
+    "repository_quality": "PASS",
+    "frozen_i03_predecessor": "UNCHANGED"
+  },
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "I04 scope is limited to local Inbox verification, quarantine and non-overwriting activation."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "The additive tooling module preserves browser-runtime layer boundaries and introduces no dependency."
+    },
+    {
+      "role": "data_schema_auditor",
+      "status": "PASS",
+      "evidence": "Candidate identity, exact version and registered lock pin are verified before activation."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Targeted I04 tests and the complete repository quality run passed."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "Path escapes and existing destinations are rejected without mutation; invalid candidates are quarantined."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "No browser UI behavior changed in I04."
+    },
+    {
+      "role": "content_canon",
+      "status": "PASS",
+      "evidence": "No productive content was added; activation tests use isolated temporary fixtures."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "I04 scope, validation, fingerprint and rollback are recorded."
+    }
+  ]
+}

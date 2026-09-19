@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-006",
+  "checkpoint": "I04",
+  "title": "Content Inbox, Quarantäne und atomare Aktivierung",
+  "purpose": "Lokale Contentkandidaten vor der Aktivierung gegen Registry und Lockfile prüfen, ungültige Kandidaten isolieren und bestehende Ziele gegen Überschreiben schützen.",
+  "scope": [
+    "lokale Inbox mit eingeschränkten Kandidatennamen",
+    "Prüfung von Paketidentität, Version, Abhängigkeiten und SHA-256-Pin",
+    "Quarantäne ungültiger Kandidaten mit stabilem Fehlercode",
+    "atomare Aktivierung ohne Überschreiben bestehender Ziele",
+    "I04-Positiv-, Negativ- und Regressionstests"
+  ],
+  "non_goals": [
+    "Keine persistenten Weltdaten",
+    "Keine produktiven Story- oder Gameplay-Inhalte",
+    "Keine Spiellogik",
+    "Keine Netzwerk- oder Synchronisationsfunktion",
+    "Keine neue Runtime-Abhängigkeit"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "Additiver lokaler Schreibcheckpoint auf I03; Registry-, Lock- und Browserverträge bleiben unverändert.",
+  "security": "Einfache Dateinamen und Root-Grenzen verhindern Pfad-Escapes; Lock-Pins verhindern manipulierte Aktivierungen; vorhandene Ziele werden niemals überschrieben.",
+  "test_plan": [
+    "gezielte I04-Unit-Tests",
+    "vollständiger Repository-Qualitätslauf einschließlich I00-I03-Regression",
+    "manipulierte und ungültige Kandidaten quarantänisieren",
+    "Pfad-Escape und vorhandenes Aktivierungsziel ohne Mutation ablehnen"
+  ],
+  "rollback": "I04-Commit revertieren; die gefreezte I03-Registry bleibt die letzte read-only Basis.",
+  "evidence": [
+    "tests/test_i04.py",
+    "tools/content_inbox.py",
+    "evidence/I04_EVIDENCE.json",
+    "evidence/I04_EVIDENCE.txt",
+    "status/I04_STATUS.json"
+  ],
+  "result": "GREEN"
+}
