@@ -19,7 +19,7 @@ button { font: inherit; }
 .ssi-skip-link:focus { left: 1rem; top: 1rem; z-index: 10; background: var(--ssi-text); color: var(--ssi-bg); padding: 0.75rem; }
 .ssi-app { width: min(70rem, calc(100% - 2rem)); margin: 0 auto; padding: 2rem 0 4rem; }
 .ssi-header { display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 1rem; }
-.ssi-kicker { color: var(--ssi-muted); margin: 0; font-size: 0.85rem; font-weight: 700; line-height: 1.4; letter-spacing: 0.08em; }
+.ssi-kicker { color: var(--ssi-muted); margin: 0; font-size: 0.85rem; font-weight: 700; line-height: 1.4; letter-spacing: 0.08em; text-wrap: balance; }
 h1, h2 { line-height: 1.2; }
 h1 { margin: 0.25rem 0 0; }
 .ssi-card, .ssi-panel { background: var(--ssi-panel); border: 1px solid var(--ssi-border); border-radius: var(--ssi-radius); padding: 1.25rem; }

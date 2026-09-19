@@ -1,90 +1,76 @@
 {
   "checkpoint": "I08",
-  "generated_at_utc": "2026-09-19T16:41:00Z",
+  "generated_at_utc": "2026-09-19T17:03:16Z",
   "status": "GREEN",
-  "fingerprint_sha256": "92b5443d7894d4543ba5cf4a3b7d128e85dff646383aac19b86c268f5af60643",
+  "fingerprint_sha256": "8e82a9603f439ef5a5bf51a45b27a8beec1d6134523f1c61108775047db25717",
   "checks": [
+    {
+      "name": "legacy_v1_readback",
+      "status": "PASS",
+      "detail": "Realer Chromium-Smoke #11 liest einen vorbestehenden rohen I08-v1-Record korrekt als I06-konformen Event-Envelope zurück."
+    },
     {
       "name": "envelope_contract_compatibility",
       "status": "PASS",
-      "detail": "Weltzuordnung liegt im Storage-Record; gespeicherte Events bleiben gültige unveränderte I06-Envelopes."
+      "detail": "Historisches world_id wird nur beim Legacy-Readback entfernt; I06-Schema bleibt unverändert."
     },
     {
-      "name": "synchronous_queue_atomicity",
+      "name": "transaction_atomicity_regression",
       "status": "PASS",
-      "detail": "Realer Chromium-Smoke #8: Clone-/Queue-Fehler nach bereits gequeued Write abortiert die gesamte Transaktion."
-    },
-    {
-      "name": "abort_atomicity",
-      "status": "PASS",
-      "detail": "Realer Chromium-Smoke #8: injizierter Abort hinterlässt keine partiellen Events."
-    },
-    {
-      "name": "duplicate_atomicity",
-      "status": "PASS",
-      "detail": "Realer Chromium-Smoke #8: Duplicate-Constraint rollt den gesamten Batch zurück."
-    },
-    {
-      "name": "reopen_readback",
-      "status": "PASS",
-      "detail": "Realer Chromium-Smoke #8: erfolgreicher Batch bleibt nach Reopen deterministisch lesbar."
+      "detail": "Abort-, Duplicate- und synchroner Queue-/Clone-Fehler bleiben vollständig rollback-sicher."
     },
     {
       "name": "repository_quality",
       "status": "PASS",
-      "detail": "Repository Quality #199 und #200 auf refrozen_i08 GREEN."
+      "detail": "Repository Quality #214, #215 und Refreeze #218 GREEN."
     },
     {
       "name": "browser_smoke",
       "status": "PASS",
-      "detail": "Allgemeiner Chromium-Smoke #53 GREEN."
-    },
-    {
-      "name": "public_status",
-      "status": "PASS",
-      "detail": "README weist I08 als aktuellen Checkpoint und I09 als nächsten Checkpoint aus."
+      "detail": "Allgemeiner Chromium-Smoke #56 GREEN."
     },
     {
       "name": "visual_ux_scope",
       "status": "PASS",
-      "detail": "Exakt eine neue visuelle UX-Änderung: .ssi-kicker line-height 1.4."
+      "detail": "Exakt eine neue visuelle UX-Änderung: .ssi-kicker text-wrap: balance."
     }
   ],
   "file_hashes": {
     "changes/CHG-20260919-015.json": "c1011087463e29e90187687bf2668c2cc71f95e4497beb3cedbbbf1436efc2c5",
-    "changes/CHG-20260919-016.json": "a8aa28df3b712c162c375cef2ea88b404e64ab6fc2d6f8c75f00606a6305baaf"
+    "changes/CHG-20260919-016.json": "a8aa28df3b712c162c375cef2ea88b404e64ab6fc2d6f8c75f00606a6305baaf",
+    "changes/CHG-20260919-017.json": "099981b25e7e1375b5025f43b8cd08046fce7c870ada9e14d9f4ff32e36fd463"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "Expliziter I08-REOPEN nur für zwei post-merge P1-Integritätsfehler und README-Drift; I09 bleibt gesperrt."
+      "evidence": "I08 wurde ausschließlich wegen eines post-merge P1-Legacy-Readback-Befunds erneut geöffnet; I09 blieb gesperrt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "I06 Envelope bleibt unverändert; Weltzuordnung wird ausschließlich als Storage-Metadatum gespeichert."
+      "evidence": "I06 Envelope und I07 Reducer bleiben unverändert; Legacy-v1 wird ausschließlich read-only kompatibel interpretiert."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Quality #199/#200, I08 Chromium #8 und Browser-Smoke #53 sind GREEN."
+      "evidence": "Quality #214/#215/#218, I08 Chromium #11 und Browser-Smoke #56 sind GREEN."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Abort-, Duplicate- und synchroner Queue-/Clone-Fehler beweisen vollständigen Batch-Rollback."
+      "evidence": "Keine Rewrite-Migration; bestehende Abort-/Duplicate-/Queue-Rollback-Invarianten bleiben grün."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "Exakt eine neue visuelle Änderung im REOPEN-Lauf: Kicker line-height 1.4."
+      "evidence": "Exakt eine neue visuelle Änderung: .ssi-kicker text-wrap: balance."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Reparierter I08-Fingerprint 92b5443d7894d4543ba5cf4a3b7d128e85dff646383aac19b86c268f5af60643 und beide I08 Change Records sind gebunden."
+      "evidence": "I08 Legacy-kompatibler Fingerprint 8e82a9603f439ef5a5bf51a45b27a8beec1d6134523f1c61108775047db25717 und alle drei I08 Change Records sind gebunden."
     }
   ]
 }

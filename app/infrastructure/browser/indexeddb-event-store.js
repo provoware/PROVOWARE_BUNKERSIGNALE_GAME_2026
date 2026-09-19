@@ -8,6 +8,12 @@ function requestResult(request) {
   });
 }
 
+function legacyRecordEvent(record) {
+  if (record && typeof record === "object" && record.event) return record.event;
+  const { world_id: _worldId, ...event } = record;
+  return event;
+}
+
 function transactionDone(transaction) {
   return new Promise((resolve, reject) => {
     transaction.addEventListener("complete", resolve, { once: true });
@@ -71,7 +77,7 @@ export function createIndexedDbEventStore({ indexedDB, dbName = "provoware-bunke
       const range = IDBKeyRange.bound([worldId, 0, ""], [worldId, Number.MAX_SAFE_INTEGER, "\uffff"]);
       const records = await requestResult(index.getAll(range));
       await done;
-      return records.map(record => structuredClone(record.event));
+      return records.map(record => structuredClone(legacyRecordEvent(record)));
     } finally {
       db.close();
     }
