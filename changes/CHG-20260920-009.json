@@ -1,0 +1,53 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-009",
+  "checkpoint": "I10",
+  "title": "I10-C validate-before-mutate world restore",
+  "purpose": "I10 mit einem fail-closed Restore vervollständigen: vollständiger Backup-Preflight, Content-Lock-Kompatibilität, no-clobber, atomarer I08-Batch-Write und Paritätsnachweis.",
+  "scope": [
+    "WorldRestoreError mit stabilen Restore-Fehlercodes",
+    "vollständiges JSON-Parsing und World-Backup-v1-Validation vor jedem Write",
+    "Content-Lock-Fingerprint muss exakt zur lokalen Basis passen",
+    "Zielwelt muss vor Restore leer sein",
+    "genau ein injizierter I08 appendWorld-Batch nach grünem Preflight",
+    "Append-/Abort-Fehler werden fail-closed weitergereicht",
+    "1000-Event Export→Restore→Re-Export byteidentisch",
+    "byteidentischer Eventstrom plus deterministischer I07-Reducer als Replay-Paritätsbeweis"
+  ],
+  "non_goals": [
+    "Kein File-Picker oder Download/Upload UI",
+    "Keine automatische Migration inkompatibler Content-Basen",
+    "Keine Überschreibung bestehender Welten",
+    "Keine Änderung am I08 Event Store oder I09 Snapshot Cache",
+    "Keine Hashkette, Signatur oder Crypto aus I11/I12",
+    "Keine Game-Shell- oder Storage-Health-UI-Änderung"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "I10-B Backup-v1 bleibt unverändert. Restore akzeptiert nur vollständig gültige, content-kompatible Backups in eine leere Zielwelt.",
+  "security": "Kein Write vor vollständigem Preflight. Der eigentliche Restore besteht aus genau einem atomaren I08-Batch-Append; ein injizierter Abort hinterlässt null partielle Events.",
+  "test_plan": [
+    "Repository Quality",
+    "fokussierte I10-C Contract-Tests",
+    "realer Chromium-Smoke mit 1000 Events",
+    "Content-Mismatch vor Write",
+    "trunkiertes und nicht replaybares Backup vor Write",
+    "no-clobber gegen bereits gefüllte Zielwelt",
+    "injizierter I08-Abort -> null partielle Events",
+    "Export→Restore→Re-Export byteidentisch",
+    "allgemeiner Browser-, Storage-Health-, Export-Backup- und Game-Shell-Regressionsschutz"
+  ],
+  "rollback": "I10-C-Branch verwerfen; main bleibt auf dem gehärteten I10-B-Stand.",
+  "evidence": [
+    "app/application/world-restore.js",
+    "tests/test_i10_restore.py",
+    ".github/workflows/i10-restore-smoke.yml",
+    "docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md"
+  ],
+  "result": "GREEN"
+}
