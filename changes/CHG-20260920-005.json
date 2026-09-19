@@ -1,0 +1,55 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-005",
+  "checkpoint": "I10",
+  "title": "I10-A Storage Health Foundation",
+  "purpose": "Den verbindlichen I10-Kernvertrag vollständig festlegen und als kleinsten Produktblock ausschließlich read-only Browser-Storage-Health implementieren.",
+  "scope": [
+    "I10-Vertrag für Quota/Persistenzstatus, 75/90-%-Warnschwellen, Backup-v1, Restore, Fehlerpfade, Non-Goals und Exit-Gates",
+    "read-only Storage-Estimate und persisted()-Status über Browser-Infrastructure",
+    "deterministische Klassifikation normal/warning/critical/unknown im Application-Layer",
+    "fail-soft Fehlerpfade ohne rohe Browserexception bis zur UI",
+    "read-only Diagnoseanzeige ohne Änderung der Game-Shell",
+    "realer Chromium-Gate für Grenzwerte, Fehlerfälle und UI-Integration",
+    "exakt eine zusätzliche visuelle UX-Verfeinerung: zugänglicher Storage-Belegungsbalken"
+  ],
+  "non_goals": [
+    "Keine Export-Produktlogik in I10-A",
+    "Keine Restore-Produktlogik in I10-A",
+    "Kein navigator.storage.persist()-Aufruf",
+    "Keine Betriebssystem-Datenträgerdiagnose oder automatische Löschung",
+    "Keine Änderung der I09-Verträge oder Game-Shell",
+    "Keine I11+-Hash-, Crypto-, Recovery-, Multi-Tab- oder Gameplay-Funktion"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "I10 bleibt active. I09 bleibt eingefroren; P0 Game UI bleibt als Regression Surface unverändert. Fehlende Storage-APIs degradieren zu unknown statt den Startpfad zu blockieren.",
+  "security": "Storage Health ist strikt read-only. Export/Restore sind in I10-A nur spezifiziert; es existiert noch kein neuer persistenter Schreibpfad.",
+  "test_plan": [
+    "Repository Quality mit allen bisherigen Regressionen",
+    "fokussierte I10 Storage-Health Contract-Tests",
+    "realer Chromium-Smoke für 74.9/75/89.9/90/>100 Prozent, unsupported, estimate failure und persisted failure",
+    "I10 Game UI Regression Shell bleibt grün",
+    "allgemeiner Browser-Smoke",
+    "finaler Diff ohne Export/Restore-Produktcode und ohne I09-Änderung"
+  ],
+  "rollback": "Branch verwerfen; main bleibt auf dem aktiven I10-P0-Stand nach dem Game-Shell-Gate-Triggerfix.",
+  "evidence": [
+    "docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md",
+    "docs/QUALITY_GATES.md",
+    "app/infrastructure/browser/storage-health.js",
+    "app/application/storage-health.js",
+    "app/bootstrap/main.js",
+    "app/ui/app.js",
+    "app/ui/styles.css",
+    "tests/test_i10_storage_health.py",
+    ".github/workflows/i10-storage-health-smoke.yml"
+  ],
+  "result": "GREEN"
+}
