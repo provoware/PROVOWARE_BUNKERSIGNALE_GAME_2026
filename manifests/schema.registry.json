@@ -141,6 +141,14 @@
       "path": "schemas/toolchain.schema.json",
       "status": "active",
       "introduced_in": "I00"
+    },
+    {
+      "name": "world-backup",
+      "version": "1.0.0",
+      "schema_id": "https://sound-system-iker.local/schema/world-backup/1.0.0",
+      "path": "schemas/world-backup.schema.json",
+      "status": "active",
+      "introduced_in": "I10"
     }
   ]
 }
