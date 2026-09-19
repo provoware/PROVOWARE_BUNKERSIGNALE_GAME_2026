@@ -181,7 +181,7 @@ Verbindliche Gates: **G1, G4, G6, G7 und G8**.
 - **I10-B Export Backup:** implementiert: Schema/Registry, Validator, kanonischer Serializer, read-only I08-Readback und 1000-Event-Determinismus-Smoke; noch kein Download.
 - **I10-C Restore:** implementiert: Preflight-Core, atomare no-clobber IndexedDB-Capability, Abort-Rollback und Export→Restore→Re-Export-Paritätsgate.
 
-I10-C vervollständigt den fachlichen I10-Produktumfang. I10 bleibt bis zur finalen Evidence-Bindung und Refreeze-Prüfung **ACTIVE**.
+I10-C vervollständigt den fachlichen I10-Produktumfang. Der finale Freeze-Status wird über `evidence/I10_EVIDENCE.json` und `status/I10_STATUS.json` an den governeden Repository-Fingerprint gebunden.
 
 ## Restrisiko
 
