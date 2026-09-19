@@ -1,0 +1,31 @@
+{
+  "checkpoint": "I07",
+  "product_version": "0.1.0-alpha.0",
+  "generated_at_utc": "2026-09-19T07:07:30Z",
+  "overall_status": "GREEN",
+  "gates": {"G0": "GREEN", "G1": "GREEN", "G2": "GREEN", "G3": "GREEN", "G6": "GREEN", "G7": "GREEN", "G8": "GREEN"},
+  "fingerprint_sha256": "c4250a63bf8db351cb3b96eb93064074e1b691b3f673c831e0beac88f9ea4a6d",
+  "tests": {
+    "i07_tests_expected": 6,
+    "deterministic_replay": "PASS",
+    "no_partial_state": "PASS",
+    "sequence_lamport_ruleset_guards": "PASS",
+    "unknown_event_noop": "PASS",
+    "purity_static_guard": "PASS",
+    "large_replay_profile": "PASS",
+    "replay_profile_count": 1000,
+    "replay_profile_budget_ms": 5000,
+    "quality_run_161": "PASS",
+    "browser_smoke_run_42": "PASS",
+    "frozen_i06_predecessor": "UNCHANGED"
+  },
+  "reviews": [
+    {"role": "orchestrator", "status": "PASS", "evidence": "I07 Scope eingehalten; I08 nicht vorgezogen."},
+    {"role": "architecture_guardian", "status": "PASS", "evidence": "Reducer hängt nur von Events und Ruleset ab."},
+    {"role": "qa_regression", "status": "PASS", "evidence": "Repository Quality und Chromium-Smoke grün."},
+    {"role": "security_integrity", "status": "PASS", "evidence": "Purity-Guard ohne I/O-/Zufalls-/Zeitabhängigkeit."},
+    {"role": "ux_accessibility", "status": "PASS", "evidence": "Einzige UX-Änderung ist stärkere aktive Tab-Markierung."},
+    {"role": "release_evidence", "status": "PASS", "evidence": "Fingerprint und I07 Change Record gebunden."}
+  ],
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime"
+}
