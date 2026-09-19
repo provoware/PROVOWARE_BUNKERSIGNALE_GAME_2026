@@ -1,0 +1,27 @@
+S.O.U.N.D. SYSTEM-IKER - I03 Evidence Report
+Generated UTC: 2026-09-19T00:38:20Z
+Status: GREEN
+Fingerprint SHA-256: 8910921b3b77674079cf9b656634214170417066ac29b8a30deac48eeb268d52
+
+SCOPE
+- I03: Content Registry + Lockfile
+- Exact local versions only
+- Deterministic read-only dependency resolver
+- SHA-256 package pins
+- Joint Registry/Lock drift fingerprint
+- No Inbox, quarantine, activation, persistence or productive story content
+
+VALIDATION
+- Repository quality run 35409955960: PASS
+- Chromium smoke run 35409955870: PASS
+- Browser: Google Chrome 152.0.7977.82
+- Duplicate package: rejected
+- Missing dependency: rejected
+- Wrong dependency version: rejected
+- Tampered lock hash: rejected
+- Registry/Lock drift: rejected
+- Failed resolution mutates registry/lock: NO
+- New runtime dependencies: 0
+
+NEXT CHECKPOINT
+I04 - Content Inbox/Quarantäne. Activation/import behavior remains intentionally outside I03.
