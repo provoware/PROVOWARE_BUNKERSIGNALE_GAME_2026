@@ -20,6 +20,12 @@ Die Dokumentation ist nach Verbindlichkeit getrennt. Bei Widersprüchen haben ma
 - `QUALITY_GATES.md`
 - `SUBAGENT_PROTOCOL.md`
 
+## Checkpoint-Dokumente
+
+- `I07_PURE_REDUCER.md` – deterministischer Replay-Core.
+- `I08_INDEXEDDB_EVENT_STORE.md` – transaktionaler Event Store und Readback.
+- `I09_SNAPSHOT_CACHE.md` – verwerfbarer Snapshot Cache und Replay-Fallback.
+
 ## Architekturentscheidungen
 
 - `decisions/ADR-0001-baseline-architecture.md`
