@@ -1,0 +1,24 @@
+{
+  "$schema": "../schemas/schema-registry.schema.json",
+  "version": "1.0.0",
+  "resolution": "exact_version_only",
+  "lifecycle": {
+    "states": ["active", "deprecated", "retired"],
+    "transitions": ["active->deprecated", "deprecated->retired"]
+  },
+  "entries": [
+    {"name": "agent-registry", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/agent-registry/1.0.0", "path": "schemas/agent-registry.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "architecture-boundaries", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/architecture-boundaries/1.0.0", "path": "schemas/architecture-boundaries.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "change-record", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/change-record/1.0.0", "path": "schemas/change-record.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "error-codes", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/error-codes/1.0.0", "path": "schemas/error-codes.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "evidence-report", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/evidence-report/1.0.0", "path": "schemas/evidence-report.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "product-dna", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/product-dna/1.0.0", "path": "schemas/product-dna.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "project-manifest", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/project-manifest/1.0.0", "path": "schemas/project-manifest.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "quality-gates", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/quality-gates/1.0.0", "path": "schemas/quality-gates.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "repository-layout", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/repository-layout/1.0.0", "path": "schemas/repository-layout.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "schema-registry", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/schema-registry/1.0.0", "path": "schemas/schema-registry.schema.json", "status": "active", "introduced_in": "I02"},
+    {"name": "standards-registry", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/standards-registry/1.0.0", "path": "schemas/standards-registry.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "status-report", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/status-report/1.0.0", "path": "schemas/status-report.schema.json", "status": "active", "introduced_in": "I00"},
+    {"name": "toolchain", "version": "1.0.0", "schema_id": "https://sound-system-iker.local/schema/toolchain/1.0.0", "path": "schemas/toolchain.schema.json", "status": "active", "introduced_in": "I00"}
+  ]
+}

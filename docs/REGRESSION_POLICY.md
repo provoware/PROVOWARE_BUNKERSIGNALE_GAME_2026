@@ -24,5 +24,8 @@ Jeder I00-Lauf prüft:
 ## Regression bei späteren Checkpoints
 Jeder spätere Checkpoint MUSS den kompletten I00-Lauf weiterhin bestehen. Zusätzlich kommen checkpoint-spezifische Tests hinzu. Ein Fehler in einer früheren Garantie setzt den neuen Checkpoint auf rot.
 
+## I02-Regressionsumfang
+I02 prüft zusätzlich Registry-Selbstvalidierung, lokale Schema-Identitäten, exakte Versionsauflösung, Lifecycle-Sperren sowie eine gültige Positivfixture. Jede Negativfixture muss mit dem dort deklarierten stabilen Fehlercode abgewiesen werden.
+
 ## Rollback
 Ein fehlgeschlagener Checkpoint wird nicht vorwärts repariert, solange die letzte grüne Basis nicht reproduzierbar ist. Rollback bedeutet Wiederherstellung des letzten grünen Fingerprints plus erneuten Komplettlauf.

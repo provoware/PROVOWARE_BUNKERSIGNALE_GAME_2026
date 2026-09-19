@@ -1,0 +1,10 @@
+{
+  "schema": "project-manifest", "version": "1.0.0", "expected_code": "SSI-SCHEMA-0004",
+  "instance": {
+    "project_id": "another-product", "title": "Fixture", "product_version": "0.1.0-alpha.0",
+    "specification_baseline": "0.4.0", "checkpoint": "I00", "status": "frozen_i00",
+    "runtime_strategy": "browser_local_first", "tooling_python_min": "3.12", "license_state": "UNLICENSED",
+    "canonical_encoding": "UTF-8", "canonical_line_endings": "LF", "next_checkpoint": "I01",
+    "normative_documents": ["docs/ARCHITECTURE.md"]
+  }
+}

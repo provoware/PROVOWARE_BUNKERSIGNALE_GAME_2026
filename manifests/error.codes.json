@@ -48,6 +48,26 @@
       "meaning": "Regressionstest fehlgeschlagen."
     },
     {
+      "code": "SSI-SCHEMA-0001",
+      "severity": "ERROR",
+      "meaning": "Schema Registry oder Schema-Identität ist inkonsistent."
+    },
+    {
+      "code": "SSI-SCHEMA-0002",
+      "severity": "ERROR",
+      "meaning": "Schema oder exakte Schema-Version ist unbekannt."
+    },
+    {
+      "code": "SSI-SCHEMA-0003",
+      "severity": "ERROR",
+      "meaning": "Schema-Lifecycle erlaubt die Verwendung nicht."
+    },
+    {
+      "code": "SSI-SCHEMA-0004",
+      "severity": "ERROR",
+      "meaning": "Dokument verletzt den aufgelösten Schema-Vertrag."
+    },
+    {
       "code": "SSI-INTL-0001",
       "severity": "FATAL",
       "meaning": "Unerwarteter interner Toolfehler."

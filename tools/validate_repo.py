@@ -12,6 +12,7 @@ from ssi_common import (
     read_json,
     scan_forbidden_markers,
 )
+from schema_registry import SchemaRegistry, SchemaRegistryError
 
 REQUIRED_FILES = [
     "VERSION",
@@ -38,14 +39,19 @@ REQUIRED_FILES = [
     "manifests/standards.registry.json",
     "agents/registry.json",
     "schemas/project-manifest.schema.json",
+    "schemas/schema-registry.schema.json",
     "schemas/status-report.schema.json",
     "schemas/evidence-report.schema.json",
     "schemas/change-record.schema.json",
     "changes/CHG-20260918-001.json",
+    "changes/CHG-20260919-003.json",
+    "manifests/schema.registry.json",
+    "tools/schema_registry.py",
     "tools/ssi_common.py",
     "tools/validate_repo.py",
     "tools/run_i00_checks.py",
     "tests/test_i00.py",
+    "tests/test_i02.py",
     "run_i00.sh",
 ]
 
@@ -159,6 +165,15 @@ def validate_architecture_fixtures() -> list[Issue]:
     issues.extend(architecture_violations(ROOT, policy))
     return issues
 
+def validate_schema_registry() -> list[Issue]:
+    try:
+        registry = SchemaRegistry(ROOT)
+        registry.audit()
+        registry.validate("schema-registry", "1.0.0", registry.data)
+        return []
+    except SchemaRegistryError as exc:
+        return [Issue(exc.code, "ERROR", "manifests/schema.registry.json", exc.message)]
+
 def validate_repository() -> list[Issue]:
     checks = [
         validate_required_files,
@@ -170,6 +185,7 @@ def validate_repository() -> list[Issue]:
         validate_line_endings,
         validate_no_code_placeholders,
         validate_architecture_fixtures,
+        validate_schema_registry,
     ]
     issues: list[Issue] = []
     for check in checks:
