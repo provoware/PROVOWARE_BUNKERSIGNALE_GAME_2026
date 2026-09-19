@@ -65,10 +65,10 @@ jobs:
 
           await call('Runtime.enable');
           const expression = `(async () => {
-            const { createIndexedDbEventStore } = await import('/app/infrastructure/browser/indexeddb-event-store.js');
-            const { createIndexedDbWorldRestore } = await import('/app/infrastructure/browser/indexeddb-world-restore.js');
-            const { exportWorldBackup } = await import('/app/application/world-backup.js');
-            const { restoreWorldBackup } = await import('/app/application/world-restore.js');
+            const { createIndexedDbEventStore } = await import('http://127.0.0.1:8765/app/infrastructure/browser/indexeddb-event-store.js');
+            const { createIndexedDbWorldRestore } = await import('http://127.0.0.1:8765/app/infrastructure/browser/indexeddb-world-restore.js');
+            const { exportWorldBackup } = await import('http://127.0.0.1:8765/app/application/world-backup.js');
+            const { restoreWorldBackup } = await import('http://127.0.0.1:8765/app/application/world-restore.js');
 
             const worldId = 'world:000000000000000000000020';
             const productVersion = '0.1.0-alpha.0';
