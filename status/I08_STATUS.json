@@ -1,0 +1,59 @@
+{
+  "checkpoint": "I08",
+  "product_version": "0.1.0-alpha.0",
+  "generated_at_utc": "2026-09-19T17:03:16Z",
+  "overall_status": "GREEN",
+  "gates": {
+    "G2": "GREEN",
+    "G4": "GREEN",
+    "G6": "GREEN"
+  },
+  "fingerprint_sha256": "8e82a9603f439ef5a5bf51a45b27a8beec1d6134523f1c61108775047db25717",
+  "tests": {
+    "i08_contract_tests": "PASS",
+    "repository_quality_run_214": "PASS",
+    "repository_quality_run_215": "PASS",
+    "repository_quality_run_218": "PASS",
+    "indexeddb_chromium_run_11": "PASS",
+    "browser_smoke_run_56": "PASS",
+    "legacy_v1_readback": "PASS",
+    "abort_atomicity": "PASS",
+    "duplicate_rollback": "PASS",
+    "synchronous_queue_rollback": "PASS",
+    "envelope_contract_unchanged": "PASS",
+    "frozen_i07_predecessor": "UNCHANGED"
+  },
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "I08 wurde ausschließlich wegen eines post-merge P1-Legacy-Readback-Befunds erneut geöffnet; I09 blieb gesperrt."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "I06 Envelope und I07 Reducer bleiben unverändert; Legacy-v1 wird ausschließlich read-only kompatibel interpretiert."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Quality #214/#215/#218, I08 Chromium #11 und Browser-Smoke #56 sind GREEN."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "Keine Rewrite-Migration; bestehende Abort-/Duplicate-/Queue-Rollback-Invarianten bleiben grün."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "Exakt eine neue visuelle Änderung: .ssi-kicker text-wrap: balance."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "I08 Legacy-kompatibler Fingerprint 8e82a9603f439ef5a5bf51a45b27a8beec1d6134523f1c61108775047db25717 und alle drei I08 Change Records sind gebunden."
+    }
+  ],
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime"
+}
