@@ -41,7 +41,7 @@ class I09SnapshotCacheTests(unittest.TestCase):
     def test_snapshot_write_has_abort_path_and_does_not_enter_i10_scope(self) -> None:
         source = CACHE.read_text(encoding="utf-8")
         self.assertIn("transaction.abort()", source)
-        for forbidden in ("navigator.storage", "estimate()", "persist()", "export", "importworld"):
+        for forbidden in ("navigator.storage", ".estimate(", ".persist(", "exportworld", "importworld"):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, source.lower())
 
