@@ -6,6 +6,8 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
+- I02 Design Tokens und gemeinsame UI-Komponenten für Buttons, Panels, Dialoge, Tabs, Statuschips, Benachrichtigungen sowie Leer- und Fehlerzustände.
+- Kontrastverstärkung über `prefers-contrast` zusätzlich zu den bestehenden Fokus- und Reduced-Motion-Schutzmechanismen.
 - I01 dependency-freie Browser-App-Shell mit sicherem Bootstrap-Fallback.
 - Read-only Health- und Recovery-Diagnose mit Browser-Capability-Detection.
 - Tastatur-/Fokus-Basis, responsive Darstellung und `prefers-reduced-motion`-Schutz.

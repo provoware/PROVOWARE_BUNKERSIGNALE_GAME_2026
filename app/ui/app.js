@@ -33,9 +33,9 @@ function renderOverview(documentRef, snapshot) {
   const section = element(documentRef, "section", { className: "ssi-panel" });
   section.id = "overview-panel";
   section.tabIndex = -1;
-  const heading = element(documentRef, "h2", { text: "System bereit für I01" });
+  const heading = element(documentRef, "h2", { text: "System bereit für I02" });
   const copy = element(documentRef, "p", {
-    text: "Diese Iteration stellt nur den sicheren Startpfad und die technische Diagnose bereit. Spiellogik und persistente Weltdaten sind noch nicht aktiv.",
+    text: "Der sichere Startpfad nutzt jetzt ein gemeinsames, zugängliches UI-Grundsystem. Spiellogik und persistente Weltdaten sind noch nicht aktiv.",
   });
   const meta = element(documentRef, "dl", { className: "ssi-meta" });
   const values = [
@@ -50,6 +50,56 @@ function renderOverview(documentRef, snapshot) {
     );
   }
   section.append(heading, copy, meta);
+  return section;
+}
+
+function renderDesignSystem(documentRef) {
+  const section = element(documentRef, "section", { className: "ssi-panel" });
+  section.id = "design-system-panel";
+  section.tabIndex = -1;
+  section.hidden = true;
+  section.append(
+    element(documentRef, "h2", { text: "UI-Grundsystem" }),
+    element(documentRef, "p", {
+      className: "ssi-muted",
+      text: "Gemeinsame Komponenten halten Bedienung, Zustände und Rückmeldungen konsistent.",
+    }),
+  );
+
+  const states = element(documentRef, "div", { className: "ssi-grid" });
+  const empty = element(documentRef, "article", { className: "ssi-card ssi-empty-state" });
+  empty.append(
+    element(documentRef, "h3", { text: "Noch keine Weltdaten" }),
+    element(documentRef, "p", { text: "Weltdaten werden erst in einem späteren Checkpoint angelegt." }),
+  );
+  const error = element(documentRef, "article", { className: "ssi-card ssi-card--error" });
+  error.setAttribute("role", "status");
+  error.append(
+    element(documentRef, "h3", { text: "Beispiel für einen Fehlerzustand" }),
+    element(documentRef, "p", { text: "Fehler bleiben verständlich und enthalten einen sicheren nächsten Schritt." }),
+  );
+  states.append(empty, error);
+
+  const dialog = element(documentRef, "dialog", { className: "ssi-dialog" });
+  dialog.setAttribute("aria-labelledby", "design-dialog-title");
+  const dialogTitle = element(documentRef, "h2", { text: "Sicherer Dialog" });
+  dialogTitle.id = "design-dialog-title";
+  const close = element(documentRef, "button", { className: "ssi-button", text: "Dialog schließen" });
+  close.type = "button";
+  close.addEventListener("click", () => dialog.close());
+  dialog.append(
+    dialogTitle,
+    element(documentRef, "p", { text: "Dialoge verwenden die native Tastatur- und Fokusführung des Browsers." }),
+    close,
+  );
+  const open = element(documentRef, "button", { className: "ssi-button ssi-button--primary", text: "Dialog öffnen" });
+  open.type = "button";
+  open.addEventListener("click", () => dialog.showModal());
+
+  const notification = element(documentRef, "p", { className: "ssi-toast", text: "Statusmeldungen werden hier zugänglich angekündigt." });
+  notification.setAttribute("role", "status");
+  notification.setAttribute("aria-live", "polite");
+  section.append(states, open, dialog, notification);
   return section;
 }
 
@@ -104,25 +154,32 @@ export function renderApp(root, snapshot, { onRefresh }) {
   nav.setAttribute("aria-label", "Hauptbereiche");
   const overviewButton = element(documentRef, "button", { className: "ssi-tab", text: "Übersicht" });
   const diagnosticsButton = element(documentRef, "button", { className: "ssi-tab", text: "Diagnose & Recovery" });
-  overviewButton.type = diagnosticsButton.type = "button";
+  const designSystemButton = element(documentRef, "button", { className: "ssi-tab", text: "UI-System" });
+  overviewButton.type = diagnosticsButton.type = designSystemButton.type = "button";
   overviewButton.setAttribute("aria-pressed", "true");
   diagnosticsButton.setAttribute("aria-pressed", "false");
-  nav.append(overviewButton, diagnosticsButton);
+  designSystemButton.setAttribute("aria-pressed", "false");
+  nav.append(overviewButton, diagnosticsButton, designSystemButton);
 
   const overview = renderOverview(documentRef, snapshot);
   const diagnostics = renderDiagnostics(documentRef, snapshot, onRefresh);
+  const designSystem = renderDesignSystem(documentRef);
 
   function select(panel) {
     const showDiagnostics = panel === "diagnostics";
-    overview.hidden = showDiagnostics;
+    const showDesignSystem = panel === "design-system";
+    overview.hidden = showDiagnostics || showDesignSystem;
     diagnostics.hidden = !showDiagnostics;
-    overviewButton.setAttribute("aria-pressed", String(!showDiagnostics));
+    designSystem.hidden = !showDesignSystem;
+    overviewButton.setAttribute("aria-pressed", String(!showDiagnostics && !showDesignSystem));
     diagnosticsButton.setAttribute("aria-pressed", String(showDiagnostics));
-    (showDiagnostics ? diagnostics : overview).focus?.();
+    designSystemButton.setAttribute("aria-pressed", String(showDesignSystem));
+    (showDiagnostics ? diagnostics : showDesignSystem ? designSystem : overview).focus?.();
   }
 
   overviewButton.addEventListener("click", () => select("overview"));
   diagnosticsButton.addEventListener("click", () => select("diagnostics"));
+  designSystemButton.addEventListener("click", () => select("design-system"));
 
-  root.append(header, nav, overview, diagnostics);
+  root.append(header, nav, overview, diagnostics, designSystem);
 }

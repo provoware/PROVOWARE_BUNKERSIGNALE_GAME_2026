@@ -8,7 +8,11 @@
   --ssi-ok: #72e2a7;
   --ssi-warning: #ffd166;
   --ssi-error: #ff8c8c;
+  --ssi-space-1: 0.5rem;
+  --ssi-space-2: 1rem;
+  --ssi-space-3: 1.5rem;
   --ssi-radius: 0.75rem;
+  --ssi-shadow: 0 1rem 3rem rgb(0 0 0 / 35%);
   font-family: system-ui, sans-serif;
 }
 
@@ -21,6 +25,7 @@ button { font: inherit; }
 .ssi-header { display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 1rem; }
 .ssi-kicker { color: var(--ssi-muted); margin: 0; font-size: 0.85rem; letter-spacing: 0.08em; }
 h1, h2 { line-height: 1.2; }
+h3 { line-height: 1.3; }
 h1 { margin: 0.25rem 0 0; }
 .ssi-card, .ssi-panel { background: var(--ssi-panel); border: 1px solid var(--ssi-border); border-radius: var(--ssi-radius); padding: 1.25rem; }
 .ssi-card--error { border-color: var(--ssi-error); }
@@ -28,6 +33,8 @@ h1 { margin: 0.25rem 0 0; }
 .ssi-tab, .ssi-button { min-height: 2.75rem; border: 1px solid var(--ssi-border); border-radius: 0.55rem; background: var(--ssi-panel); color: var(--ssi-text); padding: 0.6rem 0.9rem; cursor: pointer; }
 .ssi-tab[aria-pressed="true"] { border-color: var(--ssi-accent); box-shadow: inset 0 -0.2rem 0 var(--ssi-accent); }
 .ssi-tab:hover, .ssi-button:hover { border-color: var(--ssi-accent); }
+.ssi-button--primary { background: var(--ssi-accent); border-color: var(--ssi-accent); color: var(--ssi-bg); font-weight: 700; }
+.ssi-button--primary:hover { background: var(--ssi-text); color: var(--ssi-bg); }
 :focus-visible { outline: 0.2rem solid var(--ssi-accent); outline-offset: 0.2rem; }
 .ssi-status { display: inline-flex; align-items: center; min-height: 2rem; border: 1px solid currentColor; border-radius: 999px; padding: 0.25rem 0.65rem; font-weight: 700; }
 .ssi-status--ok { color: var(--ssi-ok); }
@@ -39,7 +46,18 @@ h1 { margin: 0.25rem 0 0; }
 .ssi-health-list { list-style: none; padding: 0; margin: 1rem 0; }
 .ssi-health-row { display: flex; gap: 1rem; justify-content: space-between; align-items: start; padding: 0.85rem 0; border-top: 1px solid var(--ssi-border); }
 .ssi-health-row p { color: var(--ssi-muted); margin: 0.3rem 0 0; }
+.ssi-muted, .ssi-empty-state p { color: var(--ssi-muted); }
+.ssi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--ssi-space-2); margin: var(--ssi-space-2) 0; }
+.ssi-empty-state { border-style: dashed; }
+.ssi-dialog { width: min(32rem, calc(100% - 2rem)); color: var(--ssi-text); background: var(--ssi-panel); border: 1px solid var(--ssi-border); border-radius: var(--ssi-radius); box-shadow: var(--ssi-shadow); }
+.ssi-dialog::backdrop { background: rgb(0 0 0 / 70%); }
+.ssi-toast { margin: var(--ssi-space-2) 0 0; padding: 0.75rem var(--ssi-space-2); border-inline-start: 0.3rem solid var(--ssi-accent); background: var(--ssi-bg); }
 [hidden] { display: none !important; }
+
+@media (prefers-contrast: more) {
+  :root { --ssi-border: #f4f7fa; --ssi-accent: #8ee5ff; }
+  .ssi-panel, .ssi-card, .ssi-tab, .ssi-button { border-width: 0.15rem; }
+}
 
 @media (max-width: 42rem) {
   .ssi-app { width: min(100% - 1rem, 70rem); padding-top: 1rem; }

@@ -1,0 +1,26 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-003",
+  "checkpoint": "I02",
+  "title": "Design System und UI-Grundsystem",
+  "purpose": "Gemeinsame zugängliche Basiskomponenten und Design Tokens für alle folgenden Kernansichten bereitstellen.",
+  "scope": [
+    "Erweiterte Farb-, Abstands-, Radius- und Schatten-Tokens",
+    "Gemeinsame Buttons, Panels, Dialoge, Tabs und Statuschips",
+    "Benachrichtigungs-, Leer- und Fehlerzustände",
+    "Kontrast-, Fokus- und Reduced-Motion-Schutz",
+    "I02-Strukturtests"
+  ],
+  "non_goals": [
+    "Keine Spiellogik oder Bunker-Hauptansicht",
+    "Keine Persistenz oder Content Registry",
+    "Keine neue Runtime-Abhängigkeit"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "security_integrity", "ux_accessibility", "release_evidence"],
+  "compatibility": "Additive Erweiterung der I01-App-Shell; bestehender Start- und Diagnosepfad bleibt erhalten.",
+  "security": "Keine neue Daten-, Import- oder Schreiboberfläche; Dialog und Statusmeldung verwenden native beziehungsweise semantische Browsermechanismen.",
+  "test_plan": ["I00/I01-Regression", "I02-Strukturtests", "JavaScript-Syntaxprüfung", "Browser-Sichtprüfung"],
+  "rollback": "I02-Commit revertieren; die gefreezte I01-App-Shell bleibt lauffähig.",
+  "evidence": ["evidence/I02_EVIDENCE.json", "evidence/I02_EVIDENCE.txt", "status/I02_STATUS.json"],
+  "result": "GREEN"
+}
