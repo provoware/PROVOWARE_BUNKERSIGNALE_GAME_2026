@@ -1,7 +1,7 @@
 {
   "checkpoint": "I06",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-19T04:58:30Z",
+  "generated_at_utc": "2026-09-19T05:03:30Z",
   "overall_status": "GREEN",
   "gates": {
     "G0": "GREEN",
@@ -12,49 +12,52 @@
     "G7": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "008000d0eaa03f97093ee18035d852c2d184f7dd7499095bc6cf7693ceedecda",
+  "fingerprint_sha256": "cb0aacbf54b89d538b9e89b1ff41cf1931f8fda9de70bcd3a34410ccf39bb86d",
   "tests": {
-    "i06_tests_expected": 6,
+    "i06_tests_expected": 8,
     "positive_envelope": "PASS",
     "optional_trace_fields": "PASS",
     "negative_fixtures": "PASS",
     "typed_author_id": "PASS",
     "optional_trace_validation": "PASS",
     "no_partial_envelope_on_failure": "PASS",
-    "repository_quality_run_116": "PASS",
-    "chromium_smoke_run_29": "PASS",
+    "truncated_noncanonical_readback": "PASS",
+    "legacy_large_readback_profile": "PASS",
+    "readback_profile_count": 1000,
+    "readback_profile_budget_ms": 5000,
+    "reopen_quality_probe_130": "EXPECTED_EVIDENCE_BLOCK_ONLY",
     "frozen_i05_predecessor": "UNCHANGED"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "I06 ist auf Event Envelope v1 begrenzt; I07 Reducer und I08 Persistenz wurden nicht vorgezogen."
+      "evidence": "I06 REOPEN ist ausschließlich auf die fehlenden v0.4-Readback-/Crash-Härtungsnachweise begrenzt; I07/I08 wurden nicht vorgezogen."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Envelope-Logik nutzt I05-Identitätsprimitive und Schema Registry; keine Browser-/DB-Abhängigkeit."
+      "evidence": "Der Envelope-Vertrag und sein Schema bleiben unverändert; Readback ergänzt nur eine strikte vollständige Bytegrenze."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "event-envelope@1.0.0 ist exakt registriert; unbekannte Zusatzfelder werden abgewiesen."
+      "evidence": "event-envelope@1.0.0 bleibt unverändert registriert; Legacy-Minimal-v1 nutzt ausschließlich bestehende Pflichtfelder."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Sechs fokussierte I06-Tests plus bestehende Regression bestanden."
+      "evidence": "Acht fokussierte I06-Tests einschließlich trunkierter/nicht-kanonischer Bytes, Legacy-Roundtrip und 1000-Envelope-Profil liefen im Quality-Gate ohne Testfehler."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Ungültige ID-Typen, Sequenzen, Lamport-Zeit und Zusatzfelder schlagen fail-closed fehl."
+      "evidence": "Teilweise, ungültige oder nicht-kanonische persistierte Bytes werden fail-closed abgewiesen."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "Einzige visuelle Änderung ist max-width 68ch für Panel-Fließtexte; Chromium-Smoke blieb grün."
+      "evidence": "Der REOPEN verändert keine UI-Datei; die einzige I06-UX-Änderung max-width 68ch wurde bereits per Chromium-Smoke geprüft."
     },
     {
       "role": "content_canon",
@@ -64,7 +67,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Quality Run 35422649017 und Chromium Run 35422649042 sind GREEN; Fingerprint ist gebunden."
+      "evidence": "REOPEN-Probe 35422848054 meldete ausschließlich veraltete Freeze-Evidence und den neuen governeden Fingerprint; keine Produkt-/Testregression."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
