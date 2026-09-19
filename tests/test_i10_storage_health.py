@@ -32,6 +32,9 @@ class I10StorageHealthTests(unittest.TestCase):
         self.assertIn('capacity_status', source)
         self.assertIn('"best_effort"', source)
         self.assertIn('"persistent"', source)
+        infra = INFRA.read_text(encoding="utf-8")
+        self.assertIn("const persistence = await readPersisted(storageManager);", infra)
+        self.assertIn("persisted: persistence.persisted", infra)
 
     def test_boot_composes_storage_health_without_touching_game_model(self) -> None:
         source = BOOT.read_text(encoding="utf-8")
