@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sound-system-iker.local/schema/world-backup/1.0.0",
+  "title": "S.O.U.N.D. SYSTEM-IKER World Backup v1",
+  "type": "object",
+  "required": [
+    "format",
+    "format_version",
+    "world_id",
+    "product_version",
+    "content_lock_fingerprint",
+    "event_count",
+    "events"
+  ],
+  "properties": {
+    "format": {"const": "ssi-world-backup"},
+    "format_version": {"const": 1},
+    "world_id": {"type":"string","pattern":"^world:[0-9a-f]{24}$"},
+    "product_version": {
+      "type":"string",
+      "pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "content_lock_fingerprint": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "event_count": {"type":"integer","minimum":0},
+    "events": {
+      "type":"array",
+      "items":{"type":"object"}
+    }
+  },
+  "additionalProperties": false
+}
