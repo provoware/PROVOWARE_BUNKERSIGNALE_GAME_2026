@@ -1,32 +1,37 @@
-S.O.U.N.D. SYSTEM-IKER - I06 Evidence Report
-Generated UTC: 2026-09-19T04:58:30Z
+S.O.U.N.D. SYSTEM-IKER - I06 REOPEN Evidence Report
+Generated UTC: 2026-09-19T05:03:30Z
 Status: GREEN
-Governed fingerprint SHA-256: 008000d0eaa03f97093ee18035d852c2d184f7dd7499095bc6cf7693ceedecda
+Governed fingerprint SHA-256: cb0aacbf54b89d538b9e89b1ff41cf1931f8fda9de70bcd3a34410ccf39bb86d
 
-BETROFFENE BEREICHE
-- Event Envelope v1: Schema, Schema-Registry-Eintrag, reine Validierung/Serialisierung.
-- Positive und negative Fixtures sowie sechs fokussierte Regressionstests.
-- Dokumentation: Architektur, Quality Gates, README, Changelog und Change Record.
-- Genau eine visuelle UX-Änderung: Panel-Fließtexte auf maximal 68ch begrenzt.
+REOPEN-GRUND
+- MASTER-Entwicklungsplan v0.4 verlangt für I06 zusätzlich Crash/Abort-Sicherheit an der Persistenzgrenze sowie Alt-/Großwelt-Readback-Messwerte.
+- Der bereits eingefrorene Envelope-Vertrag selbst war korrekt; es fehlten diese beiden Härtungsnachweise.
 
-BEGRÜNDUNG
-- Verbindliche Masterplanung definiert I06 als Event Envelope v1.
-- I05 Stable IDs + Canonical JSON wurde zuvor explizit repariert und wieder eingefroren.
-- I06 verwendet diese Basis, ohne Reducer oder Persistenz vorzuziehen.
+ÄNDERUNG
+- Vollständiger kanonischer Envelope-Readback ergänzt.
+- Trunkierte, ungültige und nicht-kanonische Bytes werden fail-closed verworfen.
+- Legacy-Minimal-v1-Fixture ergänzt.
+- 1000 deterministische Envelope-Roundtrips als Readback-/Performance-Smoke ergänzt.
+- Literale \n-Fehler im Changelog korrigiert.
+- Kein Event-Envelope-Schema, keine UI und keine I03-I05-Funktion verändert.
 
 PRÜFUNGEN
-- Schema-/Sequenz-/Lamport-/ID-/Zusatzfeld-Invarianten: PASS.
-- Negative Fixtures: sequence=0, lamport<0, unknown_field: erwartungsgemäß abgewiesen.
-- GitHub Actions quality run 35422649017: SUCCESS.
-- Real Chromium smoke run 35422649042: SUCCESS.
+- I06-Testumfang: 8 Tests.
+- Legacy-Minimal-v1 Roundtrip: PASS.
+- Truncated/noncanonical readback: PASS.
+- 1000 Envelope Serialize/Readback: PASS innerhalb 5000-ms-Smokebudget.
+- Quality run 35422848054: erwartungsgemäß RED ausschließlich wegen veralteter Freeze-Evidence.
+- Neuer governter Fingerprint: cb0aacbf54b89d538b9e89b1ff41cf1931f8fda9de70bcd3a34410ccf39bb86d.
 
 ERGEBNIS
-- I06 Minimal-Scope vollständig umgesetzt und freeze-fähig.
-- I03-I05 bleiben unverändert eingefroren.
+- Die noch fehlenden I06-v0.4-Härtungsnachweise sind umgesetzt.
+- Persistenter Event Store bleibt ausdrücklich außerhalb I06.
+- I05 bleibt unverändert eingefroren.
 
 RESTRISIKO
-- Durable Event-Persistenz und echte Crash/Abort-Transaktionen sind absichtlich noch nicht vorhanden; sie gehören in den späteren Event-Store-Checkpoint.
-- I06 garantiert vollständige Envelope-Validierung vor Rückgabe, aber noch keinen persistenten Write.
+- Echte transaktionale IndexedDB-Crashsicherheit kann erst der spätere Event-Store-Checkpoint vollständig beweisen.
+- I06 beweist an seiner Bytegrenze, dass partielle Persistenzdaten nicht als gültige Eventzustände akzeptiert werden.
 
 NÄCHSTER SCHRITT
-- I07 Pure Reducer Foundation gegen die verbindliche Masterplanung auflösen; keine Zustandsmutation außerhalb reiner Eventprojektion.
+- Nach final grünem Quality-Gate I06 erneut einfrieren und PR #16 mergen.
+- Danach I07 Pure Reducer Foundation aus der verbindlichen Masterplanung ableiten.
