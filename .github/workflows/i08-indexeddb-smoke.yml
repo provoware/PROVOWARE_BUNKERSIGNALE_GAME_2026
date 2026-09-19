@@ -58,7 +58,23 @@ jobs:
             const clean = createIndexedDbEventStore({ indexedDB, dbName });
             if ((await clean.readWorld(worldId)).length !== 0) throw new Error('aborted transaction leaked a partial write');
 
-            await clean.append(worldId, [event('11',0), event('12',1)]);
+            const legacyDb = await new Promise((resolve, reject) => {
+              const request = indexedDB.open(dbName, 1);
+              request.onsuccess = () => resolve(request.result);
+              request.onerror = () => reject(request.error);
+            });
+            await new Promise((resolve, reject) => {
+              const tx = legacyDb.transaction('events', 'readwrite');
+              tx.objectStore('events').add({ ...event('10',0), world_id: worldId });
+              tx.oncomplete = resolve;
+              tx.onerror = () => reject(tx.error);
+              tx.onabort = () => reject(tx.error || new Error('legacy seed aborted'));
+            });
+            legacyDb.close();
+            const legacyReadback = await clean.readWorld(worldId);
+            if (legacyReadback[0]?.event_id !== 'event:000000000000000000000010' || 'world_id' in legacyReadback[0]) throw new Error('legacy v1 readback mismatch');
+
+            await clean.append(worldId, [event('11',1), event('12',2)]);
             const reopened = createIndexedDbEventStore({ indexedDB, dbName });
             const readback = await reopened.readWorld(worldId);
             if (readback.map(e => e.event_id).join(',') !== 'event:000000000000000000000011,event:000000000000000000000012') throw new Error('reopen/readback mismatch');
@@ -78,12 +94,12 @@ jobs:
             if (finalReadback.some(e => e.event_id === 'event:000000000000000000000015')) throw new Error('sync queue failure committed a partial event');
 
             indexedDB.deleteDatabase(dbName);
-            return { aborted, duplicateRejected, queueRejected, count: finalReadback.length, ids: finalReadback.map(e => e.event_id) };
+            return { aborted, duplicateRejected, queueRejected, legacyCompatible: true, count: finalReadback.length, ids: finalReadback.map(e => e.event_id) };
           })()`;
           const result = await call('Runtime.evaluate', { expression, awaitPromise:true, returnByValue:true });
           if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
           const value = result.result?.value;
-          if (!value?.aborted || !value?.duplicateRejected || !value?.queueRejected || value.count !== 2) throw new Error(`I08 smoke failed: ${JSON.stringify(value)}`);
+          if (!value?.aborted || !value?.duplicateRejected || !value?.queueRejected || !value?.legacyCompatible || value.count !== 3) throw new Error(`I08 smoke failed: ${JSON.stringify(value)}`);
           console.log('I08 IndexedDB smoke: PASS', JSON.stringify(value));
           ws.close();
           NODE
