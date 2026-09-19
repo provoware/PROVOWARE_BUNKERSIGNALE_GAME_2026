@@ -47,5 +47,5 @@
     ".github/workflows/i10-restore-smoke.yml",
     "docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md"
   ],
-  "result": "PENDING_GATES"
+  "result": "RED"
 }
