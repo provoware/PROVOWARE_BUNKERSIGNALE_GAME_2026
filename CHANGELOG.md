@@ -6,6 +6,8 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
+- I10-P0 read-only Game UI Regression Shell mit Figuren-, Szenen-, Detail- und Ereignisbereich sowie vollständig deaktivierten Spielaktionen.
+- I10-P0 realer Chromium-Gate für Tab-Aktivierung, Fokus, Read-only-Aktionen, Desktop-Overflow und 640-px-Einspaltenlayout.
 - I09 verwerfbarer IndexedDB Snapshot Cache mit strikter Welt-/Ruleset-/Event-Fingerprint-Prüfung und vollständigem Replay-Fallback.
 - I09 Chromium-Härtung für fehlende, korrupte und fingerprint-falsche Snapshots, atomaren Abort sowie 1000-Schritt-Replay-/Readback-Messwerte.
 - I08 transaktionaler IndexedDB Event Store mit atomarem Batch-Append, deterministischem Welt-Readback und Legacy-v1-Kompatibilität.
@@ -30,6 +32,8 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 - I01-Strukturtests sowie realer Chromium-Boot-Smoke als Pull-Request-Gate.
 
 ### Changed
+- Technische Übersicht und Diagnose verwenden checkpoint-neutrale Texte statt veralteter I01-Hinweise.
+- Als exakt eine visuelle I10-P0-Verfeinerung erhält nur die zentrale Szenenfläche eine Akzentkante.
 - Panel-Absätze nutzen ausschließlich `text-wrap: pretty` für ruhigere Zeilenumbrüche; Layout- und Interaktionslogik bleiben unverändert.
 - Aktiver Browser-Tab wird zusätzlich typografisch hervorgehoben; Navigation und Interaktionslogik bleiben unverändert.
 - Verbliebene literale `\\n`-Sequenz zwischen I06-/I05-Changelog-Einträgen in echte Markdown-Zeilen getrennt.
