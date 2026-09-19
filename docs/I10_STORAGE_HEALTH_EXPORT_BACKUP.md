@@ -97,7 +97,7 @@ Erst danach darf ein atomarer Event-Store-Write beginnen. Jeder Fehler oder Abor
 ## Fehler- und Datenverlustpfade
 
 - Storage API fehlt -> `unknown`, Anwendung bleibt nutzbar.
-- `estimate()` schlägt fehl -> `unknown`, keine rohe Browserexception bis zur UI.
+- `estimate()` schlägt fehl -> Kapazität `unknown`, aber ein separat lesbarer Persistenzstatus bleibt erhalten; keine rohe Browserexception bis zur UI.
 - `persisted()` schlägt fehl -> Kapazitätsmessung bleibt nutzbar, Persistenzstatus wird `unknown`.
 - Export-Read schlägt fehl -> keine unvollständige Backup-Datei als erfolgreich melden.
 - Backup ist trunkiert, schemafalsch oder inkonsistent -> Restore vor jedem Write ablehnen.
