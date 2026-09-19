@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
@@ -14,6 +16,8 @@ if str(TOOLS) not in sys.path:
 
 from content_inbox import ContentInbox
 from content_registry import ContentRegistry, ContentRegistryError
+from ssi_common import repository_fingerprint
+from validate_repo import CHECKPOINT_EVIDENCE_FILES, validate_checkpoint_evidence
 
 
 class I04ContentInboxTests(unittest.TestCase):
@@ -89,6 +93,134 @@ class I04ContentInboxTests(unittest.TestCase):
         with self.assertRaises(ContentRegistryError):
             self.processor.process("addon.json", "feature.addon", "1.0.0")
         self.assertTrue(staged.is_file())
+
+    def test_activation_race_cannot_clobber_new_target(self) -> None:
+        staged = self.stage_addon()
+        destination = self.root / "packages/addon.json"
+        sentinel = b"external-writer\n"
+        real_link = os.link
+
+        def racing_link(source: Path, target: Path) -> None:
+            Path(target).write_bytes(sentinel)
+            real_link(source, target)
+
+        with patch("content_inbox.os.link", side_effect=racing_link):
+            with self.assertRaises(ContentRegistryError):
+                self.processor.process("addon.json", "feature.addon", "1.0.0")
+
+        self.assertTrue(staged.is_file())
+        self.assertEqual(destination.read_bytes(), sentinel)
+
+    def test_quarantine_race_cannot_clobber_new_target(self) -> None:
+        staged = self.stage_addon()
+        data = json.loads(staged.read_text(encoding="utf-8"))
+        data["payload"]["label"] = "Tampered"
+        staged.write_text(json.dumps(data) + "\n", encoding="utf-8")
+        destination = self.quarantine / "addon.json"
+        sentinel = b"external-quarantine-writer\n"
+        real_link = os.link
+
+        def racing_link(source: Path, target: Path) -> None:
+            Path(target).write_bytes(sentinel)
+            real_link(source, target)
+
+        with patch("content_inbox.os.link", side_effect=racing_link):
+            with self.assertRaises(ContentRegistryError):
+                self.processor.process("addon.json", "feature.addon", "1.0.0")
+
+        self.assertTrue(staged.is_file())
+        self.assertEqual(destination.read_bytes(), sentinel)
+
+    def test_cleanup_failure_never_deletes_concurrently_replaced_target(self) -> None:
+        staged = self.stage_addon()
+        destination = self.root / "packages/addon.json"
+        sentinel = b"replacement-owned-by-other-writer\n"
+        real_unlink = Path.unlink
+
+        def failing_cleanup(path: Path, *args, **kwargs) -> None:
+            if path == staged:
+                real_unlink(destination)
+                destination.write_bytes(sentinel)
+                raise OSError("simulated source cleanup failure")
+            real_unlink(path, *args, **kwargs)
+
+        with patch.object(Path, "unlink", autospec=True, side_effect=failing_cleanup):
+            with self.assertRaises(ContentRegistryError):
+                self.processor.process("addon.json", "feature.addon", "1.0.0")
+
+        self.assertTrue(staged.is_file())
+        self.assertEqual(destination.read_bytes(), sentinel)
+
+    def test_stale_frozen_checkpoint_evidence_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "manifests").mkdir()
+            (root / "evidence").mkdir()
+            (root / "status").mkdir()
+            (root / "manifests/project.manifest.json").write_text(
+                json.dumps({"checkpoint": "I04", "status": "frozen_i04"}) + "\n",
+                encoding="utf-8",
+            )
+            stale = "0" * 64
+            (root / "evidence/I04_EVIDENCE.json").write_text(
+                json.dumps({
+                    "checkpoint": "I04",
+                    "status": "GREEN",
+                    "fingerprint_sha256": stale,
+                    "file_hashes": {},
+                }) + "\n",
+                encoding="utf-8",
+            )
+            (root / "status/I04_STATUS.json").write_text(
+                json.dumps({
+                    "checkpoint": "I04",
+                    "overall_status": "GREEN",
+                    "fingerprint_sha256": stale,
+                }) + "\n",
+                encoding="utf-8",
+            )
+
+            issues = validate_checkpoint_evidence(root)
+            self.assertTrue(any(issue.code == "SSI-INT-0001" for issue in issues))
+
+    def test_exact_frozen_checkpoint_evidence_is_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "manifests").mkdir()
+            (root / "evidence").mkdir()
+            (root / "status").mkdir()
+            (root / "manifests/project.manifest.json").write_text(
+                json.dumps({"checkpoint": "I04", "status": "frozen_i04"}) + "\n",
+                encoding="utf-8",
+            )
+            for rel in CHECKPOINT_EVIDENCE_FILES["I04"]:
+                path = root / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("fixture\n", encoding="utf-8")
+            fingerprint, hashes = repository_fingerprint(root)
+            critical_hashes = {
+                rel: hashes[rel]
+                for rel in CHECKPOINT_EVIDENCE_FILES["I04"]
+            }
+            (root / "evidence/I04_EVIDENCE.json").write_text(
+                json.dumps({
+                    "checkpoint": "I04",
+                    "status": "GREEN",
+                    "fingerprint_sha256": fingerprint,
+                    "file_hashes": critical_hashes,
+                }) + "\n",
+                encoding="utf-8",
+            )
+            (root / "status/I04_STATUS.json").write_text(
+                json.dumps({
+                    "checkpoint": "I04",
+                    "overall_status": "GREEN",
+                    "fingerprint_sha256": fingerprint,
+                }) + "\n",
+                encoding="utf-8",
+            )
+
+            self.assertEqual(validate_checkpoint_evidence(root), [])
 
 
 if __name__ == "__main__":

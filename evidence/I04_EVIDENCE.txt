@@ -1,21 +1,29 @@
-S.O.U.N.D. SYSTEM-IKER - I04 Evidence Report
-Generated UTC: 2026-09-19T00:48:32Z
+S.O.U.N.D. SYSTEM-IKER - I04 REOPEN Evidence Report
+Generated UTC: 2026-09-19T01:23:10Z
 Status: GREEN
-Fingerprint SHA-256: e816c527b230b32e7c1d55efb1eef02853267ceb5f42e2f2bbaca3cd21f96f2f
+Governed fingerprint SHA-256: 984bfbcf8de86b8f00fb7c916e8628f0f7a1f73c77b436e59a4bbdf0bef2638d
 
-SCOPE
-- Local Content Inbox with simple candidate names
-- Registry identity, exact version, dependency graph and SHA-256 lock-pin verification
-- Quarantine of invalid candidates with stable reason codes
-- Atomic activation only into a free registered destination
-- No productive content, world persistence, gameplay, synchronization or new dependency
+REOPEN-BEFUNDE
+- No-Clobber musste auch unter Ziel-Races garantiert werden.
+- I04-Artefakte mussten vom Repository-Gate erzwungen werden.
+- Evidence durfte nicht nur vorhanden, sondern musste aktuell und kryptografisch an den governeden Stand gebunden sein.
+- Ein Cleanup-Fehler durfte niemals ein inzwischen fremd ersetztes Ziel löschen.
 
-VALIDATION
-- python3 -S -m unittest tests.test_i04 -v: PASS (4 tests)
-- ./run_i00.sh: PASS
-- Existing activation target remains unchanged: PASS
-- Path escape remains outside Inbox and unchanged: PASS
-- Tampered and invalid JSON candidates are quarantined: PASS
+HÄRTUNG
+- Aktivierung und Quarantäne: atomare No-Clobber-Zielanlage per Hardlink.
+- Cross-Filesystem: fail-closed statt nicht-atomarer Kopie.
+- Source-Cleanup-Fehler: Ziel bleibt unangetastet.
+- Freeze-Guard: Evidence- und Status-Fingerprint müssen aktuell sein.
+- Sechs I04-kritische Dateien werden zusätzlich einzeln per SHA-256 belegt.
+- Negative Evidence-Probe: Run 35412393774 wurde erwartungsgemäß mit SSI-INT-0001 gestoppt.
 
-NEXT CHECKPOINT
-I05 - remains intentionally outside I04.
+ABSCHLUSSPRÜFUNG
+- GitHub Actions quality run 35412482151: SUCCESS.
+- Real Chromium smoke run 35412482180: SUCCESS.
+- Quality-Fingerprint bestätigt: 984bfbcf8de86b8f00fb7c916e8628f0f7a1f73c77b436e59a4bbdf0bef2638d.
+- I04-Testmodul: 9 Tests einschließlich Ziel-Races, Cleanup-Failure und Evidence-Integrität.
+- I00-I03 bleiben unverändert und wurden nicht reopened.
+
+FREEZE
+- I04 ist auf diesem Stand wieder vollständig beweisbar und freeze-fähig.
+- I05 bleibt der nächste eigenständige Checkpoint und wurde nicht vorgezogen.

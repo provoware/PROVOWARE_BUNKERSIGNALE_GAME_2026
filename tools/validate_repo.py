@@ -10,6 +10,7 @@ from ssi_common import (
     architecture_violations,
     governed_files,
     read_json,
+    repository_fingerprint,
     scan_forbidden_markers,
 )
 from schema_registry import SchemaRegistry, SchemaRegistryError
@@ -55,17 +56,33 @@ REQUIRED_FILES = [
     "schemas/change-record.schema.json",
     "tools/schema_registry.py",
     "tools/content_registry.py",
+    "tools/content_inbox.py",
     "tools/ssi_common.py",
     "tools/validate_repo.py",
     "tools/run_i00_checks.py",
     "tests/test_i00.py",
     "tests/test_i02.py",
     "tests/test_i03.py",
+    "tests/test_i04.py",
+    "evidence/I04_EVIDENCE.json",
+    "evidence/I04_EVIDENCE.txt",
+    "status/I04_STATUS.json",
     "run_i00.sh",
 ]
 
 SEMVER_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 CHECKPOINT_RE = re.compile(r"^I([0-9]{2})$")
+
+CHECKPOINT_EVIDENCE_FILES = {
+    "I04": [
+        "tools/content_inbox.py",
+        "tools/validate_repo.py",
+        "tests/test_i04.py",
+        "docs/REGRESSION_POLICY.md",
+        "changes/CHG-20260919-006.json",
+        "changes/CHG-20260919-007.json",
+    ],
+}
 
 
 def validate_required_files() -> list[Issue]:
@@ -243,6 +260,78 @@ def validate_content_registry() -> list[Issue]:
     except ContentRegistryError as exc:
         return [Issue(exc.code, "ERROR", "manifests/content.registry.json", exc.message)]
 
+
+def validate_checkpoint_evidence(root=ROOT) -> list[Issue]:
+    """Require frozen checkpoint evidence to describe the exact governed tree."""
+    manifest_path = root / "manifests/project.manifest.json"
+    if not manifest_path.is_file():
+        return []
+
+    try:
+        manifest = read_json(manifest_path)
+    except Exception as exc:
+        return [Issue("SSI-VAL-0002", "ERROR", "manifests/project.manifest.json", str(exc))]
+
+    checkpoint = str(manifest.get("checkpoint", ""))
+    if CHECKPOINT_RE.fullmatch(checkpoint) is None:
+        return []
+
+    evidence_path = root / f"evidence/{checkpoint}_EVIDENCE.json"
+    status_path = root / f"status/{checkpoint}_STATUS.json"
+    if not evidence_path.is_file() or not status_path.is_file():
+        return []
+
+    try:
+        evidence = read_json(evidence_path)
+        status = read_json(status_path)
+    except Exception as exc:
+        return [Issue("SSI-VAL-0002", "ERROR", checkpoint, f"Checkpoint-Evidence ist nicht lesbar: {exc}")]
+
+    current_fingerprint, current_hashes = repository_fingerprint(root)
+    issues: list[Issue] = []
+
+    if evidence.get("checkpoint") != checkpoint:
+        issues.append(Issue("SSI-INT-0001", "ERROR", evidence_path.relative_to(root).as_posix(), "Evidence-Checkpoint stimmt nicht mit dem Projektmanifest überein."))
+    if evidence.get("fingerprint_sha256") != current_fingerprint:
+        issues.append(Issue("SSI-INT-0001", "ERROR", evidence_path.relative_to(root).as_posix(), "Evidence-Fingerprint ist veraltet oder inkonsistent."))
+    recorded_hashes = evidence.get("file_hashes")
+    if not isinstance(recorded_hashes, dict):
+        issues.append(Issue("SSI-INT-0001", "ERROR", evidence_path.relative_to(root).as_posix(), "Evidence-Dateihashes fehlen oder sind ungültig."))
+    else:
+        required_hash_paths = CHECKPOINT_EVIDENCE_FILES.get(checkpoint, [])
+        missing_hashes = [path for path in required_hash_paths if path not in recorded_hashes]
+        stale_hashes = [
+            path
+            for path, digest in recorded_hashes.items()
+            if current_hashes.get(path) != digest
+        ]
+        if missing_hashes:
+            issues.append(Issue(
+                "SSI-INT-0001",
+                "ERROR",
+                evidence_path.relative_to(root).as_posix(),
+                "Checkpoint-kritische Evidence-Dateihashes fehlen: " + ", ".join(missing_hashes),
+            ))
+        if stale_hashes:
+            issues.append(Issue(
+                "SSI-INT-0001",
+                "ERROR",
+                evidence_path.relative_to(root).as_posix(),
+                "Evidence-Dateihashes sind veraltet oder unbekannt: " + ", ".join(sorted(stale_hashes)),
+            ))
+
+    if status.get("checkpoint") != checkpoint:
+        issues.append(Issue("SSI-INT-0001", "ERROR", status_path.relative_to(root).as_posix(), "Status-Checkpoint stimmt nicht mit dem Projektmanifest überein."))
+    if status.get("fingerprint_sha256") != current_fingerprint:
+        issues.append(Issue("SSI-INT-0001", "ERROR", status_path.relative_to(root).as_posix(), "Status-Fingerprint ist veraltet oder inkonsistent."))
+
+    expected_frozen_status = f"frozen_{checkpoint.lower()}"
+    if manifest.get("status") == expected_frozen_status:
+        if evidence.get("status") != "GREEN" or status.get("overall_status") != "GREEN":
+            issues.append(Issue("SSI-INT-0001", "ERROR", checkpoint, "Ein eingefrorener Checkpoint benötigt grüne Evidence und grünen Status."))
+
+    return issues
+
 def validate_repository() -> list[Issue]:
     checks = [
         validate_required_files,
@@ -257,6 +346,7 @@ def validate_repository() -> list[Issue]:
         validate_architecture_fixtures,
         validate_schema_registry,
         validate_content_registry,
+        validate_checkpoint_evidence,
     ]
     issues: list[Issue] = []
     for check in checks:
