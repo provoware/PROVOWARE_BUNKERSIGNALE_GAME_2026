@@ -48,6 +48,12 @@ I02 prüft zusätzlich Registry-Selbstvalidierung, lokale Schema-Identitäten, e
 
 I03 prüft zusätzlich Content-Registry und Lockfile als gemeinsames read-only Vertragsset. Pflichtprüfungen sind: exakte Paketversionen, eindeutige Paket-IDs, vollständige Abhängigkeiten, deterministische Auflösungsreihenfolge, Pfadbegrenzung auf den erlaubten Root, SHA-256-Lock-Pins und gemeinsamer Registry/Lock-Fingerprint. Positive sowie manipulierte Fixtures müssen reproduzierbar akzeptiert beziehungsweise mit stabilem CONTENT-Fehlercode abgewiesen werden. Ein fehlgeschlagener Resolve-/Drift-Test darf Registry oder Lockfile nicht verändern.
 
+## I04-Regressionsumfang
+
+I04 prüft zusätzlich den vollständigen Lebenszyklus eines einzelnen Inbox-Kandidaten. Ein registrierter, exakt gepinnter Kandidat wird nur an ein freies Ziel veröffentlicht; manipulierte oder unlesbare Kandidaten werden mit stabilem CONTENT-Fehlercode quarantänisiert. Pfad-Escapes und vorhandene Aktivierungs- oder Quarantäneziele müssen ohne Überschreiben abgewiesen werden.
+
+Die No-Clobber-Garantie MUSS auch bei einem Ziel-Race gelten: Entsteht das Ziel zwischen Validierung und Dateisystemoperation, darf es niemals ersetzt werden. Der Kandidat bleibt in diesem Fehlerfall erhalten. Cross-Filesystem-Veröffentlichungen werden fail-closed abgewiesen, statt auf eine nicht-atomare Kopierstrategie auszuweichen.
+
 ## Rollback
 
 Ein fehlgeschlagener Checkpoint wird nicht vorwärts repariert, solange die letzte grüne Basis nicht reproduzierbar ist. Rollback bedeutet Wiederherstellung des letzten grünen Checkpoints plus erneuten vollständigen Qualitätslauf.
