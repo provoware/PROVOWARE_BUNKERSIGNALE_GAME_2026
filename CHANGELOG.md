@@ -6,8 +6,11 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
+- I07 Pure Reducer Foundation mit deterministischem Replay ausschließlich aus Event-Envelopes und explizitem Ruleset.
+- I07 Purity-Guard, fail-closed Sequenz-/Lamport-/Ruleset-Prüfung und 1000-Event-Replay-Smoke.
 - I06 Event Envelope v1 mit Schema Registry, Sequenz-/Lamport-Invarianten und definierten Trace-Feldern.
-- I06 Positiv-/Negativfixtures für gültige Envelopes, ungültige Sequenz, negative Lamport-Zeit und unbekannte Zusatzfelder.\n- I05 stabile world/actor/object/event IDs mit deterministischem Generator und strikter Typvalidierung.
+- I06 Positiv-/Negativfixtures für gültige Envelopes, ungültige Sequenz, negative Lamport-Zeit und unbekannte Zusatzfelder.
+- I05 stabile world/actor/object/event IDs mit deterministischem Generator und strikter Typvalidierung.
 - I05 Canonical-JSON-Serialisierung mit UTF-8, sortierten Schlüsseln, LF-Normalisierung und fail-closed Behandlung instabiler Werte.
 - I05 read-only Content-Hot-Swap-Policy mit vier Sicherheitsklassen, sicherem Default und deterministischen Freigabeentscheidungen.
 - I05-Regressionstests für Sofortwechsel, Neustartpflicht, Migrationspflicht und Sperre während laufender Welten.
@@ -24,6 +27,8 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 - I01-Strukturtests sowie realer Chromium-Boot-Smoke als Pull-Request-Gate.
 
 ### Changed
+- Aktiver Browser-Tab wird zusätzlich typografisch hervorgehoben; Navigation und Interaktionslogik bleiben unverändert.
+- Verbliebene literale `\\n`-Sequenz zwischen I06-/I05-Changelog-Einträgen in echte Markdown-Zeilen getrennt.
 - I06 per dokumentiertem REOPEN um kanonischen Crash/Abort-Readback, Legacy-Readback und 1000-Envelope-Profil ergänzt.
 - Panel-Fließtexte auf eine ruhige maximale Zeilenbreite begrenzt; keine Navigation oder Laufzeitlogik verändert.
 - I05 per dokumentiertem REOPEN an die verbindliche v0.4-Voraussetzung für Stable IDs + Canonical JSON angeglichen; bestehende Hot-Swap-Funktion bleibt unverändert.
