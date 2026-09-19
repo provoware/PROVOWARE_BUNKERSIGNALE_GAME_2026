@@ -1,0 +1,118 @@
+name: i10-game-ui-shell-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'app/application/game-shell.js'
+      - 'app/bootstrap/main.js'
+      - 'app/ui/**'
+      - 'tests/test_i10_ui_shell.py'
+      - '.github/workflows/i10-game-ui-shell-smoke.yml'
+      - 'docs/I10_GAME_UI_REGRESSION_SHELL.md'
+      - 'manifests/project.manifest.json'
+      - 'README.md'
+      - 'CHANGELOG.md'
+
+jobs:
+  game-ui-shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read-only game surface in real Chromium
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser"
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i10-ui-http.log" 2>&1 &
+          server_pid=$!
+          "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --remote-debugging-address=127.0.0.1 --remote-debugging-port=9222 about:blank >"$RUNNER_TEMP/i10-ui-chromium.log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$server_pid" "$browser_pid" 2>/dev/null || true' EXIT
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break
+            sleep 0.1
+          done
+
+          node <<'NODE'
+          const debugBase = 'http://127.0.0.1:9222';
+          const appUrl = 'http://127.0.0.1:8765/index.html';
+          const target = await fetch(`${debugBase}/json/new?${encodeURIComponent(appUrl)}`, {method:'PUT'}).then(r => r.json());
+          const ws = new WebSocket(target.webSocketDebuggerUrl);
+          await new Promise((resolve, reject) => {
+            ws.addEventListener('open', resolve, {once:true});
+            ws.addEventListener('error', reject, {once:true});
+          });
+
+          let seq = 0;
+          const pending = new Map();
+          const exceptions = [];
+          ws.addEventListener('message', event => {
+            const msg = JSON.parse(event.data);
+            if (msg.id && pending.has(msg.id)) {
+              const p = pending.get(msg.id);
+              pending.delete(msg.id);
+              msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg.result ?? {});
+            } else if (msg.method === 'Runtime.exceptionThrown') {
+              exceptions.push(msg.params);
+            }
+          });
+          const call=(method,params={})=>new Promise((resolve,reject)=>{
+            const id=++seq; pending.set(id,{resolve,reject}); ws.send(JSON.stringify({id,method,params}));
+          });
+
+          await call('Runtime.enable');
+          const deadline = Date.now() + 10000;
+          while (Date.now() < deadline) {
+            const ready = await call('Runtime.evaluate', {
+              expression: `document.querySelector('#app')?.getAttribute('aria-busy') === 'false' && document.body.innerText.includes('Technische Basis bereit')`,
+              returnByValue: true
+            });
+            if (ready.result?.value === true) break;
+            await new Promise(r => setTimeout(r, 100));
+          }
+
+          const desktop = await call('Runtime.evaluate', {
+            expression: `(() => {
+              const gameButton=[...document.querySelectorAll('.ssi-tab')].find(button=>button.textContent==='Spiel');
+              if (!gameButton) throw new Error('game tab missing');
+              gameButton.click();
+              const panel=document.querySelector('#game-panel');
+              const actions=[...document.querySelectorAll('.ssi-game-action')];
+              return {
+                pressed: gameButton.getAttribute('aria-pressed'),
+                hidden: panel?.hidden,
+                surface: panel?.dataset.regressionSurface,
+                active: document.activeElement?.id,
+                heading: panel?.querySelector('h2')?.textContent,
+                readOnly: panel?.innerText.includes('keine Weltmutation'),
+                actions: actions.length,
+                enabledActions: actions.filter(button=>!button.disabled).length,
+                overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
+              };
+            })()`,
+            returnByValue: true
+          });
+          const d=desktop.result?.value;
+          if (d?.pressed !== 'true' || d.hidden !== false || d.surface !== 'game-shell') throw new Error(`game selection failed: ${JSON.stringify(d)}`);
+          if (d.active !== 'game-panel' || d.heading !== 'Spielansicht · Regression') throw new Error(`game focus/heading failed: ${JSON.stringify(d)}`);
+          if (!d.readOnly || d.actions !== 4 || d.enabledActions !== 0) throw new Error(`read-only action contract failed: ${JSON.stringify(d)}`);
+          if (d.overflow) throw new Error('desktop game shell has horizontal overflow');
+
+          await call('Emulation.setDeviceMetricsOverride', {width:640,height:900,deviceScaleFactor:1,mobile:false});
+          await new Promise(r => setTimeout(r, 100));
+          const narrow = await call('Runtime.evaluate', {
+            expression: `(() => ({
+              overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+              columns: getComputedStyle(document.querySelector('.ssi-game-grid')).gridTemplateColumns
+            }))()`,
+            returnByValue: true
+          });
+          const n=narrow.result?.value;
+          if (n?.overflow) throw new Error(`narrow game shell has horizontal overflow: ${JSON.stringify(n)}`);
+          if (!n?.columns || n.columns.trim().split(/\\s+/).length !== 1) throw new Error(`narrow game grid did not collapse: ${JSON.stringify(n)}`);
+          if (exceptions.length) throw new Error(`Runtime exceptions: ${JSON.stringify(exceptions)}`);
+
+          console.log('I10 Game UI shell smoke: PASS', JSON.stringify({desktop:d,narrow:n}));
+          ws.close();
+          NODE
