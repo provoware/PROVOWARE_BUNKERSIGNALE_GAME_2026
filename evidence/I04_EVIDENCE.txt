@@ -1,21 +1,25 @@
-S.O.U.N.D. SYSTEM-IKER - I04 Evidence Report
-Generated UTC: 2026-09-19T00:48:32Z
+S.O.U.N.D. SYSTEM-IKER - I04 REOPEN Evidence Report
+Generated UTC: 2026-09-19T01:15:37Z
 Status: GREEN
-Fingerprint SHA-256: e816c527b230b32e7c1d55efb1eef02853267ceb5f42e2f2bbaca3cd21f96f2f
+Fingerprint SHA-256: f1529d45ae948fc260a3b86e80e2bde507d926ada91d237979b4ff8f2c3e3800
 
-SCOPE
-- Local Content Inbox with simple candidate names
-- Registry identity, exact version, dependency graph and SHA-256 lock-pin verification
-- Quarantine of invalid candidates with stable reason codes
-- Atomic activation only into a free registered destination
-- No productive content, world persistence, gameplay, synchronization or new dependency
+REOPEN-GRUND
+- Review-Befund 1: No-Clobber war mit exists() + os.replace() unter einem Ziel-Race nicht garantiert.
+- Review-Befund 2: I04-Implementierung und I04-Test waren im Pflichtdatei-Gate nicht explizit erzwungen.
 
-VALIDATION
-- python3 -S -m unittest tests.test_i04 -v: PASS (4 tests)
-- ./run_i00.sh: PASS
-- Existing activation target remains unchanged: PASS
-- Path escape remains outside Inbox and unchanged: PASS
-- Tampered and invalid JSON candidates are quarantined: PASS
+REPARATUR
+- Aktivierung und Quarantäne verwenden atomare No-Clobber-Zielerzeugung via os.link().
+- FileExistsError schlägt fail-closed fehl; vorhandene Ziele bleiben unverändert.
+- Cross-Filesystem-Veröffentlichung wird abgewiesen statt nicht-atomar kopiert.
+- tools/content_inbox.py, tests/test_i04.py, I04-Evidence und I04-Status sind Pflichtartefakte.
+- I04-Regressionspolicy fordert explizit Schutz gegen Ziel-Races.
 
-NEXT CHECKPOINT
-I05 - remains intentionally outside I04.
+VALIDIERUNG
+- GitHub quality run 35412086985: SUCCESS
+- Real browser smoke run 35412086983: SUCCESS
+- I04-Testbestand: 6 Tests, einschließlich Aktivierungs-Race und Quarantäne-Race
+- Repository-Fingerprint: f1529d45ae948fc260a3b86e80e2bde507d926ada91d237979b4ff8f2c3e3800
+- I00-I03: nicht reopened; Gesamtlauf GREEN
+
+FREEZE
+I04 kann nach diesem REOPEN wieder eingefroren werden. I05 bleibt der nächste eigenständige Checkpoint.
