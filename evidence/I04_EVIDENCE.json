@@ -1,8 +1,8 @@
 {
   "checkpoint": "I04",
-  "generated_at_utc": "2026-09-19T01:23:10Z",
+  "generated_at_utc": "2026-09-19T01:27:59Z",
   "status": "GREEN",
-  "fingerprint_sha256": "984bfbcf8de86b8f00fb7c916e8628f0f7a1f73c77b436e59a4bbdf0bef2638d",
+  "fingerprint_sha256": "2cb628f4f0d841768d7c2b701f1c6d7488f48f79e92f887621589ad586383cc3",
   "checks": [
     {
       "name": "no_clobber_activation",
@@ -43,15 +43,31 @@
       "name": "chromium_smoke_final",
       "status": "PASS",
       "detail": "Real Chromium smoke run 35412482180 completed SUCCESS on the same PR head."
+    },
+    {
+      "name": "architecture_contract_correction",
+      "status": "PASS",
+      "detail": "Normative I04 architecture text now matches the tested hard-link no-clobber implementation and cleanup-failure behavior."
+    },
+    {
+      "name": "dynamic_change_record_hashing",
+      "status": "PASS",
+      "detail": "All Change Records belonging to the current checkpoint are discovered dynamically and required as critical evidence hashes."
+    },
+    {
+      "name": "stale_evidence_reopen_probe",
+      "status": "PASS",
+      "detail": "Quality run 35412727792 rejected the pre-refresh evidence and explicitly reported missing CHG-20260919-008 plus stale changed-file hashes."
     }
   ],
   "file_hashes": {
     "tools/content_inbox.py": "f44f125c109dfb7a75783beb12e8747c68823896d725f4d31bb0e5f15e7b0b5a",
-    "tools/validate_repo.py": "d9b0eae06ea333027b13b6249cdad44d8e85a36742e3836a221555e5c8a4f747",
-    "tests/test_i04.py": "2b647ff8609944bae32d29a8488a1f738557ba206a961d11702c259f9afd60d6",
+    "tools/validate_repo.py": "ab9513561ca43e913dec72fce19f5ab2a8d5f0bff8ea223c9f9f9824bb981855",
+    "tests/test_i04.py": "0c3080a174d03382d654a211959291e58ea448b8c2a02df62835000ccaafc32e",
     "docs/REGRESSION_POLICY.md": "bce6ee57736d6b43117f01ba1122a7172acfbe5d2eec3f70e72b398825835d3e",
     "changes/CHG-20260919-006.json": "0795ba4a25f6a691bbcb944e5502e1f86bb81bbc238b76826f4689a1f3c1f803",
-    "changes/CHG-20260919-007.json": "f9538c5ea4a113669b19c606ac62a16238038149b7d77c619dc93dedeb8b0043"
+    "changes/CHG-20260919-007.json": "f9538c5ea4a113669b19c606ac62a16238038149b7d77c619dc93dedeb8b0043",
+    "changes/CHG-20260919-008.json": "6532a1f292ac44f168e2abdfb85972c743ff32474878b8a4dbd8f0dbd24e4f85"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
@@ -63,7 +79,7 @@
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Only I04 tooling, validation, tests and regression documentation changed; browser layer boundaries remain unchanged."
+      "evidence": "I04 normative architecture now matches the tested hard-link no-clobber implementation; no runtime behavior changed."
     },
     {
       "role": "data_schema_auditor",
@@ -93,7 +109,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Final quality run 35412482151 and Chromium smoke 35412482180 are GREEN; evidence remains bound to fingerprint 984bfbcf...f2638d and six critical hashes."
+      "evidence": "Evidence is rebound to fingerprint 2cb628f4...383cc3; all I04 Change Records, including CHG-20260919-008, are dynamically required and hashed."
     }
   ]
 }
