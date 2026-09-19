@@ -34,5 +34,5 @@
     "app/application/world-restore.js",
     "tests/test_i10_restore.py"
   ],
-  "result": "RED"
+  "result": "GREEN"
 }
