@@ -6,6 +6,9 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
+- I10-A read-only Storage Health über Browser-Estimate/Persistenzstatus mit exakten 75-%-/90-%-Kapazitätsgrenzen und fail-soft `unknown`-Pfad.
+- I10 Storage Health/Export/Restore-Kernvertrag mit deterministischem Backup-v1-Format, no-clobber Restore und expliziten Exit-Gates.
+- I10 realer Chromium-Storage-Health-Smoke für Grenzwerte, API-Fehler und Diagnoseintegration.
 - I10-P0 read-only Game UI Regression Shell mit Figuren-, Szenen-, Detail- und Ereignisbereich sowie vollständig deaktivierten Spielaktionen.
 - I10-P0 realer Chromium-Gate für Tab-Aktivierung, Fokus, Read-only-Aktionen, Desktop-Overflow und 640-px-Einspaltenlayout.
 - I09 verwerfbarer IndexedDB Snapshot Cache mit strikter Welt-/Ruleset-/Event-Fingerprint-Prüfung und vollständigem Replay-Fallback.
@@ -32,6 +35,7 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 - I01-Strukturtests sowie realer Chromium-Boot-Smoke als Pull-Request-Gate.
 
 ### Changed
+- Storage Health erhält als exakt eine visuelle I10-A-Verfeinerung einen zugänglichen Belegungsbalken in der read-only Diagnose; die Game-Shell bleibt unverändert.
 - Technische Übersicht und Diagnose verwenden checkpoint-neutrale Texte statt veralteter I01-Hinweise.
 - Als exakt eine visuelle I10-P0-Verfeinerung erhält nur die zentrale Szenenfläche eine Akzentkante.
 - Panel-Absätze nutzen ausschließlich `text-wrap: pretty` für ruhigere Zeilenumbrüche; Layout- und Interaktionslogik bleiben unverändert.
