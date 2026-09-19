@@ -9,12 +9,12 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Bereich | Stand |
 | --- | --- |
 | Produktversion | `0.1.0-alpha.0` |
-| Aktueller Checkpoint | **I07 – Pure Reducer Foundation** |
-| Nächster Checkpoint | **I08 – IndexedDB Event Store** |
+| Aktueller Checkpoint | **I08 – IndexedDB Event Store** |
+| Nächster Checkpoint | **I09 – Snapshot Cache** |
 | Runtime | Browser, local-first |
 | Buildschritt | nicht erforderlich |
 | Paketmanager | nicht erforderlich |
-| Persistente Weltdaten | noch nicht aktiv |
+| Persistente Eventdaten | **I08 aktiv – IndexedDB Event Store** |
 | Spiellogik | noch nicht aktiv |
 
 Bereits umgesetzt:
@@ -27,6 +27,7 @@ Bereits umgesetzt:
 - **I05** – stabile world/actor/object/event IDs, Canonical JSON sowie read-only Hot-Swap-Policy.
 - **I06** – Event Envelope v1 mit Schema, Sequenz-/Lamport-Invarianten, Trace-Feldern und Negative Fixtures.
 - **I07** – deterministische Pure-Reducer-Grundlage mit fail-closed Replay-Invarianten und Purity-Guard.
+- **I08** – transaktionaler IndexedDB Event Store mit Weltzuordnung als Storage-Metadatum, deterministischem Readback und vollständigem Rollback bei Abort, Duplicate sowie synchronen Queue-/Clone-Fehlern.
 
 ## Schnellstart
 
@@ -83,8 +84,9 @@ Dokumentationsindex: **[docs/README.md](docs/README.md)**
 - I05 stellt stabile Identitäten und Canonical JSON bereit; Contentwechsel bleiben read-only klassifiziert.
 - I06 validiert vollständige Event Envelopes, persistiert aber noch keine Events.
 - I07 reduziert ausschließlich aus Events + Ruleset und besitzt keine Zeit-, Zufalls-, Storage-/Datei- oder Netzwerkabhängigkeit.
+- I08 persistiert Events transaktional in IndexedDB; die Weltzuordnung liegt außerhalb des unveränderten I06-Envelope-Vertrags als Storage-Metadatum.
 - Neue Runtime-Abhängigkeiten benötigen eine begründete Architekturentscheidung.
-- Persistente Weltdaten, produktive Contentpakete und Spiellogik werden nicht vorgezogen.
+- Snapshots, Quota-/Export-Funktionen, produktive Contentpakete und Spiellogik werden nicht vorgezogen.
 
 ## Lizenzstatus
 
