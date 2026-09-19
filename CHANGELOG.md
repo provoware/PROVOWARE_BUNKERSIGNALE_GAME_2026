@@ -6,6 +6,8 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
+- I10-B World Backup v1: registriertes Schema, exakter Runtime-Validator, kanonischer JSON-Serializer und read-only I08-Welt-Export.
+- I10-B realer Chromium-Smoke mit 1.000 Events, zwei byteidentischen Wiederholungsexporten und 5.000-ms-Smoke-Budget.
 - I10-A read-only Storage Health über Browser-Estimate/Persistenzstatus mit exakten 75-%-/90-%-Kapazitätsgrenzen und fail-soft `unknown`-Pfad.
 - I10 Storage Health/Export/Restore-Kernvertrag mit deterministischem Backup-v1-Format, no-clobber Restore und expliziten Exit-Gates.
 - I10 realer Chromium-Storage-Health-Smoke für Grenzwerte, API-Fehler und Diagnoseintegration.
@@ -35,6 +37,7 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 - I01-Strukturtests sowie realer Chromium-Boot-Smoke als Pull-Request-Gate.
 
 ### Changed
+- I10 bleibt nach Export Backup v1 bewusst ACTIVE; Restore, Download und jeder neue Schreibpfad bleiben außerhalb von I10-B.
 - Storage Health erhält als exakt eine visuelle I10-A-Verfeinerung einen zugänglichen Belegungsbalken in der read-only Diagnose; die Game-Shell bleibt unverändert.
 - Technische Übersicht und Diagnose verwenden checkpoint-neutrale Texte statt veralteter I01-Hinweise.
 - Als exakt eine visuelle I10-P0-Verfeinerung erhält nur die zentrale Szenenfläche eine Akzentkante.
