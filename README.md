@@ -9,8 +9,8 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Bereich | Stand |
 | --- | --- |
 | Produktversion | `0.1.0-alpha.0` |
-| Aktueller Checkpoint | **I06 – Event Envelope v1** |
-| Nächster Checkpoint | **I07** |
+| Aktueller Checkpoint | **I07 – Pure Reducer Foundation** |
+| Nächster Checkpoint | **I08 – IndexedDB Event Store** |
 | Runtime | Browser, local-first |
 | Buildschritt | nicht erforderlich |
 | Paketmanager | nicht erforderlich |
@@ -26,6 +26,7 @@ Bereits umgesetzt:
 - **I04** – lokale Inbox mit Lock-Pin-Prüfung, Quarantäne ungültiger Kandidaten und atomarer Aktivierung in noch freie Paketziele.
 - **I05** – stabile world/actor/object/event IDs, Canonical JSON sowie read-only Hot-Swap-Policy.
 - **I06** – Event Envelope v1 mit Schema, Sequenz-/Lamport-Invarianten, Trace-Feldern und Negative Fixtures.
+- **I07** – deterministische Pure-Reducer-Grundlage mit fail-closed Replay-Invarianten und Purity-Guard.
 
 ## Schnellstart
 
@@ -81,6 +82,7 @@ Dokumentationsindex: **[docs/README.md](docs/README.md)**
 - I04 verarbeitet nur explizit benannte lokale Inbox-Kandidaten; Zielkonflikte schlagen ohne Überschreiben fehl.
 - I05 stellt stabile Identitäten und Canonical JSON bereit; Contentwechsel bleiben read-only klassifiziert.
 - I06 validiert vollständige Event Envelopes, persistiert aber noch keine Events.
+- I07 reduziert ausschließlich aus Events + Ruleset und besitzt keine Zeit-, Zufalls-, Storage-/Datei- oder Netzwerkabhängigkeit.
 - Neue Runtime-Abhängigkeiten benötigen eine begründete Architekturentscheidung.
 - Persistente Weltdaten, produktive Contentpakete und Spiellogik werden nicht vorgezogen.
 
