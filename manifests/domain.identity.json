@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "id_kinds": ["world", "actor", "object", "event"],
+  "id_format": "kind:24-lowercase-hex",
+  "generator": "sha256(kind + LF + normalized_stable_key), first 24 hex",
+  "canonical_json": {
+    "encoding": "UTF-8",
+    "key_order": "lexicographic",
+    "whitespace": "none",
+    "line_endings_in_strings": "LF",
+    "reject_non_finite_numbers": true,
+    "reject_non_string_object_keys": true
+  }
+}
