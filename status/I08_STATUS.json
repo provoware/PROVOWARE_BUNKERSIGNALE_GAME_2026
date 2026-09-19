@@ -1,0 +1,55 @@
+{
+  "checkpoint": "I08",
+  "product_version": "0.1.0-alpha.0",
+  "generated_at_utc": "2026-09-19T15:36:37Z",
+  "overall_status": "GREEN",
+  "gates": {
+    "G2": "GREEN",
+    "G4": "GREEN",
+    "G6": "GREEN"
+  },
+  "fingerprint_sha256": "0d7826cac046275ef0460526d940ca903842dd2094e59edb62ae10e53a1219ec",
+  "tests": {
+    "i08_contract_tests": "PASS",
+    "repository_quality_run_181": "PASS",
+    "indexeddb_chromium_run_4": "PASS",
+    "browser_smoke_run_49": "PASS",
+    "abort_atomicity": "PASS",
+    "duplicate_rollback": "PASS",
+    "reopen_readback": "PASS",
+    "frozen_i07_predecessor": "UNCHANGED"
+  },
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "I08 bleibt auf IndexedDB Event Store plus exakt eine isolierte UX-Änderung begrenzt; I09 wurde nicht vorgezogen."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "Persistenz liegt in app/infrastructure/browser; I07-Reducer bleibt unverändert."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Quality #181, I08 Chromium #4 und Browser #49 sind GREEN."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "Abort und Duplicate-Constraint wurden auf vollständigen Transaktions-Rollback geprüft."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "Nur Kicker-Typografie verstärkt; keine Layout- oder Interaktionsänderung."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "I08-Fingerprint 0d7826cac046275ef0460526d940ca903842dd2094e59edb62ae10e53a1219ec ist an den Freeze-Manifest-Stand gebunden."
+    }
+  ],
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime"
+}
