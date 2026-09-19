@@ -49,11 +49,11 @@ export function createHealthSnapshot({ build, capabilities, checkedAt }) {
     ]),
     project: Object.freeze({
       worldVersion: "Noch keine Welt geöffnet",
-      databaseStatus: "Noch nicht initialisiert – I01 schreibt keine Weltdaten",
-      contentStatus: "Technische Baseline aktiv; Content Registry folgt in einem späteren Checkpoint",
+      databaseStatus: "Persistenz-Bausteine vorhanden; Diagnose führt keine Schreibaktion aus",
+      contentStatus: "Lokale Content-Basis vorhanden; Diagnose aktiviert keine Spielinhalte",
       syncStatus: "Noch nicht aktiv",
       quarantineStatus: "Noch nicht aktiv",
-      recoveryMode: "Read-only Diagnose; keine Reparatur- oder Löschaktion in I01",
+      recoveryMode: "Read-only Diagnose; keine Reparatur- oder Löschaktion",
     }),
   });
 }
