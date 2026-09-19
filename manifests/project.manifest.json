@@ -7,7 +7,7 @@
   "specification_baseline": "0.4.0",
   "checkpoint": "I09",
   "checkpoint_title": "Snapshot Cache",
-  "status": "frozen_i09",
+  "status": "active_i09",
   "runtime_strategy": "browser_local_first",
   "tooling_python_min": "3.12",
   "license_state": "UNLICENSED",
