@@ -72,6 +72,18 @@ Die Messwerte sind Regression-Smokebudgets, keine Hardwaregarantie.
 
 Verbindliche Gates: **G4 Persistenz/Recovery** und **G6 Integrität/Datenverlustschutz**.
 
+## Freeze-Evidence
+
+Validierter Produkt-/Teststand vor der reinen Evidence-Bindung: `64ae53555381621b7fcb4bddb65e5f6c86fcc5ec`, Basis `main` `89e21a2ffda87bd7325d23636d1b2d3449896930`.
+
+Am 2026-09-19 waren für diesen unveränderten Head die triggerrelevanten GitHub-Actions grün:
+
+- `snapshot-smoke`: success,
+- `chromium-smoke`: success,
+- Repository-Quality-Job `i00`: success.
+
+Der Freeze bleibt bis zur grünen Wiederholung der durch diese Dokumentationsänderung ausgelösten relevanten Gates offen. Diese Evidence-Bindung ändert keine Produkt-, Persistenz-, Test- oder UI-Logik.
+
 ## Restrisiko
 
 I09 prüft einen Snapshot gegen einen gelieferten Event-Fingerprint, definiert aber noch nicht dessen spätere kryptografische Herkunft. Speicherknappheit, Export/Restore, Multi-Tab-Schreibkoordination und umfassende Start-Recovery bleiben bewusst späteren Checkpoints vorbehalten.
