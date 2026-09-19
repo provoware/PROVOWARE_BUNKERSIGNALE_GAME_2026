@@ -9,7 +9,7 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Bereich | Stand |
 | --- | --- |
 | Produktversion | `0.1.0-alpha.0` |
-| Aktueller Checkpoint | **I10 – Storage Health + Export Backup (C: Restore)** |
+| Aktueller Checkpoint | **I10 – Storage Health + Export Backup · GREEN/FROZEN** |
 | Nächster Checkpoint | **I11 – Hash Chain** |
 | Runtime | Browser, local-first |
 | Buildschritt | nicht erforderlich |
@@ -37,7 +37,7 @@ Bereits umgesetzt:
 - **I10-P0** – read-only Game UI Regression Shell mit Figuren-, Szenen-, Detail- und Ereignisbereich; alle Spielaktionen bleiben deaktiviert.
 - **I10-A** – read-only Storage Health über Browser-Estimate/Persistenzstatus mit deterministischer Normal/Knapp/Kritisch-Klassifikation.
 - **I10-B** – World Backup v1 mit registriertem Schema, I06-Validator, kanonischen Bytes und read-only I08-Welt-Readback.
-- **I10-C** – Restore mit vollständigem Preflight, Content-Lock-Prüfung und atomarer `restoreIfEmpty`-Capability ohne Teilwrites.
+- **I10-C** – Restore mit vollständigem Preflight, Content-Lock-Prüfung und atomarer `restoreIfEmpty`-Capability ohne Teilwrites. **I10 ist damit GREEN/FROZEN.**
 
 ## Schnellstart
 
