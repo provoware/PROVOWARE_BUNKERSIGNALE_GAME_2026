@@ -1,0 +1,148 @@
+name: i10-storage-health-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'app/infrastructure/browser/storage-health.js'
+      - 'app/application/storage-health.js'
+      - 'app/bootstrap/main.js'
+      - 'app/ui/app.js'
+      - 'app/ui/styles.css'
+      - 'tests/test_i10_storage_health.py'
+      - 'docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md'
+      - '.github/workflows/i10-storage-health-smoke.yml'
+
+jobs:
+  storage-health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Storage health thresholds and UI in real Chromium
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser"
+
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i10-storage-http.log" 2>&1 &
+          server_pid=$!
+          "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage             --remote-debugging-address=127.0.0.1 --remote-debugging-port=9222 about:blank             >"$RUNNER_TEMP/i10-storage-chromium.log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$server_pid" "$browser_pid" 2>/dev/null || true' EXIT
+
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break
+            sleep 0.1
+          done
+
+          node <<'NODE'
+          const debugBase = 'http://127.0.0.1:9222';
+          const appUrl = 'http://127.0.0.1:8765/index.html';
+          const target = await fetch(`${debugBase}/json/new?${encodeURIComponent(appUrl)}`, {method:'PUT'}).then(r => r.json());
+          const ws = new WebSocket(target.webSocketDebuggerUrl);
+          await new Promise((resolve, reject) => {
+            ws.addEventListener('open', resolve, {once:true});
+            ws.addEventListener('error', reject, {once:true});
+          });
+
+          let seq = 0;
+          const pending = new Map();
+          const exceptions = [];
+          ws.addEventListener('message', event => {
+            const msg = JSON.parse(event.data);
+            if (msg.id && pending.has(msg.id)) {
+              const p = pending.get(msg.id);
+              pending.delete(msg.id);
+              msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg.result ?? {});
+            } else if (msg.method === 'Runtime.exceptionThrown') {
+              exceptions.push(msg.params);
+            }
+          });
+          const call=(method,params={})=>new Promise((resolve,reject)=>{
+            const id=++seq;
+            pending.set(id,{resolve,reject});
+            ws.send(JSON.stringify({id,method,params}));
+          });
+
+          await call('Runtime.enable');
+          const expression = `(async () => {
+            const { readBrowserStorageHealth } = await import('/app/infrastructure/browser/storage-health.js');
+            const { classifyStorageHealth } = await import('/app/application/storage-health.js');
+
+            const sample = async (usage, quota, persisted=true) =>
+              classifyStorageHealth(await readBrowserStorageHealth({
+                storageManager: {
+                  estimate: async () => ({usage, quota}),
+                  persisted: async () => persisted,
+                }
+              }));
+
+            const normal = await sample(749, 1000);
+            const warningBoundary = await sample(750, 1000);
+            const warning = await sample(899, 1000);
+            const criticalBoundary = await sample(900, 1000);
+            const overQuota = await sample(1200, 1000);
+
+            if (normal.capacity_status !== 'normal') throw new Error('74.9% must be normal');
+            if (warningBoundary.capacity_status !== 'warning') throw new Error('75% must be warning');
+            if (warning.capacity_status !== 'warning') throw new Error('89.9% must be warning');
+            if (criticalBoundary.capacity_status !== 'critical') throw new Error('90% must be critical');
+            if (overQuota.capacity_status !== 'critical' || overQuota.remaining_bytes !== 0) throw new Error('over-quota must stay critical and clamp remaining');
+
+            const unsupported = classifyStorageHealth(await readBrowserStorageHealth({storageManager:null}));
+            if (unsupported.capacity_status !== 'unknown' || unsupported.persistence_status !== 'unsupported') throw new Error('unsupported contract failed');
+
+            const estimateFailure = classifyStorageHealth(await readBrowserStorageHealth({
+              storageManager: { estimate: async () => { throw new Error('boom'); } }
+            }));
+            if (estimateFailure.capacity_status !== 'unknown' || estimateFailure.error_code !== 'SSI-STO-1001') throw new Error('estimate failure contract failed');
+
+            const persistedFailure = classifyStorageHealth(await readBrowserStorageHealth({
+              storageManager: {
+                estimate: async () => ({usage:100, quota:1000}),
+                persisted: async () => { throw new Error('persisted failed'); }
+              }
+            }));
+            if (persistedFailure.capacity_status !== 'normal' || persistedFailure.persistence_status !== 'unknown' || persistedFailure.error_code !== 'SSI-STO-1002') {
+              throw new Error('persisted failure must not destroy capacity result');
+            }
+
+            const real = classifyStorageHealth(await readBrowserStorageHealth());
+            return {normal, warningBoundary, criticalBoundary, overQuota, unsupported, estimateFailure, persistedFailure, real};
+          })()`;
+          const contract = await call('Runtime.evaluate', {expression, awaitPromise:true, returnByValue:true});
+          if (contract.exceptionDetails) throw new Error(JSON.stringify(contract.exceptionDetails));
+
+          const deadline = Date.now() + 10000;
+          let ui = null;
+          while (Date.now() < deadline) {
+            const result = await call('Runtime.evaluate', {
+              expression: `(() => {
+                const button=[...document.querySelectorAll('.ssi-tab')].find(x=>x.textContent==='Diagnose & Recovery');
+                if (!button || document.querySelector('#app')?.getAttribute('aria-busy') !== 'false') return null;
+                button.click();
+                const block=document.querySelector('.ssi-storage-health');
+                const meter=document.querySelector('.ssi-storage-meter');
+                return block ? {
+                  text:block.innerText,
+                  capacity:block.dataset.capacity,
+                  meter:meter ? {value:meter.value,max:meter.max,label:meter.getAttribute('aria-label')} : null,
+                  gameSurface:document.querySelector('#game-panel')?.dataset.regressionSurface || null
+                } : null;
+              })()`,
+              returnByValue:true
+            });
+            ui=result.result?.value;
+            if (ui?.text?.includes('Storage Health')) break;
+            await new Promise(r=>setTimeout(r,100));
+          }
+
+          if (!ui?.text?.includes('Browser-Schätzung')) throw new Error(`storage health UI missing: ${JSON.stringify(ui)}`);
+          if (ui.gameSurface !== 'game-shell') throw new Error('game regression surface changed');
+          if (ui.meter && ui.meter.label !== 'Geschätzte Speicherbelegung') throw new Error('storage meter accessibility label missing');
+          if (exceptions.length) throw new Error(`Runtime exceptions: ${JSON.stringify(exceptions)}`);
+
+          console.log('I10 Storage Health smoke: PASS', JSON.stringify({contract:contract.result?.value, ui}));
+          ws.close();
+          NODE
