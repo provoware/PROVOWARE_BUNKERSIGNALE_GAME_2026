@@ -1,0 +1,35 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-012",
+  "checkpoint": "I06",
+  "title": "REOPEN I06: Crash/Abort-Readback und Großweltprofil",
+  "purpose": "Die zwei noch fehlenden I06-Härtungsnachweise aus MASTER-Entwicklungsplan v0.4 ergänzen, ohne Event Store oder Reducer vorzuziehen.",
+  "scope": [
+    "kanonischen vollständigen Envelope-Readback ergänzen",
+    "trunkierte, ungültige oder nicht-kanonische persistierte Bytes fail-closed abweisen",
+    "Legacy-Minimalfixture ohne optionale Trace-Felder readbackfähig halten",
+    "deterministisches 1000-Envelope-Readbackprofil mit Messwerten ergänzen",
+    "Architektur- und Exit-Dokumentation auf die Härtung ausrichten",
+    "fehlerhafte literale Changelog-Zeilenumbrüche korrigieren"
+  ],
+  "non_goals": [
+    "Kein IndexedDB-, Datei- oder anderer dauerhafter Event Store",
+    "Kein Reducer, Replay-Core oder Weltzustand",
+    "Keine Änderung am Event-Envelope-Schema",
+    "Keine weitere visuelle UX-Änderung",
+    "Keine Änderung an I03-I05"
+  ],
+  "affected_owners": ["orchestrator","architecture_guardian","qa_regression","security_integrity","release_evidence"],
+  "compatibility": "Der bestehende I06-Envelope bleibt unverändert; Readback ergänzt nur eine strengere vollständige Bytegrenze und akzeptiert das minimale v1-Pflichtfeldformat.",
+  "security": "Teilweise oder nicht-kanonische Bytes können nicht als gültiger Envelope gelesen werden.",
+  "test_plan": [
+    "trunkierten und nicht-kanonischen Readback negativ prüfen",
+    "Legacy-Minimalfixture roundtrip prüfen",
+    "1000 deterministische Envelopes serialisieren und vollständig zurücklesen",
+    "Readback-Laufzeit gegen großzügiges 5000-ms-Smokebudget prüfen",
+    "vollständigen Repository-Quality-Lauf erneut ausführen"
+  ],
+  "rollback": "REOPEN-Commit revertieren; I06 darf dann wegen fehlender v0.4-Härtung nicht als vollständig masterplankonform gelten.",
+  "evidence": ["tools/event_envelope.py","tests/test_i06.py","tests/fixtures/event/positive/legacy-envelope-v1.json","tests/fixtures/event/readback-profile.json","evidence/I06_EVIDENCE.json","status/I06_STATUS.json"],
+  "result": "GREEN"
+}
