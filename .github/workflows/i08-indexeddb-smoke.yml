@@ -40,29 +40,50 @@ jobs:
           const expression = `(async () => {
             const { createIndexedDbEventStore } = await import('/app/infrastructure/browser/indexeddb-event-store.js');
             const dbName = 'i08-smoke-' + crypto.randomUUID();
-            const event = (id, lamport) => ({ event_id:id, world_id:'world:test', author_id:'actor:test', sequence:lamport+1, lamport, event_type:'test.event', ruleset_version:'1.0.0', payload:{} });
+            const worldId = 'world:000000000000000000000001';
+            const event = (hex, lamport) => ({
+              event_id:'event:' + hex.padStart(24,'0'),
+              author_id:'actor:000000000000000000000001',
+              sequence:lamport+1,
+              lamport,
+              event_type:'test.event',
+              ruleset_version:'1.0.0',
+              payload:{},
+              metadata:{}
+            });
             const aborting = createIndexedDbEventStore({ indexedDB, dbName, faultInjector: ({writeCount, transaction}) => { if (writeCount === 1) transaction.abort(); } });
             let aborted = false;
-            try { await aborting.append([event('event:abort-a',0), event('event:abort-b',1)]); } catch { aborted = true; }
+            try { await aborting.append(worldId, [event('1',0), event('2',1)]); } catch { aborted = true; }
             if (!aborted) throw new Error('simulated abort did not reject');
             const clean = createIndexedDbEventStore({ indexedDB, dbName });
-            if ((await clean.readWorld('world:test')).length !== 0) throw new Error('aborted transaction leaked a partial write');
-            await clean.append([event('event:1',0), event('event:2',1)]);
+            if ((await clean.readWorld(worldId)).length !== 0) throw new Error('aborted transaction leaked a partial write');
+
+            await clean.append(worldId, [event('11',0), event('12',1)]);
             const reopened = createIndexedDbEventStore({ indexedDB, dbName });
-            const readback = await reopened.readWorld('world:test');
-            if (readback.map(e => e.event_id).join(',') !== 'event:1,event:2') throw new Error('reopen/readback mismatch');
+            const readback = await reopened.readWorld(worldId);
+            if (readback.map(e => e.event_id).join(',') !== 'event:000000000000000000000011,event:000000000000000000000012') throw new Error('reopen/readback mismatch');
+
             let duplicateRejected = false;
-            try { await reopened.append([event('event:3',2), event('event:2',3)]); } catch { duplicateRejected = true; }
+            try { await reopened.append(worldId, [event('13',2), event('12',3)]); } catch { duplicateRejected = true; }
             if (!duplicateRejected) throw new Error('duplicate append was accepted');
-            const finalReadback = await reopened.readWorld('world:test');
-            if (finalReadback.some(e => e.event_id === 'event:3')) throw new Error('failed append committed a partial event');
+            const afterDuplicate = await reopened.readWorld(worldId);
+            if (afterDuplicate.some(e => e.event_id === 'event:000000000000000000000013')) throw new Error('failed duplicate append committed a partial event');
+
+            let queueRejected = false;
+            const uncloneable = event('14',4);
+            uncloneable.payload = { bad: () => {} };
+            try { await reopened.append(worldId, [event('15',4), uncloneable]); } catch { queueRejected = true; }
+            if (!queueRejected) throw new Error('uncloneable batch was accepted');
+            const finalReadback = await reopened.readWorld(worldId);
+            if (finalReadback.some(e => e.event_id === 'event:000000000000000000000015')) throw new Error('sync queue failure committed a partial event');
+
             indexedDB.deleteDatabase(dbName);
-            return { aborted, count: finalReadback.length, ids: finalReadback.map(e => e.event_id) };
+            return { aborted, duplicateRejected, queueRejected, count: finalReadback.length, ids: finalReadback.map(e => e.event_id) };
           })()`;
           const result = await call('Runtime.evaluate', { expression, awaitPromise:true, returnByValue:true });
           if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
           const value = result.result?.value;
-          if (!value?.aborted || value.count !== 2) throw new Error(`I08 smoke failed: ${JSON.stringify(value)}`);
+          if (!value?.aborted || !value?.duplicateRejected || !value?.queueRejected || value.count !== 2) throw new Error(`I08 smoke failed: ${JSON.stringify(value)}`);
           console.log('I08 IndexedDB smoke: PASS', JSON.stringify(value));
           ws.close();
           NODE
