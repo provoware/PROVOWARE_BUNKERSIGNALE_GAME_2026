@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import re
 from typing import Any
 
-from domain_identity import canonical_json_bytes, validate_stable_id
+from domain_identity import IdentityError, canonical_json_bytes, validate_stable_id
 from schema_registry import SchemaRegistry, SchemaRegistryError
 from ssi_common import ROOT
 
@@ -27,11 +27,14 @@ def validate_event_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
     except SchemaRegistryError as exc:
         raise EventEnvelopeError(exc.code, exc.message) from exc
 
-    validate_stable_id(envelope["event_id"], expected_kind="event")
-    validate_stable_id(envelope["author_id"], expected_kind="actor")
-    causation = envelope.get("causation_event_id")
-    if causation is not None:
-        validate_stable_id(causation, expected_kind="event")
+    try:
+        validate_stable_id(envelope["event_id"], expected_kind="event")
+        validate_stable_id(envelope["author_id"], expected_kind="actor")
+        causation = envelope.get("causation_event_id")
+        if causation is not None:
+            validate_stable_id(causation, expected_kind="event")
+    except IdentityError as exc:
+        raise EventEnvelopeError("SSI-EVENT-0001", str(exc)) from exc
 
     if envelope["sequence"] < 1:
         raise EventEnvelopeError("SSI-EVENT-0001", "sequence muss mindestens 1 sein.")
@@ -47,7 +50,10 @@ def validate_event_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
         if value is not None and (not isinstance(value, str) or not value.strip()):
             raise EventEnvelopeError("SSI-EVENT-0001", f"{optional_id} darf nicht leer sein.")
 
-    canonical_json_bytes(envelope)
+    try:
+        canonical_json_bytes(envelope)
+    except IdentityError as exc:
+        raise EventEnvelopeError("SSI-EVENT-0001", str(exc)) from exc
     return envelope
 
 
