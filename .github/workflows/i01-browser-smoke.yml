@@ -12,8 +12,8 @@ on:
       - 'CHANGELOG.md'
       - 'changes/**'
       - 'schemas/**'
-      - 'evidence/I01_*'
-      - 'status/I01_*'
+      - 'evidence/I*_EVIDENCE.*'
+      - 'status/I*_STATUS.json'
 
 jobs:
   chromium-smoke:

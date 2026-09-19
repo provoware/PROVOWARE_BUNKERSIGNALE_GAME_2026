@@ -18,6 +18,9 @@
     "result"
   ],
   "properties": {
+    "$schema": {
+      "type": "string"
+    },
     "change_id": {
       "type": "string",
       "pattern": "^CHG-[0-9]{8}-[0-9]{3}$"

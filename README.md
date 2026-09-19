@@ -2,9 +2,38 @@
 
 **Bunkersignale & Persönlichkeitsfraktale**
 
-Dieses Repository ist die technische Master-Baseline ab Checkpoint I00. I02 enthält weiterhin keine Spiellogik oder Persistenz. Es ergänzt die gefreezte I01-Browser-Shell ausschließlich um eine deterministische, lokale Schema Registry.
+Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-Modell. Das Repository wird bewusst dependency-arm entwickelt und trennt Runtime, Verträge, Tests und Entwicklungsnachweise klar voneinander.
 
-## Ein-Kommando-Prüfung
+## Aktueller Stand
+
+| Bereich | Stand |
+| --- | --- |
+| Produktversion | `0.1.0-alpha.0` |
+| Aktueller Checkpoint | **I02 – deterministische lokale Schema Registry** |
+| Nächster Checkpoint | **I03** |
+| Runtime | Browser, local-first |
+| Buildschritt | nicht erforderlich |
+| Paketmanager | nicht erforderlich |
+| Persistente Weltdaten | noch nicht aktiv |
+| Spiellogik | noch nicht aktiv |
+
+Bereits umgesetzt:
+
+- **I00** – Governance, Architekturregeln, Fehlercodes, Regression und Evidence-Baseline.
+- **I01** – dependency-freie Browser-Shell mit Safe-Start sowie read-only Health/Recovery-Diagnose.
+- **I02** – lokale Schema Registry mit exakter Versionsauflösung, Lifecycle-Regeln sowie Positiv-/Negativtests.
+
+## Schnellstart
+
+Für einen lokalen Browserstart im Repository:
+
+```bash
+python3 -m http.server 8765 --bind 127.0.0.1
+```
+
+Danach im Browser `http://127.0.0.1:8765/` öffnen.
+
+## Qualitätsprüfung
 
 Auf Linux/Kubuntu/Mint:
 
@@ -12,28 +41,42 @@ Auf Linux/Kubuntu/Mint:
 ./run_i00.sh
 ```
 
-Plattformneutral mit Python 3.12 oder neuer:
+Plattformneutral:
 
 ```bash
 python3 tools/run_i00_checks.py
 ```
 
-Ein erfolgreicher Lauf endet mit Exit-Code 0 und erzeugt:
+Der Dateiname `run_i00` bleibt aus Kompatibilitätsgründen erhalten. Der Lauf prüft inzwischen den **gesamten aktuellen Repository-Stand** einschließlich späterer Regressionstests. Ab Checkpoint I01 wird die eingefrorene I00-Evidence dabei **nicht mehr überschrieben**.
 
-- `status/I00_STATUS.json`
-- `evidence/I00_EVIDENCE.json`
-- `evidence/I00_EVIDENCE.txt`
-- `evidence/baseline.sha256`
+## Repository-Struktur
 
-## Grundsatz
+| Pfad | Zweck |
+| --- | --- |
+| `app/` | Browser-Runtime: Bootstrap, UI, Application und Infrastructure |
+| `schemas/` | versionierte JSON-Schema-Verträge |
+| `manifests/` | maschinenlesbare Governance, Toolchain und Registry |
+| `content/` | spätere versionierte Story-/Contentdaten |
+| `data/` | keine Runtime-Daten; nur klar definierte Entwicklungsdaten |
+| `tests/` | Unit-, Negativ-, Architektur- und Checkpointtests |
+| `tools/` | lokale Validierung und Qualitätswerkzeuge |
+| `changes/` | nachvollziehbare Change Records |
+| `evidence/` | eingefrorene Checkpoint-Nachweise |
+| `status/` | maschinenlesbarer Checkpointstatus |
+| `docs/` | Architektur, Standards, Betrieb und Referenzen |
 
-Kein rotes Qualitätsgate wird durch Weiterentwicklung umgangen. Eine technische Lücke wird nicht durch einen vagen Marker kaschiert, sondern als Scope-Ausschluss mit Zieliteration und Fallback dokumentiert.
+Dokumentationsindex: **[docs/README.md](docs/README.md)**
 
-## Projektstatus
+## Entwicklungsregeln
 
-- Spezifikationsbasis: MASTER-Entwicklungsplan v0.4
-- Gefreezte Governance-/Architekturbasis: I00
-- Aktueller implementierter Vertrags-Checkpoint: I02
-- Produktversion: 0.1.0-alpha.0
-- Spiellogik und Persistenz: noch nicht Bestandteil von I02
-- Schema-Auflösung: nur explizite SemVer-Versionen, keine `latest`- oder Netzwerkauflösung
+- Kein rotes Gate wird durch Weiterentwicklung umgangen.
+- Änderungen bleiben auf den kleinsten fachlich sinnvollen Scope begrenzt.
+- Gefreezte Evidence wird nicht still neu geschrieben.
+- Runtime-Code importiert nur entlang der definierten Schichtgrenzen.
+- Schema-Auflösung ist lokal und versionsgenau; kein `latest`, keine Netzwerkauflösung.
+- Neue Runtime-Abhängigkeiten benötigen eine begründete Architekturentscheidung.
+- Persistenz, Content-Aktivierung und Spiellogik werden nicht vorgezogen.
+
+## Lizenzstatus
+
+Das Projekt ist derzeit **UNLICENSED**. Ohne separate Lizenzdatei werden keine weitergehenden Nutzungsrechte eingeräumt.

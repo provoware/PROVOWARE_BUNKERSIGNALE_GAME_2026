@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-004",
+  "checkpoint": "I02",
+  "title": "Repository-Hygiene und Dokumentationskonsistenz",
+  "purpose": "Repository-Struktur, Einstieg, Projektmetadaten und Freeze-Sicherheit an den tatsächlich implementierten I02-Stand angleichen, ohne Runtime- oder Gameplay-Verhalten zu verändern.",
+  "scope": [
+    "README und Bereichsdokumentation konsolidieren",
+    "Projektmanifest auf I02 -> I03 ausrichten",
+    "historische Masteranweisung in docs/reference verschieben",
+    "I00-Evidence vor späterem Überschreiben schützen",
+    "Checkpoint- und Change-Validierung zukunftsfähig machen",
+    "fehlende I02-Evidence nach erfolgreicher Validierung ergänzen"
+  ],
+  "non_goals": [
+    "Keine neue Spiellogik",
+    "Keine Persistenz",
+    "Keine Content-Aktivierung",
+    "Keine Änderung der I01-Browser-Runtime",
+    "Keine neue Runtime-Abhängigkeit"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "release_evidence"
+  ],
+  "compatibility": "Reine Repository-/Governance-Wartung auf I02; Runtime-Verhalten und Produktversion bleiben unverändert.",
+  "security": "Keine neue Eingabe- oder Persistenzfläche. Historische Evidence bleibt unverändert und wird gegen versehentliches Überschreiben geschützt.",
+  "test_plan": [
+    "vollständiger Repository-Qualitätslauf",
+    "I00/I01/I02 Regression",
+    "Schema-Registry-Selbstvalidierung",
+    "Change-Historienprüfung",
+    "realer Chromium-Smoke für unveränderte Browser-Runtime"
+  ],
+  "rollback": "Maintenance-Squash-Commit revertieren; der gemergte I02-Stand bleibt wiederherstellbar.",
+  "evidence": [
+    "README.md",
+    "docs/README.md",
+    "manifests/project.manifest.json",
+    "tools/validate_repo.py",
+    "tools/run_i00_checks.py"
+  ],
+  "result": "GREEN"
+}

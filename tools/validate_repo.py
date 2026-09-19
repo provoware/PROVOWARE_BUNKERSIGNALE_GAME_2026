@@ -20,6 +20,7 @@ REQUIRED_FILES = [
     "CHANGELOG.md",
     ".editorconfig",
     ".gitattributes",
+    "docs/README.md",
     "docs/ARCHITECTURE.md",
     "docs/DEVELOPMENT_RULES.md",
     "docs/GLOBAL_STANDARDS.md",
@@ -29,6 +30,8 @@ REQUIRED_FILES = [
     "docs/CHANGE_CONTROL.md",
     "docs/QUALITY_GATES.md",
     "docs/decisions/ADR-0001-baseline-architecture.md",
+    "docs/reference/README.md",
+    "docs/reference/WORK_MASTERANWEISUNG_RELEASE_v1.1_BLACKBOX.pdf",
     "manifests/project.manifest.json",
     "manifests/architecture.boundaries.json",
     "manifests/quality.gates.json",
@@ -37,15 +40,13 @@ REQUIRED_FILES = [
     "manifests/error.codes.json",
     "manifests/repository.layout.json",
     "manifests/standards.registry.json",
+    "manifests/schema.registry.json",
     "agents/registry.json",
     "schemas/project-manifest.schema.json",
     "schemas/schema-registry.schema.json",
     "schemas/status-report.schema.json",
     "schemas/evidence-report.schema.json",
     "schemas/change-record.schema.json",
-    "changes/CHG-20260918-001.json",
-    "changes/CHG-20260919-003.json",
-    "manifests/schema.registry.json",
     "tools/schema_registry.py",
     "tools/ssi_common.py",
     "tools/validate_repo.py",
@@ -56,6 +57,8 @@ REQUIRED_FILES = [
 ]
 
 SEMVER_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
+CHECKPOINT_RE = re.compile(r"^I([0-9]{2})$")
+
 
 def validate_required_files() -> list[Issue]:
     return [
@@ -63,6 +66,7 @@ def validate_required_files() -> list[Issue]:
         for rel in REQUIRED_FILES
         if not (ROOT / rel).is_file()
     ]
+
 
 def validate_json_files() -> list[Issue]:
     issues: list[Issue] = []
@@ -75,6 +79,7 @@ def validate_json_files() -> list[Issue]:
             issues.append(Issue("SSI-VAL-0002", "ERROR", path.relative_to(ROOT).as_posix(), str(exc)))
     return issues
 
+
 def validate_versions() -> list[Issue]:
     issues: list[Issue] = []
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
@@ -83,9 +88,45 @@ def validate_versions() -> list[Issue]:
         issues.append(Issue("SSI-VAL-0003", "ERROR", "VERSION", "Produktversion ist kein gültiges SemVer-Muster."))
     if manifest.get("product_version") != version:
         issues.append(Issue("SSI-VAL-0003", "ERROR", "manifests/project.manifest.json", "Produktversion stimmt nicht mit VERSION überein."))
-    if manifest.get("checkpoint") != "I00" or manifest.get("next_checkpoint") != "I01":
-        issues.append(Issue("SSI-VAL-0003", "ERROR", "manifests/project.manifest.json", "Checkpointfolge I00 -> I01 ist inkonsistent."))
+
+    current_match = CHECKPOINT_RE.fullmatch(str(manifest.get("checkpoint", "")))
+    next_match = CHECKPOINT_RE.fullmatch(str(manifest.get("next_checkpoint", "")))
+    if current_match is None or next_match is None:
+        issues.append(Issue("SSI-VAL-0003", "ERROR", "manifests/project.manifest.json", "Checkpoint oder Folgecheckpoint ist ungültig."))
+    elif int(next_match.group(1)) != int(current_match.group(1)) + 1:
+        issues.append(Issue("SSI-VAL-0003", "ERROR", "manifests/project.manifest.json", "Folgecheckpoint muss exakt der nächste numerische Checkpoint sein."))
     return issues
+
+
+def validate_change_records() -> list[Issue]:
+    issues: list[Issue] = []
+    paths = sorted((ROOT / "changes").glob("CHG-*.json"))
+    if not paths:
+        return [Issue("SSI-VAL-0001", "ERROR", "changes", "Mindestens ein Change Record ist erforderlich.")]
+
+    seen_ids: set[str] = set()
+    checkpoints: set[str] = set()
+    for path in paths:
+        data = read_json(path)
+        change_id = str(data.get("change_id", ""))
+        if change_id != path.stem:
+            issues.append(Issue("SSI-VAL-0003", "ERROR", path.relative_to(ROOT).as_posix(), "Dateiname und change_id stimmen nicht überein."))
+        if change_id in seen_ids:
+            issues.append(Issue("SSI-VAL-0003", "ERROR", path.relative_to(ROOT).as_posix(), "Change-ID ist nicht eindeutig."))
+        seen_ids.add(change_id)
+        checkpoint = str(data.get("checkpoint", ""))
+        if CHECKPOINT_RE.fullmatch(checkpoint):
+            checkpoints.add(checkpoint)
+
+    manifest = read_json(ROOT / "manifests/project.manifest.json")
+    match = CHECKPOINT_RE.fullmatch(str(manifest.get("checkpoint", "")))
+    if match:
+        for number in range(int(match.group(1)) + 1):
+            checkpoint = f"I{number:02d}"
+            if checkpoint not in checkpoints:
+                issues.append(Issue("SSI-VAL-0003", "ERROR", "changes", f"Change-Historie enthält keinen Record für {checkpoint}."))
+    return issues
+
 
 def validate_agent_registry() -> list[Issue]:
     issues: list[Issue] = []
@@ -98,29 +139,31 @@ def validate_agent_registry() -> list[Issue]:
     if merge_roles != ["orchestrator"]:
         issues.append(Issue("SSI-ARCH-0002", "ERROR", "agents/registry.json", "Nur orchestrator darf Merge-Hoheit besitzen."))
     required = {
-        "orchestrator","architecture_guardian","data_schema_auditor","qa_regression",
-        "security_integrity","ux_accessibility","content_canon","release_evidence"
+        "orchestrator", "architecture_guardian", "data_schema_auditor", "qa_regression",
+        "security_integrity", "ux_accessibility", "content_canon", "release_evidence"
     }
     if set(ids) != required:
         issues.append(Issue("SSI-ARCH-0002", "ERROR", "agents/registry.json", "Fachrollenregister ist unvollständig oder enthält unerwartete Rollen."))
     return issues
+
 
 def validate_standards_registry() -> list[Issue]:
     issues: list[Issue] = []
     registry = read_json(ROOT / "manifests/standards.registry.json")
     actual = {item["id"]: item["version"] for item in registry.get("standards", [])}
     expected = {
-        "semver":"2.0.0",
-        "conventional_commits":"1.0.0",
-        "keep_a_changelog":"1.1.0",
-        "json_schema":"2020-12",
-        "wcag":"2.2-AA-target",
-        "owasp_asvs":"5.0.0-reference",
+        "semver": "2.0.0",
+        "conventional_commits": "1.0.0",
+        "keep_a_changelog": "1.1.0",
+        "json_schema": "2020-12",
+        "wcag": "2.2-AA-target",
+        "owasp_asvs": "5.0.0-reference",
     }
     for key, value in expected.items():
         if actual.get(key) != value:
             issues.append(Issue("SSI-VAL-0003", "ERROR", "manifests/standards.registry.json", f"Standard {key} muss Version '{value}' tragen."))
     return issues
+
 
 def validate_schema_headers() -> list[Issue]:
     issues: list[Issue] = []
@@ -131,6 +174,7 @@ def validate_schema_headers() -> list[Issue]:
             issues.append(Issue("SSI-VAL-0003", "ERROR", path.relative_to(ROOT).as_posix(), "Schema verwendet nicht JSON Schema Draft 2020-12."))
     return issues
 
+
 def validate_line_endings() -> list[Issue]:
     issues: list[Issue] = []
     for path in governed_files(ROOT):
@@ -138,6 +182,7 @@ def validate_line_endings() -> list[Issue]:
         if b"\r\n" in raw or b"\r" in raw:
             issues.append(Issue("SSI-VAL-0003", "ERROR", path.relative_to(ROOT).as_posix(), "Datei verwendet nicht ausschließlich LF-Zeilenenden."))
     return issues
+
 
 def validate_no_code_placeholders() -> list[Issue]:
     issues: list[Issue] = []
@@ -150,6 +195,7 @@ def validate_no_code_placeholders() -> list[Issue]:
         if hits:
             issues.append(Issue("SSI-VAL-0004", "ERROR", path.relative_to(ROOT).as_posix(), "Verbotener Entwicklungsmarker: " + ", ".join(hits)))
     return issues
+
 
 def validate_architecture_fixtures() -> list[Issue]:
     policy = read_json(ROOT / "manifests/architecture.boundaries.json")
@@ -165,20 +211,26 @@ def validate_architecture_fixtures() -> list[Issue]:
     issues.extend(architecture_violations(ROOT, policy))
     return issues
 
+
 def validate_schema_registry() -> list[Issue]:
     try:
         registry = SchemaRegistry(ROOT)
         registry.audit()
         registry.validate("schema-registry", "1.0.0", registry.data)
+        registry.validate("project-manifest", "1.0.0", read_json(ROOT / "manifests/project.manifest.json"))
+        for path in sorted((ROOT / "changes").glob("CHG-*.json")):
+            registry.validate("change-record", "1.0.0", read_json(path))
         return []
     except SchemaRegistryError as exc:
         return [Issue(exc.code, "ERROR", "manifests/schema.registry.json", exc.message)]
+
 
 def validate_repository() -> list[Issue]:
     checks = [
         validate_required_files,
         validate_json_files,
         validate_versions,
+        validate_change_records,
         validate_agent_registry,
         validate_standards_registry,
         validate_schema_headers,
@@ -192,6 +244,7 @@ def validate_repository() -> list[Issue]:
         issues.extend(check())
     return issues
 
+
 def exit_code_for(issues: list[Issue]) -> int:
     if not issues:
         return 0
@@ -202,15 +255,17 @@ def exit_code_for(issues: list[Issue]) -> int:
         return 4
     return 2
 
+
 def main() -> int:
     issues = validate_repository()
     if not issues:
-        print("I00 repository validation: GREEN")
+        print("Repository validation: GREEN")
         return 0
-    print("I00 repository validation: RED")
+    print("Repository validation: RED")
     for issue in issues:
         print(f"{issue.code} | {issue.path} | {issue.message}", file=sys.stderr)
     return exit_code_for(issues)
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

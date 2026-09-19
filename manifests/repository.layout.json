@@ -24,19 +24,19 @@
       "path": "docs",
       "owner": "orchestrator",
       "first_write_checkpoint": "I00",
-      "purpose": "Normative und erklärende Dokumentation"
+      "purpose": "Normative, erklärende und historische Dokumentation"
     },
     {
       "path": "manifests",
       "owner": "architecture_guardian",
       "first_write_checkpoint": "I00",
-      "purpose": "Maschinenlesbare Governance"
+      "purpose": "Maschinenlesbare Governance und Registry-Metadaten"
     },
     {
       "path": "schemas",
       "owner": "data_schema_auditor",
       "first_write_checkpoint": "I00",
-      "purpose": "Governance-Schemas; Runtime-Schema-Registry folgt I02"
+      "purpose": "Governance-Schemas und lokale Schema Registry"
     },
     {
       "path": "agents",
@@ -60,7 +60,7 @@
       "path": "evidence",
       "owner": "release_evidence",
       "first_write_checkpoint": "I00",
-      "purpose": "Generierte Nachweise"
+      "purpose": "Eingefrorene Checkpoint-Nachweise"
     },
     {
       "path": "status",
