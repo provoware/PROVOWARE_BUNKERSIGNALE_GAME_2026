@@ -1,0 +1,74 @@
+{
+  "checkpoint": "I08",
+  "generated_at_utc": "2026-09-19T15:36:37Z",
+  "status": "GREEN",
+  "fingerprint_sha256": "0d7826cac046275ef0460526d940ca903842dd2094e59edb62ae10e53a1219ec",
+  "checks": [
+    {
+      "name": "transactional_append",
+      "status": "PASS",
+      "detail": "IndexedDB Batch-Append ist transaktional; Duplicate/Constraint-Fehler committen keine Teilmenge."
+    },
+    {
+      "name": "abort_atomicity",
+      "status": "PASS",
+      "detail": "Realer Chromium-Smoke #4: simulierter Abort nach erstem Write hinterlässt null sichtbare Events."
+    },
+    {
+      "name": "reopen_readback",
+      "status": "PASS",
+      "detail": "Realer Chromium-Smoke #4: erfolgreicher Append bleibt nach Reopen deterministisch lesbar."
+    },
+    {
+      "name": "repository_quality",
+      "status": "PASS",
+      "detail": "Repository Quality #181 auf Freeze-Manifest GREEN."
+    },
+    {
+      "name": "browser_smoke",
+      "status": "PASS",
+      "detail": "Allgemeiner Chromium-Smoke #49 GREEN."
+    },
+    {
+      "name": "visual_ux_scope",
+      "status": "PASS",
+      "detail": "Exakt eine visuelle UX-Änderung: .ssi-kicker erhält font-weight 700; keine Interaktionslogik geändert."
+    }
+  ],
+  "file_hashes": {
+    "changes/CHG-20260919-015.json": "c1011087463e29e90187687bf2668c2cc71f95e4497beb3cedbbbf1436efc2c5"
+  },
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "I08 bleibt auf IndexedDB Event Store plus exakt eine isolierte UX-Änderung begrenzt; I09 wurde nicht vorgezogen."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "Persistenz liegt in app/infrastructure/browser; I07-Reducer bleibt unverändert."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Quality #181, I08 Chromium #4 und Browser #49 sind GREEN."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "Abort und Duplicate-Constraint wurden auf vollständigen Transaktions-Rollback geprüft."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "Nur Kicker-Typografie verstärkt; keine Layout- oder Interaktionsänderung."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "I08-Fingerprint 0d7826cac046275ef0460526d940ca903842dd2094e59edb62ae10e53a1219ec ist an den Freeze-Manifest-Stand gebunden."
+    }
+  ]
+}
