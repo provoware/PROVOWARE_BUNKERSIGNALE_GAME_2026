@@ -73,6 +73,17 @@ REQUIRED_FILES = [
 SEMVER_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 CHECKPOINT_RE = re.compile(r"^I([0-9]{2})$")
 
+CHECKPOINT_EVIDENCE_FILES = {
+    "I04": [
+        "tools/content_inbox.py",
+        "tools/validate_repo.py",
+        "tests/test_i04.py",
+        "docs/REGRESSION_POLICY.md",
+        "changes/CHG-20260919-006.json",
+        "changes/CHG-20260919-007.json",
+    ],
+}
+
 
 def validate_required_files() -> list[Issue]:
     return [
@@ -283,8 +294,31 @@ def validate_checkpoint_evidence(root=ROOT) -> list[Issue]:
         issues.append(Issue("SSI-INT-0001", "ERROR", evidence_path.relative_to(root).as_posix(), "Evidence-Checkpoint stimmt nicht mit dem Projektmanifest überein."))
     if evidence.get("fingerprint_sha256") != current_fingerprint:
         issues.append(Issue("SSI-INT-0001", "ERROR", evidence_path.relative_to(root).as_posix(), "Evidence-Fingerprint ist veraltet oder inkonsistent."))
-    if evidence.get("file_hashes") != current_hashes:
-        issues.append(Issue("SSI-INT-0001", "ERROR", evidence_path.relative_to(root).as_posix(), "Evidence-Dateihashes stimmen nicht exakt mit dem governeden Repository-Stand überein."))
+    recorded_hashes = evidence.get("file_hashes")
+    if not isinstance(recorded_hashes, dict):
+        issues.append(Issue("SSI-INT-0001", "ERROR", evidence_path.relative_to(root).as_posix(), "Evidence-Dateihashes fehlen oder sind ungültig."))
+    else:
+        required_hash_paths = CHECKPOINT_EVIDENCE_FILES.get(checkpoint, [])
+        missing_hashes = [path for path in required_hash_paths if path not in recorded_hashes]
+        stale_hashes = [
+            path
+            for path, digest in recorded_hashes.items()
+            if current_hashes.get(path) != digest
+        ]
+        if missing_hashes:
+            issues.append(Issue(
+                "SSI-INT-0001",
+                "ERROR",
+                evidence_path.relative_to(root).as_posix(),
+                "Checkpoint-kritische Evidence-Dateihashes fehlen: " + ", ".join(missing_hashes),
+            ))
+        if stale_hashes:
+            issues.append(Issue(
+                "SSI-INT-0001",
+                "ERROR",
+                evidence_path.relative_to(root).as_posix(),
+                "Evidence-Dateihashes sind veraltet oder unbekannt: " + ", ".join(sorted(stale_hashes)),
+            ))
 
     if status.get("checkpoint") != checkpoint:
         issues.append(Issue("SSI-INT-0001", "ERROR", status_path.relative_to(root).as_posix(), "Status-Checkpoint stimmt nicht mit dem Projektmanifest überein."))
