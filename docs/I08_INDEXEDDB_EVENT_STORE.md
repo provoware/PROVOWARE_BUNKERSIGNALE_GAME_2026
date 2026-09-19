@@ -27,7 +27,7 @@ Ein `append(events)` ist atomar. Bei Abort oder Constraint-Fehler darf kein Teil
 
 ## Implementierung
 
-`app/infrastructure/browser/indexeddb-event-store.js` kapselt IndexedDB hinter `createIndexedDbEventStore`. Die Weltzuordnung wird als Storage-Metadatum neben dem unveränderten I06-Event-Envelope gespeichert; `append(worldId, events)` verändert den Envelope-Vertrag nicht. Synchrone Queue-/Clone-Fehler abortieren die aktive Transaktion explizit, bevor der Fehler weitergegeben wird. `faultInjector` ist ausschließlich ein injizierbarer Fault-Hook für deterministische Crash-/Abort-Prüfung; ohne Injektion existiert kein künstlicher Fehlerpfad.
+`app/infrastructure/browser/indexeddb-event-store.js` kapselt IndexedDB hinter `createIndexedDbEventStore`. Die Weltzuordnung wird als Storage-Metadatum neben dem unveränderten I06-Event-Envelope gespeichert; `append(worldId, events)` verändert den Envelope-Vertrag nicht. Synchrone Queue-/Clone-Fehler abortieren die aktive Transaktion explizit, bevor der Fehler weitergegeben wird. Bereits mit der ersten I08-Fassung gespeicherte rohe v1-Records werden beim Readback kompatibel erkannt; ihr historisches `world_id`-Storagefeld wird entfernt, bevor der unveränderte Event-Envelope zurückgegeben wird. `faultInjector` ist ausschließlich ein injizierbarer Fault-Hook für deterministische Crash-/Abort-Prüfung; ohne Injektion existiert kein künstlicher Fehlerpfad.
 
 ## Exit-Gates
 
@@ -38,7 +38,8 @@ Ein `append(events)` ist atomar. Bei Abort oder Constraint-Fehler darf kein Teil
 5. Duplicate-Batch → vollständiger Rollback,
 6. synchroner Queue-/Clone-Fehler nach bereits gequeued Write → vollständiger Rollback,
 7. gespeicherte Weltzuordnung bleibt Storage-Metadatum; gültige I06-Envelopes bleiben unverändert,
-8. finaler Diff enthält keine I09+-Funktion und keinen I07-REOPEN.
+8. bereits persistierte I08-v1-Raw-Records bleiben lesbar und werden als unveränderte Event-Envelopes zurückgegeben,
+9. finaler Diff enthält keine I09+-Funktion und keinen I07-REOPEN.
 
 Erst nach vollständig grünen Gates darf I08 eingefroren und gemergt werden.
 
