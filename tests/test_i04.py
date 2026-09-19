@@ -17,7 +17,7 @@ if str(TOOLS) not in sys.path:
 from content_inbox import ContentInbox
 from content_registry import ContentRegistry, ContentRegistryError
 from ssi_common import repository_fingerprint
-from validate_repo import CHECKPOINT_EVIDENCE_FILES, validate_checkpoint_evidence
+from validate_repo import CHECKPOINT_EVIDENCE_FILES, checkpoint_evidence_files, validate_checkpoint_evidence
 
 
 class I04ContentInboxTests(unittest.TestCase):
@@ -197,10 +197,18 @@ class I04ContentInboxTests(unittest.TestCase):
                 path = root / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text("fixture\n", encoding="utf-8")
+            change_path = root / "changes/CHG-TEST-I04.json"
+            change_path.parent.mkdir(parents=True, exist_ok=True)
+            change_path.write_text(
+                json.dumps({"checkpoint": "I04"}) + "\n",
+                encoding="utf-8",
+            )
             fingerprint, hashes = repository_fingerprint(root)
+            required_hashes = checkpoint_evidence_files(root, "I04")
+            self.assertIn("changes/CHG-TEST-I04.json", required_hashes)
             critical_hashes = {
                 rel: hashes[rel]
-                for rel in CHECKPOINT_EVIDENCE_FILES["I04"]
+                for rel in required_hashes
             }
             (root / "evidence/I04_EVIDENCE.json").write_text(
                 json.dumps({

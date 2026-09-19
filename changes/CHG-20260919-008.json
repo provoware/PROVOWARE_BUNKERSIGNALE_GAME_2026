@@ -1,0 +1,45 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-008",
+  "checkpoint": "I04",
+  "title": "REOPEN I04: normativen Architekturvertrag korrigieren",
+  "purpose": "Eine nach dem I04-Freeze entdeckte normative Dokumentationsabweichung beseitigen und verhindern, dass spätere I04-REOPEN-Change-Records außerhalb der kritischen Evidence-Hashes bleiben.",
+  "scope": [
+    "I04 formell ausschließlich für die dokumentierte Vertragsabweichung wieder öffnen",
+    "docs/ARCHITECTURE.md von alter os.replace-Beschreibung auf die geprüfte Hardlink-No-Clobber-Semantik korrigieren",
+    "checkpoint-kritische Evidence-Hashes automatisch um alle Change Records des aktuellen Checkpoints erweitern",
+    "bestehenden Evidence-Akzeptanztest um einen dynamischen I04-Change-Record ergänzen",
+    "Changelog auf den tatsächlich geprüften I04-Vertrag ausrichten"
+  ],
+  "non_goals": [
+    "Keine I05-Hot-Swap-Funktion",
+    "Keine Änderung an Content-Inbox-Laufzeitlogik",
+    "Keine Persistenz, Spiellogik, Plugins oder Import/Export",
+    "Keine Änderung an Registry- oder Lockfile-Verträgen"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "release_evidence"
+  ],
+  "compatibility": "Nur normative Dokumentation und Freeze-Evidence-Guard werden korrigiert; die bereits grün geprüfte I04-Laufzeitsemantik bleibt unverändert.",
+  "security": "Der Evidence-Guard kann künftige I04-REOPEN-Records nicht mehr durch eine fest verdrahtete Hashliste übersehen.",
+  "test_plan": [
+    "bestehende I04-Regression vollständig ausführen",
+    "dynamischen I04-Change-Record im Evidence-Test nachweisen",
+    "veraltete I04-Evidence muss erwartungsgemäß mit SSI-INT-0001 blockieren",
+    "vollständigen Repository-Qualitätslauf und realen Chromium-Smoke ausführen",
+    "erneuerte I04-Evidence auf finalen governeden Fingerprint binden"
+  ],
+  "rollback": "Commit revertieren; I04 gilt dann wegen der wieder vorhandenen normativen Abweichung nicht als vollständig dokumentiert und I05 bleibt gesperrt.",
+  "evidence": [
+    "docs/ARCHITECTURE.md",
+    "tools/validate_repo.py",
+    "tests/test_i04.py",
+    "CHANGELOG.md",
+    "evidence/I04_EVIDENCE.json",
+    "status/I04_STATUS.json"
+  ],
+  "result": "GREEN"
+}
