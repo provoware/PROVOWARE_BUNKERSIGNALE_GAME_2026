@@ -6,7 +6,7 @@
   "product_version": "0.1.0-alpha.0",
   "specification_baseline": "0.4.0",
   "checkpoint": "I05",
-  "checkpoint_title": "Content Hot-Swap Policy",
+  "checkpoint_title": "Stable IDs + Canonical JSON + Content Hot-Swap Policy",
   "status": "frozen_i05",
   "runtime_strategy": "browser_local_first",
   "tooling_python_min": "3.12",
