@@ -1,0 +1,51 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-011",
+  "checkpoint": "I10",
+  "title": "I10-C atomic restore capability and parity proof",
+  "purpose": "Den bereits gemergten I10-C-Preflight-Core um die fehlende atomare no-clobber Infrastructure, Abort-Rollback und Export→Restore→Replay-Paritätsnachweise vervollständigen.",
+  "scope": [
+    "separate I10 IndexedDB restore capability ohne I08-REOPEN",
+    "Zielwelt-Leerprüfung und Batch-Write in derselben Readwrite-Transaktion",
+    "stabile Storage-Fehlercodes für no-clobber und atomaren Transaktionsfehler",
+    "1000-Event Chromium-Restore",
+    "Content-Mismatch, trunkiertes und nicht replaybares Backup erreichen keine Schreibfähigkeit",
+    "injizierter Abort hinterlässt null partielle Events",
+    "Export→Restore→Re-Export ist byteidentisch"
+  ],
+  "non_goals": [
+    "Keine Änderung am eingefrorenen I08 Event Store",
+    "Kein Restore-UI/File-Picker",
+    "Keine automatische Content-Migration",
+    "Keine Überschreibung bestehender Welten",
+    "Keine I11+-Hash-, Signatur-, Crypto- oder Multi-Tab-Funktion",
+    "Keine weitere visuelle UX-Änderung; PR #30 enthält bereits die eine I10-C-UX-Verfeinerung dieses Laufs"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "I10-B Backup-v1 bleibt unverändert. Die neue Infrastructure spiegelt ausschließlich den eingefrorenen I08-Storage-Vertrag und wird über die bereits vorhandene restoreIfEmpty-Application-Grenze injiziert.",
+  "security": "No-clobber-Prüfung und Event-Batch laufen in derselben IndexedDB-Readwrite-Transaktion. Bei Abort oder Constraint-Fehler committen keine Teilereignisse.",
+  "test_plan": [
+    "Repository Quality",
+    "I10-C Contract-Tests",
+    "realer Chromium-Smoke mit 1000 Events",
+    "no-clobber ohne Mutation",
+    "Content-/Parse-/Validator-Fehler vor Write",
+    "injizierter Abort -> null partielle Events",
+    "Export→Restore→Re-Export byteidentisch",
+    "bestehende I10-A/B, Browser- und Game-Shell-Gates bleiben grün"
+  ],
+  "rollback": "Branch verwerfen; main bleibt auf dem gemergten I10-C-Preflight-Core.",
+  "evidence": [
+    "app/infrastructure/browser/indexeddb-world-restore.js",
+    "tests/test_i10_restore.py",
+    ".github/workflows/i10-restore-smoke.yml",
+    "docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md"
+  ],
+  "result": "PENDING_GATES"
+}
