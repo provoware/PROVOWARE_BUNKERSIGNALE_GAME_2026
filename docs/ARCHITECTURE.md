@@ -48,8 +48,11 @@ Persistente Operationen müssen später atomar oder rückrollbar sein. Ein fehlg
 
 Der I04-Freeze ist zusätzlich kryptografisch gebunden: Evidence- und Status-Fingerprint müssen dem aktuellen governeden Repository-Stand entsprechen; checkpoint-kritische Einzelhashes umfassen die statischen I04-Artefakte und automatisch alle I04-Change-Records.
 
-## 12. Erweiterungsregel
+## 12. Content Hot-Swap Policy I05
+`manifests/content.hot-swap.json` trennt die Hot-Swap-Sicherheitsentscheidung von Registry, Lockfile und Inbox. `tools/content_hot_swap.py` arbeitet ausschließlich read-only und definiert exakt vier Klassen: `immediate_safe`, `restart_required`, `migration_required` und `blocked_while_world_running`. Textwechsel liegen verbindlich in `immediate_safe`. Unbekannte Contentarten fallen fail-closed auf `restart_required` zurück. I05 führt selbst keine Aktivierung, Migration, Persistenz oder Weltmutation aus.
+
+## 13. Erweiterungsregel
 Ein neues Modul wird nur aufgenommen, wenn Owner, Eingaben, Ausgaben, Fehlerpfad, Tests, Versionierungswirkung und Rückwärtskompatibilität definiert sind.
 
-## 13. Entscheidungshoheit
+## 14. Entscheidungshoheit
 Architekturänderungen benötigen eine ADR, eine Auswirkungsanalyse und einen vollständigen Qualitätslauf. Der Orchestrator ist alleinige Merge-Instanz; Fachrollen liefern prüfbare Empfehlungen und Vetos.

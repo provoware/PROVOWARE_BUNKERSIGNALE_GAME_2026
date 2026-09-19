@@ -1,0 +1,51 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-009",
+  "checkpoint": "I05",
+  "title": "I05: deterministische Content-Hot-Swap-Policy",
+  "purpose": "Die vier in der Masterplanung verbindlich geforderten Hot-Swap-Klassen als read-only, fail-closed Entscheidungsschicht einführen, ohne I03/I04-Laufzeitverhalten oder persistente Weltdaten vorzuziehen.",
+  "scope": [
+    "separate I05-Hot-Swap-Policy mit vier verbindlichen Klassen ergänzen",
+    "deterministische read-only Klassifikation und Freigabeentscheidung implementieren",
+    "Textwechsel der sichersten Klasse immediate_safe zuordnen",
+    "Regressionstests für Neustart-, Migrations- und Running-World-Sperren ergänzen",
+    "Checkpointdokumentation auf I05 aktualisieren",
+    "genau eine visuelle UX-Verbesserung: globalen Text-Zeilenabstand moderat erhöhen"
+  ],
+  "non_goals": [
+    "Keine tatsächliche Content-Aktivierung oder Dateimutation in I05",
+    "Keine Änderung an I03 Registry/Lockfile oder I04 Inbox/Quarantäne",
+    "Keine Persistenz, Event-Ledger-, Replay-, Plugin- oder Spiellogik",
+    "Keine neue Runtime-Abhängigkeit"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "I05 liest ausschließlich eine separate Policy; bestehende Registry-, Lockfile- und Inbox-Verträge bleiben unverändert.",
+  "security": "Unbekannte Contentarten fallen auf restart_required zurück; migrations- und laufzeitkritische Klassen werden fail-closed behandelt.",
+  "test_plan": [
+    "I05-Unit-Tests für alle vier Klassen und den sicheren Default ausführen",
+    "Unverändertheit von Registry und Lockfile während einer Entscheidung nachweisen",
+    "bestehende I00-I04-Regression vollständig über den Repository-Quality-Lauf prüfen",
+    "realen Chromium-Smoke wegen der isolierten CSS-Lesbarkeitsänderung ausführen",
+    "I05-Evidence erst nach grünem Quality- und Browser-Gate auf den finalen Fingerprint binden"
+  ],
+  "rollback": "I05-Commit revertieren; I04 bleibt der letzte vollständig eingefrorene Checkpoint.",
+  "evidence": [
+    "manifests/content.hot-swap.json",
+    "tools/content_hot_swap.py",
+    "tests/test_i05.py",
+    "docs/ARCHITECTURE.md",
+    "docs/QUALITY_GATES.md",
+    "app/ui/styles.css",
+    "evidence/I05_EVIDENCE.json",
+    "status/I05_STATUS.json"
+  ],
+  "result": "GREEN"
+}

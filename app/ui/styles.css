@@ -13,7 +13,7 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--ssi-bg); color: var(--ssi-text); }
+body { margin: 0; background: var(--ssi-bg); color: var(--ssi-text); line-height: 1.5; }
 button { font: inherit; }
 .ssi-skip-link { position: absolute; left: -9999px; }
 .ssi-skip-link:focus { left: 1rem; top: 1rem; z-index: 10; background: var(--ssi-text); color: var(--ssi-bg); padding: 0.75rem; }

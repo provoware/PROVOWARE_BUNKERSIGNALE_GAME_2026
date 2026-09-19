@@ -1,0 +1,32 @@
+S.O.U.N.D. SYSTEM-IKER - I05 Evidence Report
+Generated UTC: 2026-09-19T03:54:00Z
+Status: GREEN
+Governed fingerprint SHA-256: a2109489bad2acb281dff782a8bae3d344e6474136930ade2376a8d706296c31
+
+BETROFFENE BEREICHE
+- Neue read-only Hot-Swap-Policy und sechs fokussierte I05-Regressionstests.
+- Projektmanifest, Architekturvertrag, Quality Gate, README, Content-Hinweis und Changelog auf I05 ausgerichtet.
+- Genau eine visuelle UX-Änderung: body line-height 1.5.
+- I03 Registry/Lockfile, I04 Inbox/Quarantäne sowie I00-I04 Evidence/Status blieben unverändert.
+
+BEGRÜNDUNG
+- Die verbindliche Masterplanung fordert vier Hot-Swap-Klassen.
+- Der letzte I04-Change-Record schloss I05-Hot-Swap ausdrücklich aus I04 aus.
+- I05 trennt die Sicherheitsentscheidung bewusst von tatsächlicher Aktivierung, Migration und Weltmutation.
+
+TESTS
+- Sechs I05-Unit-Tests: vier Klassen, sicherer Default, Migration/Running-World-Guards und Non-Mutation.
+- GitHub Actions quality run 35419813077: SUCCESS.
+- Real Chromium smoke run 35419813098: SUCCESS.
+- Governed fingerprint: a2109489bad2acb281dff782a8bae3d344e6474136930ade2376a8d706296c31.
+
+ERGEBNIS
+- I05 erfüllt den definierten Minimal-Scope und ist freeze-fähig.
+- Kein REOPEN von I00-I04 erforderlich.
+
+RESTRISIKO
+- I05 trifft nur die Zulässigkeitsentscheidung; tatsächliche Aktivierung/Migration ist absichtlich nicht Teil dieses Checkpoints.
+- Produktive Contentpakete und persistente Weltdaten sind weiterhin nicht aktiv.
+
+NÄCHSTER SCHRITT
+- I06 erst aus Masterplanung und aktuellem main neu ableiten; keine I05-Erweiterung ohne neuen Befund.

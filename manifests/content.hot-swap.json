@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "default_class": "restart_required",
+  "content_kinds": {
+    "text": "immediate_safe",
+    "localized_text": "immediate_safe",
+    "presentation": "restart_required",
+    "ruleset": "restart_required",
+    "schema_bound": "migration_required",
+    "world_core": "blocked_while_world_running"
+  }
+}
