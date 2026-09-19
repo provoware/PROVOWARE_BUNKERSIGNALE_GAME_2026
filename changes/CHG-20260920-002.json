@@ -1,0 +1,42 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-002",
+  "checkpoint": "I09",
+  "title": "I09 async read-error settlement",
+  "purpose": "Post-merge gefundenen I09-Fehler beheben, bei dem ein asynchroner IndexedDB-Readfehler trotz funktionierendem Replay-Fallback ein unbehandeltes Transaktions-Promise hinterlassen konnte.",
+  "scope": [
+    "Read-Request und zugehöriges Transaktionsende werden auf jedem Fehlerpfad vollständig settled",
+    "bestehender Replay-Fallback bleibt unverändert",
+    "realer Chromium-Regressionsfall erzwingt Abort nach queued Read und prüft null unhandledrejection"
+  ],
+  "non_goals": [
+    "Keine Änderung am I08 Event Store",
+    "Keine Änderung an I06/I07-Verträgen",
+    "Keine I10-Funktion",
+    "Keine UI- oder Gameplay-Funktion"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Valide Snapshot-Reads und bisherige Cache-Miss-Pfade bleiben unverändert; der Fix konsumiert ausschließlich den zweiten Fehlerkanal der fehlgeschlagenen Read-Transaktion.",
+  "security": "Fehler des nichtautoritativen Snapshot-Caches dürfen weder Wiederherstellung blockieren noch unbehandelte Promise-Rejections im Browser hinterlassen.",
+  "test_plan": [
+    "Repository Quality",
+    "I09 Chromium-Smoke mit asynchronem Read-Abort und unhandledrejection-Zähler",
+    "bestehende Snapshot-, Replay-, Abort- und Großweltregressionen",
+    "allgemeiner Browser-Smoke",
+    "finaler Diff ohne I10+-Scope"
+  ],
+  "rollback": "REOPEN-Branch verwerfen; main bleibt auf dem vorherigen I09-Freeze.",
+  "evidence": [
+    "app/infrastructure/browser/indexeddb-snapshot-cache.js",
+    "tests/test_i09.py",
+    ".github/workflows/i09-snapshot-smoke.yml",
+    "docs/I09_SNAPSHOT_CACHE.md"
+  ],
+  "result": "GREEN"
+}
