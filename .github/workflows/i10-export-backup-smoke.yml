@@ -1,0 +1,187 @@
+name: i10-export-backup-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'schemas/world-backup.schema.json'
+      - 'manifests/schema.registry.json'
+      - 'app/application/world-backup.js'
+      - 'app/infrastructure/browser/indexeddb-event-store.js'
+      - 'tests/test_i10_backup.py'
+      - 'docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md'
+      - '.github/workflows/i10-export-backup-smoke.yml'
+
+jobs:
+  export-backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deterministic 1000-event backup in real Chromium
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser"
+
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i10-backup-http.log" 2>&1 &
+          server_pid=$!
+          "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage             --remote-debugging-address=127.0.0.1 --remote-debugging-port=9222 about:blank             >"$RUNNER_TEMP/i10-backup-chromium.log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$server_pid" "$browser_pid" 2>/dev/null || true' EXIT
+
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break
+            sleep 0.1
+          done
+
+          node <<'NODE'
+          const debugBase = 'http://127.0.0.1:9222';
+          const appUrl = 'http://127.0.0.1:8765/index.html';
+          const target = await fetch(`${debugBase}/json/new?${encodeURIComponent(appUrl)}`, {method:'PUT'}).then(r => r.json());
+          const ws = new WebSocket(target.webSocketDebuggerUrl);
+          await new Promise((resolve, reject) => {
+            ws.addEventListener('open', resolve, {once:true});
+            ws.addEventListener('error', reject, {once:true});
+          });
+
+          let seq = 0;
+          const pending = new Map();
+          const exceptions = [];
+          ws.addEventListener('message', event => {
+            const msg = JSON.parse(event.data);
+            if (msg.id && pending.has(msg.id)) {
+              const p = pending.get(msg.id);
+              pending.delete(msg.id);
+              msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg.result ?? {});
+            } else if (msg.method === 'Runtime.exceptionThrown') {
+              exceptions.push(msg.params);
+            }
+          });
+          const call=(method,params={})=>new Promise((resolve,reject)=>{
+            const id=++seq;
+            pending.set(id,{resolve,reject});
+            ws.send(JSON.stringify({id,method,params}));
+          });
+
+          await call('Runtime.enable');
+          const expression = `(async () => {
+            const { createIndexedDbEventStore } = await import('/app/infrastructure/browser/indexeddb-event-store.js');
+            const {
+              canonicalJson,
+              exportWorldBackup,
+              serializeWorldBackup,
+              validateWorldBackup
+            } = await import('/app/application/world-backup.js');
+
+            const dbName = 'i10-backup-' + crypto.randomUUID();
+            const worldId = 'world:000000000000000000000010';
+            const productVersion = '0.1.0-alpha.0';
+            const contentLockFingerprint = 'a8562f17edc6682170cb08d0ccc4cb012346392f21e97415f301ae322212878f';
+            const store = createIndexedDbEventStore({ indexedDB, dbName });
+            const events = Array.from({length:1000}, (_, index) => ({
+              event_id:'event:' + (index + 1).toString(16).padStart(24,'0'),
+              event_type:'test.event',
+              payload:{index, note:index === 0 ? 'line1\\r\\nline2' : 'ok'},
+              author_id:'actor:000000000000000000000001',
+              sequence:index + 1,
+              lamport:index,
+              ruleset_version:'1.0.0',
+              metadata:{source:'i10-smoke'}
+            }));
+
+            await store.append(worldId, events);
+
+            let readCalls = 0;
+            const readWorld = async requestedWorldId => {
+              readCalls += 1;
+              return store.readWorld(requestedWorldId);
+            };
+
+            const started = performance.now();
+            const first = await exportWorldBackup({worldId, productVersion, contentLockFingerprint, readWorld});
+            const second = await exportWorldBackup({worldId, productVersion, contentLockFingerprint, readWorld});
+            const elapsedMs = performance.now() - started;
+
+            if (readCalls !== 2) throw new Error('export must perform exactly one readWorld per call');
+            if (first.backup.event_count !== 1000 || first.backup.events.length !== 1000) throw new Error('1000-event backup count mismatch');
+            if (first.backup.events[0].event_id !== events[0].event_id || first.backup.events[999].event_id !== events[999].event_id) throw new Error('event order changed');
+            if (first.text !== second.text) throw new Error('repeat export text is not deterministic');
+
+            const encoder = new TextEncoder();
+            const bytesA = encoder.encode(first.text);
+            const bytesB = encoder.encode(second.text);
+            if (bytesA.length !== bytesB.length) throw new Error('repeat export byte length mismatch');
+            for (let index = 0; index < bytesA.length; index += 1) {
+              if (bytesA[index] !== bytesB[index]) throw new Error('repeat export bytes differ');
+            }
+
+            const parsed = JSON.parse(first.text);
+            validateWorldBackup(parsed);
+            const keys = Object.keys(parsed).sort().join(',');
+            const expectedKeys = ['content_lock_fingerprint','event_count','events','format','format_version','product_version','world_id'].sort().join(',');
+            if (keys !== expectedKeys) throw new Error('backup top-level fields changed');
+            if ('snapshot' in parsed || 'exported_at' in parsed || 'storage_health' in parsed) throw new Error('non-authoritative state leaked into backup');
+            if (!first.text.includes('line1\\nline2') || first.text.includes('line1\\r')) throw new Error('canonical line ending normalization failed');
+
+            const reordered = {
+              events: parsed.events,
+              event_count: parsed.event_count,
+              content_lock_fingerprint: parsed.content_lock_fingerprint,
+              product_version: parsed.product_version,
+              world_id: parsed.world_id,
+              format_version: parsed.format_version,
+              format: parsed.format
+            };
+            if (serializeWorldBackup(reordered) !== first.text) throw new Error('key order affected serialized bytes');
+            if (canonicalJson(parsed) !== first.text) throw new Error('canonical serializer drift');
+
+            const countMismatch = JSON.parse(first.text);
+            countMismatch.event_count -= 1;
+            let countRejected = false;
+            try { validateWorldBackup(countMismatch); } catch { countRejected = true; }
+            if (!countRejected) throw new Error('event_count mismatch was accepted');
+
+            const extraField = JSON.parse(first.text);
+            extraField.snapshot = {};
+            let extraRejected = false;
+            try { validateWorldBackup(extraField); } catch { extraRejected = true; }
+            if (!extraRejected) throw new Error('unexpected backup field was accepted');
+
+            const invalidEvent = JSON.parse(first.text);
+            invalidEvent.events[0].sequence = 0;
+            let eventRejected = false;
+            try { validateWorldBackup(invalidEvent); } catch { eventRejected = true; }
+            if (!eventRejected) throw new Error('invalid I06 event was accepted');
+
+            const badOrder = JSON.parse(first.text);
+            [badOrder.events[0], badOrder.events[1]] = [badOrder.events[1], badOrder.events[0]];
+            let orderRejected = false;
+            try { validateWorldBackup(badOrder); } catch { orderRejected = true; }
+            if (!orderRejected) throw new Error('non-deterministic event order was accepted');
+
+            const maxElapsedMs = 5000;
+            if (elapsedMs >= maxElapsedMs) throw new Error(`1000-event repeat export exceeded budget: ${elapsedMs.toFixed(1)} ms`);
+
+            indexedDB.deleteDatabase(dbName);
+            return {
+              count:first.backup.event_count,
+              bytes:bytesA.length,
+              repeat_exports:2,
+              elapsed_ms:Number(elapsedMs.toFixed(1)),
+              max_elapsed_ms:maxElapsedMs,
+              count_rejected:countRejected,
+              extra_rejected:extraRejected,
+              event_rejected:eventRejected,
+              order_rejected:orderRejected
+            };
+          })()`;
+
+          const result = await call('Runtime.evaluate', {expression, awaitPromise:true, returnByValue:true});
+          if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
+          const value = result.result?.value;
+          if (value?.count !== 1000 || value?.repeat_exports !== 2) throw new Error(`I10 backup smoke failed: ${JSON.stringify(value)}`);
+          if (exceptions.length) throw new Error(`Runtime exceptions: ${JSON.stringify(exceptions)}`);
+
+          console.log('I10 Export Backup smoke: PASS', JSON.stringify(value));
+          ws.close();
+          NODE
