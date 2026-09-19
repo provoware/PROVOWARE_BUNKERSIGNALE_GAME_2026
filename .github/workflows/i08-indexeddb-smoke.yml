@@ -1,0 +1,68 @@
+name: i08-indexeddb-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'app/infrastructure/browser/indexeddb-event-store.js'
+      - '.github/workflows/i08-indexeddb-smoke.yml'
+      - 'tests/test_i08.py'
+      - 'docs/I08_INDEXEDDB_EVENT_STORE.md'
+
+jobs:
+  indexeddb-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Transaction, abort and reopen/readback in real Chromium
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser"
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i08-http.log" 2>&1 &
+          server_pid=$!
+          "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --remote-debugging-address=127.0.0.1 --remote-debugging-port=9222 about:blank >"$RUNNER_TEMP/i08-chromium.log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$server_pid" "$browser_pid" 2>/dev/null || true' EXIT
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break
+            sleep 0.1
+          done
+          node <<'NODE'
+          const debugBase = 'http://127.0.0.1:9222';
+          const target = await fetch(`${debugBase}/json/new?${encodeURIComponent('http://127.0.0.1:8765/index.html')}`, {method:'PUT'}).then(r => r.json());
+          const ws = new WebSocket(target.webSocketDebuggerUrl);
+          await new Promise((resolve, reject) => { ws.addEventListener('open', resolve, {once:true}); ws.addEventListener('error', reject, {once:true}); });
+          let seq = 0; const pending = new Map();
+          ws.addEventListener('message', event => { const msg = JSON.parse(event.data); if (msg.id && pending.has(msg.id)) { const p=pending.get(msg.id); pending.delete(msg.id); msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg.result ?? {}); } });
+          const call=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq; pending.set(id,{resolve,reject}); ws.send(JSON.stringify({id,method,params}));});
+          await call('Runtime.enable');
+          const expression = `(async () => {
+            const { createIndexedDbEventStore } = await import('/app/infrastructure/browser/indexeddb-event-store.js');
+            const dbName = 'i08-smoke-' + crypto.randomUUID();
+            const event = (id, lamport) => ({ event_id:id, world_id:'world:test', author_id:'actor:test', sequence:lamport+1, lamport, event_type:'test.event', ruleset_version:'1.0.0', payload:{} });
+            const aborting = createIndexedDbEventStore({ indexedDB, dbName, faultInjector: ({writeCount, transaction}) => { if (writeCount === 1) transaction.abort(); } });
+            let aborted = false;
+            try { await aborting.append([event('event:abort-a',0), event('event:abort-b',1)]); } catch { aborted = true; }
+            if (!aborted) throw new Error('simulated abort did not reject');
+            const clean = createIndexedDbEventStore({ indexedDB, dbName });
+            if ((await clean.readWorld('world:test')).length !== 0) throw new Error('aborted transaction leaked a partial write');
+            await clean.append([event('event:1',0), event('event:2',1)]);
+            const reopened = createIndexedDbEventStore({ indexedDB, dbName });
+            const readback = await reopened.readWorld('world:test');
+            if (readback.map(e => e.event_id).join(',') !== 'event:1,event:2') throw new Error('reopen/readback mismatch');
+            let duplicateRejected = false;
+            try { await reopened.append([event('event:3',2), event('event:2',3)]); } catch { duplicateRejected = true; }
+            if (!duplicateRejected) throw new Error('duplicate append was accepted');
+            const finalReadback = await reopened.readWorld('world:test');
+            if (finalReadback.some(e => e.event_id === 'event:3')) throw new Error('failed append committed a partial event');
+            indexedDB.deleteDatabase(dbName);
+            return { aborted, count: finalReadback.length, ids: finalReadback.map(e => e.event_id) };
+          })()`;
+          const result = await call('Runtime.evaluate', { expression, awaitPromise:true, returnByValue:true });
+          if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
+          const value = result.result?.value;
+          if (!value?.aborted || value.count !== 2) throw new Error(`I08 smoke failed: ${JSON.stringify(value)}`);
+          console.log('I08 IndexedDB smoke: PASS', JSON.stringify(value));
+          ws.close();
+          NODE
