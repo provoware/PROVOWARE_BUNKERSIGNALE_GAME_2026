@@ -69,8 +69,9 @@ Die Messwerte sind Regression-Smokebudgets, keine Hardwaregarantie.
 7. Abort während Snapshot-Replacement -> letzter gültiger Snapshot bleibt lesbar,
 8. 1000-Schritt-Großweltprofil bleibt innerhalb der dokumentierten Smoke-Budgets,
 9. Ausfall der Snapshot-Datenbank beim Öffnen/Lesen/Löschen -> vollständiger Replay bleibt möglich,
-10. allgemeiner Chromium-Smoke bleibt grün,
-11. finaler Diff enthält keine I10+-Funktion und keinen I08-REOPEN.
+10. asynchroner Readfehler -> Transaktion wird vollständig settled, kein `unhandledrejection`, Replay bleibt möglich,
+11. allgemeiner Chromium-Smoke bleibt grün,
+12. finaler Diff enthält keine I10+-Funktion und keinen I08-REOPEN.
 
 Verbindliche Gates: **G4 Persistenz/Recovery** und **G6 Integrität/Datenverlustschutz**.
 
@@ -89,6 +90,10 @@ Der Freeze bleibt bis zur grünen Wiederholung der durch diese Dokumentationsän
 ## I09 REOPEN - Cache-Storage-Fallback
 
 Nach dem Merge von PR #22 wurde ein konkreter Fehler festgestellt: Ein Ausfall ausschließlich der separaten Snapshot-Datenbank konnte `resolveState()` abbrechen, bevor der vollständige Replay gestartet wurde. Der REOPEN begrenzt sich auf diesen Fehlerpfad. Argumentfehler bleiben fail-closed; nur Storagefehler des verwerfbaren Caches werden als Cache-Miss behandelt. I08-Event-Store, I06/I07-Verträge und I10+-Scope bleiben unverändert.
+
+## I09 REOPEN - asynchroner Readfehler
+
+Nach dem ersten Cache-Storage-Fallback-REOPEN wurde ein zweiter konkreter Fehlerpfad gefunden: Ein asynchron fehlschlagender IndexedDB-`get()`-Request konnte sowohl den Request als auch das Transaktions-Promise ablehnen. Der Replay-Fallback funktionierte zwar, das nicht konsumierte Transaktions-Promise konnte aber als `unhandledrejection` nachlaufen. `readValid()` wartet bzw. konsumiert deshalb bei jedem Readfehler nun zusätzlich das Transaktionsende, bevor der Fehler an `resolveState()` weitergegeben und dort als Cache-Miss behandelt wird. Der Chromium-Smoke erzwingt diesen Abort direkt nach dem queued Read und prüft explizit auf null unbehandelte Promise-Rejections.
 
 ## Restrisiko
 
