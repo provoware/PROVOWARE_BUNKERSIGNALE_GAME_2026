@@ -9,7 +9,8 @@
     "Race-sichere No-Clobber-Veröffentlichung für Aktivierung und Quarantäne",
     "Regressionstests für konkurrierend entstehende Aktivierungs- und Quarantäneziele",
     "I04-Implementierung, Tests, Evidence und Status als Pflichtdateien validieren",
-    "I04-Regressionspolicy um expliziten Ziel-Race-Schutz ergänzen"
+    "I04-Regressionspolicy um expliziten Ziel-Race-Schutz ergänzen",
+    "Evidence-Fingerprint und Einzelhashes als zwingende Freeze-Integritätsprüfung"
   ],
   "non_goals": [
     "Keine I05-Funktion",
@@ -25,13 +26,15 @@
     "release_evidence"
   ],
   "compatibility": "I04-Verträge bleiben fachlich gleich; die Implementierung erfüllt die bereits dokumentierte No-Clobber-Garantie nun auch unter Race-Bedingungen.",
-  "security": "os.link erzeugt das Ziel atomar nur bei Nichtvorhandensein. FileExistsError führt fail-closed zum stabilen CONTENT-Fehler; Cross-Filesystem- oder sonstige Linkfehler lassen die Quelle unverändert.",
+  "security": "Atomare Hard-Link-Zielerzeugung verhindert Clobbering. Bei Quell-Cleanup-Fehlern wird das Ziel nicht automatisch gelöscht, damit ein inzwischen fremd ersetztes Ziel nicht verloren geht. Evidence und Status müssen exakt zum aktuellen governeden Fingerprint und Dateihashsatz passen.",
   "test_plan": [
     "gezielte tests.test_i04 einschließlich Aktivierungs-Race und Quarantäne-Race",
     "Repository-Gate muss beim Fehlen von tools/content_inbox.py oder tests/test_i04.py rot werden",
     "vollständiger Repository-Qualitätslauf",
     "I00-I03 Regression unverändert grün",
-    "finalen Repository-Fingerprint in erneuerter I04-Evidence dokumentieren"
+    "finalen Repository-Fingerprint in erneuerter I04-Evidence dokumentieren",
+    "Quell-Cleanup-Fehler mit konkurrierend ersetztem Ziel darf kein fremdes Ziel löschen",
+    "veraltete Checkpoint-Evidence muss mit SSI-INT-0001 abgelehnt werden"
   ],
   "rollback": "REOPEN-Fixcommit revertieren; I04 gilt dann wieder als nicht ausreichend bewiesen und I05 bleibt gesperrt.",
   "evidence": [

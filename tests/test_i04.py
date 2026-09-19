@@ -16,6 +16,8 @@ if str(TOOLS) not in sys.path:
 
 from content_inbox import ContentInbox
 from content_registry import ContentRegistry, ContentRegistryError
+from ssi_common import repository_fingerprint
+from validate_repo import validate_checkpoint_evidence
 
 
 class I04ContentInboxTests(unittest.TestCase):
@@ -128,6 +130,89 @@ class I04ContentInboxTests(unittest.TestCase):
 
         self.assertTrue(staged.is_file())
         self.assertEqual(destination.read_bytes(), sentinel)
+
+    def test_cleanup_failure_never_deletes_concurrently_replaced_target(self) -> None:
+        staged = self.stage_addon()
+        destination = self.root / "packages/addon.json"
+        sentinel = b"replacement-owned-by-other-writer\n"
+        real_unlink = Path.unlink
+
+        def failing_cleanup(path: Path, *args, **kwargs) -> None:
+            if path == staged:
+                real_unlink(destination)
+                destination.write_bytes(sentinel)
+                raise OSError("simulated source cleanup failure")
+            real_unlink(path, *args, **kwargs)
+
+        with patch.object(Path, "unlink", autospec=True, side_effect=failing_cleanup):
+            with self.assertRaises(ContentRegistryError):
+                self.processor.process("addon.json", "feature.addon", "1.0.0")
+
+        self.assertTrue(staged.is_file())
+        self.assertEqual(destination.read_bytes(), sentinel)
+
+    def test_stale_frozen_checkpoint_evidence_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "manifests").mkdir()
+            (root / "evidence").mkdir()
+            (root / "status").mkdir()
+            (root / "manifests/project.manifest.json").write_text(
+                json.dumps({"checkpoint": "I04", "status": "frozen_i04"}) + "\n",
+                encoding="utf-8",
+            )
+            stale = "0" * 64
+            (root / "evidence/I04_EVIDENCE.json").write_text(
+                json.dumps({
+                    "checkpoint": "I04",
+                    "status": "GREEN",
+                    "fingerprint_sha256": stale,
+                    "file_hashes": {},
+                }) + "\n",
+                encoding="utf-8",
+            )
+            (root / "status/I04_STATUS.json").write_text(
+                json.dumps({
+                    "checkpoint": "I04",
+                    "overall_status": "GREEN",
+                    "fingerprint_sha256": stale,
+                }) + "\n",
+                encoding="utf-8",
+            )
+
+            issues = validate_checkpoint_evidence(root)
+            self.assertTrue(any(issue.code == "SSI-INT-0001" for issue in issues))
+
+    def test_exact_frozen_checkpoint_evidence_is_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "manifests").mkdir()
+            (root / "evidence").mkdir()
+            (root / "status").mkdir()
+            (root / "manifests/project.manifest.json").write_text(
+                json.dumps({"checkpoint": "I04", "status": "frozen_i04"}) + "\n",
+                encoding="utf-8",
+            )
+            fingerprint, hashes = repository_fingerprint(root)
+            (root / "evidence/I04_EVIDENCE.json").write_text(
+                json.dumps({
+                    "checkpoint": "I04",
+                    "status": "GREEN",
+                    "fingerprint_sha256": fingerprint,
+                    "file_hashes": hashes,
+                }) + "\n",
+                encoding="utf-8",
+            )
+            (root / "status/I04_STATUS.json").write_text(
+                json.dumps({
+                    "checkpoint": "I04",
+                    "overall_status": "GREEN",
+                    "fingerprint_sha256": fingerprint,
+                }) + "\n",
+                encoding="utf-8",
+            )
+
+            self.assertEqual(validate_checkpoint_evidence(root), [])
 
 
 if __name__ == "__main__":

@@ -60,10 +60,12 @@ class ContentInbox:
         return destination
 
     def _move_no_clobber(self, source: Path, destination: Path, existing_message: str) -> None:
-        """Publish a complete file atomically without ever replacing an existing target.
+        """Publish a complete file without replacing an existing destination.
 
-        Hard-link creation is the no-clobber primitive. If source and destination
-        are on different filesystems, activation fails closed and leaves source intact.
+        Atomic hard-link creation is the no-clobber primitive. Cross-filesystem
+        publication fails closed. If source cleanup fails after link creation,
+        both names are intentionally retained; deleting the destination would
+        risk removing a concurrently replaced file.
         """
         destination.parent.mkdir(parents=True, exist_ok=True)
         try:
@@ -80,12 +82,8 @@ class ContentInbox:
         try:
             source.unlink()
         except OSError as exc:
-            rollback_error: OSError | None = None
-            try:
-                destination.unlink()
-            except OSError as rollback_exc:
-                rollback_error = rollback_exc
-            message = "Quellkandidat konnte nach sicherer Zielanlage nicht entfernt werden."
-            if rollback_error is not None:
-                message += " Ziel-Rollback ist ebenfalls fehlgeschlagen."
-            raise ContentRegistryError("SSI-CONTENT-0001", message) from exc
+            raise ContentRegistryError(
+                "SSI-CONTENT-0001",
+                "Quellkandidat konnte nach sicherer Zielanlage nicht entfernt werden; "
+                "Ziel bleibt zur Vermeidung fremder Datenverluste unangetastet.",
+            ) from exc

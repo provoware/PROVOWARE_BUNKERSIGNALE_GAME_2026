@@ -52,7 +52,9 @@ I03 prüft zusätzlich Content-Registry und Lockfile als gemeinsames read-only V
 
 I04 prüft zusätzlich den vollständigen Lebenszyklus eines einzelnen Inbox-Kandidaten. Ein registrierter, exakt gepinnter Kandidat wird nur an ein freies Ziel veröffentlicht; manipulierte oder unlesbare Kandidaten werden mit stabilem CONTENT-Fehlercode quarantänisiert. Pfad-Escapes und vorhandene Aktivierungs- oder Quarantäneziele müssen ohne Überschreiben abgewiesen werden.
 
-Die No-Clobber-Garantie MUSS auch bei einem Ziel-Race gelten: Entsteht das Ziel zwischen Validierung und Dateisystemoperation, darf es niemals ersetzt werden. Der Kandidat bleibt in diesem Fehlerfall erhalten. Cross-Filesystem-Veröffentlichungen werden fail-closed abgewiesen, statt auf eine nicht-atomare Kopierstrategie auszuweichen.
+Die No-Clobber-Garantie MUSS auch bei einem Ziel-Race gelten: Entsteht das Ziel zwischen Validierung und Dateisystemoperation, darf es niemals ersetzt werden. Der Kandidat bleibt in diesem Fehlerfall erhalten. Cross-Filesystem-Veröffentlichungen werden fail-closed abgewiesen, statt auf eine nicht-atomare Kopierstrategie auszuweichen. Scheitert nach erfolgreicher Zielanlage nur das Entfernen der Quelle, bleibt das Ziel unangetastet; ein automatischer Ziel-Rollback ist verboten, weil ein inzwischen fremd ersetztes Ziel sonst gelöscht werden könnte.
+
+Für einen eingefrorenen Checkpoint reicht die bloße Existenz von Evidence nicht aus. Evidence- und Status-Fingerprint MÜSSEN dem aktuellen governeden Repository-Fingerprint entsprechen; die in der Evidence gespeicherten Einzelhashes MÜSSEN exakt dem aktuellen governeden Dateisatz entsprechen.
 
 ## Rollback
 
