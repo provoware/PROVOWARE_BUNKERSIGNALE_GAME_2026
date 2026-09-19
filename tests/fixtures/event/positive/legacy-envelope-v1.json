@@ -1,0 +1,10 @@
+{
+  "event_id": "event:444444444444444444444444",
+  "event_type": "world.opened",
+  "payload": {"revision": 1},
+  "author_id": "actor:222222222222222222222222",
+  "sequence": 1,
+  "lamport": 0,
+  "ruleset_version": "1.0.0",
+  "metadata": {"fixture": "legacy-minimal-v1"}
+}
