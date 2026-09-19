@@ -1,100 +1,33 @@
 {
   "checkpoint": "I06",
-  "generated_at_utc": "2026-09-19T05:03:30Z",
+  "generated_at_utc": "2026-09-19T06:06:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "cb0aacbf54b89d538b9e89b1ff41cf1931f8fda9de70bcd3a34410ccf39bb86d",
+  "fingerprint_sha256": "5a0b5db65e68ef4d93defb8375414360f70abaf8d3059cc50ef2b76d00963110",
   "checks": [
-    {
-      "name": "event_envelope_schema",
-      "status": "PASS",
-      "detail": "Pflichtfelder und optionale Trace-Felder bleiben unverändert in event-envelope@1.0.0 definiert."
-    },
-    {
-      "name": "sequence_lamport_identity_invariants",
-      "status": "PASS",
-      "detail": "Sequenz-, Lamport- und typed-ID-Invarianten bleiben grün."
-    },
-    {
-      "name": "unknown_field_rejection",
-      "status": "PASS",
-      "detail": "Unbekannte Envelope-Felder werden weiterhin fail-closed abgewiesen."
-    },
-    {
-      "name": "canonical_serialization",
-      "status": "PASS",
-      "detail": "Gleiche Envelopes serialisieren unabhängig von Schlüsselreihenfolge byteidentisch."
-    },
-    {
-      "name": "abort_truncation_readback",
-      "status": "PASS",
-      "detail": "Trunkierte, ungültige oder nicht-kanonische Bytes werden nicht als gültiger Envelope zurückgelesen."
-    },
-    {
-      "name": "legacy_readback",
-      "status": "PASS",
-      "detail": "Minimales Event-Envelope-v1 ohne optionale Trace-Felder roundtript vollständig."
-    },
-    {
-      "name": "large_readback_profile",
-      "status": "PASS",
-      "detail": "1000 deterministische Envelope-Serialize/Readback-Roundtrips bestanden innerhalb des 5000-ms-Smokebudgets."
-    },
-    {
-      "name": "reopen_evidence_probe",
-      "status": "PASS",
-      "detail": "Quality run 35422848054 blockierte erwartungsgemäß ausschließlich wegen veralteter I06-Freeze-Evidence."
-    },
-    {
-      "name": "visual_ux_scope",
-      "status": "PASS",
-      "detail": "Keine weitere UX-Änderung im REOPEN; I06 behält exakt die bereits geprüfte Panel-Lesebreite 68ch."
-    }
+    {"name": "event_envelope_schema", "status": "PASS", "detail": "Pflichtfelder und optionale Trace-Felder bleiben unverändert in event-envelope@1.0.0 definiert."},
+    {"name": "sequence_lamport_identity_invariants", "status": "PASS", "detail": "Sequenz-, Lamport- und typed-ID-Invarianten bleiben grün."},
+    {"name": "unknown_field_rejection", "status": "PASS", "detail": "Unbekannte Envelope-Felder werden weiterhin fail-closed abgewiesen."},
+    {"name": "canonical_serialization", "status": "PASS", "detail": "Gleiche Envelopes serialisieren unabhängig von Schlüsselreihenfolge byteidentisch."},
+    {"name": "abort_truncation_readback", "status": "PASS", "detail": "Trunkierte, ungültige oder nicht-kanonische Bytes werden nicht als gültiger Envelope zurückgelesen."},
+    {"name": "legacy_readback", "status": "PASS", "detail": "Minimales Event-Envelope-v1 ohne optionale Trace-Felder roundtript vollständig."},
+    {"name": "large_readback_profile", "status": "PASS", "detail": "1000 deterministische Envelope-Serialize/Readback-Roundtrips bestanden innerhalb des 5000-ms-Smokebudgets."},
+    {"name": "reopen_evidence_probe", "status": "PASS", "detail": "Quality run 35425680249 blockierte nach Schema-Korrektur ausschließlich wegen veralteter I06-Freeze-Evidence."},
+    {"name": "visual_ux_scope", "status": "PASS", "detail": "Genau eine visuelle UX-Änderung: Status-Pills umbrechen intern nicht mehr; Chromium-Smoke run 35425680357 war GREEN."}
   ],
   "file_hashes": {
     "changes/CHG-20260919-011.json": "509294a776b345e65a22144fea043f5d93afc048e0777dcaf2965e4b4f91faab",
-    "changes/CHG-20260919-012.json": "bd229410702bf48a3ef9e611df78a65e5ef75706887b80e61266954a3e46334a"
+    "changes/CHG-20260919-012.json": "bd229410702bf48a3ef9e611df78a65e5ef75706887b80e61266954a3e46334a",
+    "changes/CHG-20260919-013.json": "2f3fbd92a2614fc1daa58f01fa43818751593d129c9935562a1e9cfbf9a0f311"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
-    {
-      "role": "orchestrator",
-      "status": "PASS",
-      "evidence": "I06 REOPEN ist ausschließlich auf die fehlenden v0.4-Readback-/Crash-Härtungsnachweise begrenzt; I07/I08 wurden nicht vorgezogen."
-    },
-    {
-      "role": "architecture_guardian",
-      "status": "PASS",
-      "evidence": "Der Envelope-Vertrag und sein Schema bleiben unverändert; Readback ergänzt nur eine strikte vollständige Bytegrenze."
-    },
-    {
-      "role": "data_schema_auditor",
-      "status": "PASS",
-      "evidence": "event-envelope@1.0.0 bleibt unverändert registriert; Legacy-Minimal-v1 nutzt ausschließlich bestehende Pflichtfelder."
-    },
-    {
-      "role": "qa_regression",
-      "status": "PASS",
-      "evidence": "Acht fokussierte I06-Tests einschließlich trunkierter/nicht-kanonischer Bytes, Legacy-Roundtrip und 1000-Envelope-Profil liefen im Quality-Gate ohne Testfehler."
-    },
-    {
-      "role": "security_integrity",
-      "status": "PASS",
-      "evidence": "Teilweise, ungültige oder nicht-kanonische persistierte Bytes werden fail-closed abgewiesen."
-    },
-    {
-      "role": "ux_accessibility",
-      "status": "PASS",
-      "evidence": "Der REOPEN verändert keine UI-Datei; die einzige I06-UX-Änderung max-width 68ch wurde bereits per Chromium-Smoke geprüft."
-    },
-    {
-      "role": "content_canon",
-      "status": "PASS",
-      "evidence": "Keine Story-, Figuren- oder Kanondaten wurden verändert."
-    },
-    {
-      "role": "release_evidence",
-      "status": "PASS",
-      "evidence": "REOPEN-Probe 35422848054 meldete ausschließlich veraltete Freeze-Evidence und den neuen governeden Fingerprint; keine Produkt-/Testregression."
-    }
+    {"role": "orchestrator", "status": "PASS", "evidence": "I06 REOPEN blieb auf README-Korrektur, Evidence-Rebind und exakt eine CSS-UX-Änderung begrenzt; I07/I08 wurden nicht vorgezogen."},
+    {"role": "architecture_guardian", "status": "PASS", "evidence": "Envelope-Vertrag, Schema, Runtime-Semantik und Persistenz bleiben unverändert."},
+    {"role": "data_schema_auditor", "status": "PASS", "evidence": "event-envelope@1.0.0 bleibt unverändert registriert; Change Record ist schema-valid GREEN."},
+    {"role": "qa_regression", "status": "PASS", "evidence": "Browser-Smoke run 35425680357 ist GREEN; Quality run 35425680249 zeigte nach Schema-Korrektur nur die erwartete stale-Evidence-Sperre."},
+    {"role": "security_integrity", "status": "PASS", "evidence": "Keine Änderung an Trust Boundaries, Datenformaten oder produktiver Persistenz."},
+    {"role": "ux_accessibility", "status": "PASS", "evidence": "Status-Pills erhalten ausschließlich white-space: nowrap; realer Chromium-Smoke blieb GREEN."},
+    {"role": "content_canon", "status": "PASS", "evidence": "Keine Story-, Figuren- oder Kanondaten wurden verändert."},
+    {"role": "release_evidence", "status": "PASS", "evidence": "Governed Fingerprint 5a0b5db65e68ef4d93defb8375414360f70abaf8d3059cc50ef2b76d00963110 und CHG-20260919-013-Hash wurden neu gebunden."}
   ]
 }

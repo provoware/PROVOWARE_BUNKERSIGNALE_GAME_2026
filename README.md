@@ -24,7 +24,8 @@ Bereits umgesetzt:
 - **I02** – lokale Schema Registry mit exakter Versionsauflösung, Lifecycle-Regeln sowie Positiv-/Negativtests.
 - **I03** – read-only Content Registry + Lockfile mit exakter Paketauflösung, SHA-256-Pins, deterministischem Dependency-Resolver und gemeinsamer Drift-Erkennung.
 - **I04** – lokale Inbox mit Lock-Pin-Prüfung, Quarantäne ungültiger Kandidaten und atomarer Aktivierung in noch freie Paketziele.
-- **I05** – stabile world/actor/object/event IDs, Canonical JSON sowie read-only Hot-Swap-Policy.\n- **I06** – Event Envelope v1 mit Schema, Sequenz-/Lamport-Invarianten, Trace-Feldern und Negative Fixtures.
+- **I05** – stabile world/actor/object/event IDs, Canonical JSON sowie read-only Hot-Swap-Policy.
+- **I06** – Event Envelope v1 mit Schema, Sequenz-/Lamport-Invarianten, Trace-Feldern und Negative Fixtures.
 
 ## Schnellstart
 
@@ -78,7 +79,8 @@ Dokumentationsindex: **[docs/README.md](docs/README.md)**
 - Runtime-Code importiert nur entlang der definierten Schichtgrenzen.
 - Schema- und Content-Auflösung sind lokal und versionsgenau; kein `latest`, keine Netzwerkauflösung.
 - I04 verarbeitet nur explizit benannte lokale Inbox-Kandidaten; Zielkonflikte schlagen ohne Überschreiben fehl.
-- I05 stellt stabile Identitäten und Canonical JSON bereit; Contentwechsel bleiben read-only klassifiziert.\n- I06 validiert vollständige Event Envelopes, persistiert aber noch keine Events.
+- I05 stellt stabile Identitäten und Canonical JSON bereit; Contentwechsel bleiben read-only klassifiziert.
+- I06 validiert vollständige Event Envelopes, persistiert aber noch keine Events.
 - Neue Runtime-Abhängigkeiten benötigen eine begründete Architekturentscheidung.
 - Persistente Weltdaten, produktive Contentpakete und Spiellogik werden nicht vorgezogen.
 
