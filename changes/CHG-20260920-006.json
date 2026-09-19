@@ -1,0 +1,40 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-006",
+  "checkpoint": "I10",
+  "title": "I10-A persistence status independence",
+  "purpose": "Post-merge gefundenen P2-Vertragsfehler beheben: ein Estimate-Fehler darf einen separat verfügbaren Persistenzstatus nicht verdecken.",
+  "scope": [
+    "persisted() unabhängig vom Estimate-Ergebnis lesen",
+    "bei Estimate-Fehler Kapazität unknown, Persistenzstatus aber erhalten",
+    "Chromium-Regression für estimate reject + persisted true"
+  ],
+  "non_goals": [
+    "Keine Änderung an Kapazitätsgrenzen",
+    "Keine Game-Shell- oder UI-Layoutänderung",
+    "Keine Export-/Restore-Produktlogik",
+    "Kein navigator.storage.persist()-Aufruf"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "release_evidence"
+  ],
+  "compatibility": "Normale Estimates und persisted()-Fehlerpfade bleiben unverändert; nur die bisher fälschlich gekoppelte Fehlerbehandlung wird getrennt.",
+  "security": "Weiterhin strikt read-only; kein neuer Persistenzschreibpfad.",
+  "test_plan": [
+    "Repository Quality",
+    "I10 Storage Health Chromium-Smoke",
+    "Game UI Regression Shell",
+    "allgemeiner Browser-Smoke"
+  ],
+  "rollback": "Branch verwerfen; main bleibt auf dem I10-A-Stand.",
+  "evidence": [
+    "app/infrastructure/browser/storage-health.js",
+    "tests/test_i10_storage_health.py",
+    ".github/workflows/i10-storage-health-smoke.yml",
+    "docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md"
+  ],
+  "result": "GREEN"
+}
