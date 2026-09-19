@@ -1,94 +1,28 @@
 {
   "checkpoint": "I05",
-  "generated_at_utc": "2026-09-19T03:54:00Z",
+  "generated_at_utc": "2026-09-19T04:54:30Z",
   "status": "GREEN",
-  "fingerprint_sha256": "a2109489bad2acb281dff782a8bae3d344e6474136930ade2376a8d706296c31",
+  "fingerprint_sha256": "189eb87987799568d8076637cf9ae5d6e5c9b5fdeb02f215e154cf88cea9ffe4",
   "checks": [
-    {
-      "name": "hot_swap_class_coverage",
-      "status": "PASS",
-      "detail": "Alle vier verbindlichen Hot-Swap-Klassen sind deterministisch abgebildet."
-    },
-    {
-      "name": "safe_text_class",
-      "status": "PASS",
-      "detail": "Textwechsel ist immediate_safe."
-    },
-    {
-      "name": "fail_closed_unknown_content",
-      "status": "PASS",
-      "detail": "Unbekannte Contentarten fallen auf restart_required zurück."
-    },
-    {
-      "name": "migration_and_running_world_guards",
-      "status": "PASS",
-      "detail": "Migration benötigt Bereitschaft plus gestoppte Welt; world_core bleibt während laufender Welt blockiert."
-    },
-    {
-      "name": "registry_lock_non_mutation",
-      "status": "PASS",
-      "detail": "I05-Entscheidungen verändern Content Registry und Lockfile nicht."
-    },
-    {
-      "name": "repository_quality",
-      "status": "PASS",
-      "detail": "GitHub Actions quality run 35419813077 completed SUCCESS."
-    },
-    {
-      "name": "chromium_smoke",
-      "status": "PASS",
-      "detail": "Real Chromium smoke run 35419813098 completed SUCCESS."
-    },
-    {
-      "name": "visual_ux_scope",
-      "status": "PASS",
-      "detail": "Genau ein visueller UX-Aspekt geändert: globaler Text-Zeilenabstand auf 1.5."
-    }
+    {"name":"stable_id_contract","status":"PASS","detail":"world/actor/object/event IDs werden deterministisch erzeugt und typgeprüft."},
+    {"name":"canonical_json_golden","status":"PASS","detail":"Canonical JSON bleibt für Schlüsselreihenfolge, Unicode, Zahlen sowie CRLF/CR/LF byteidentisch."},
+    {"name":"unstable_value_rejection","status":"PASS","detail":"NaN, Infinity, Nicht-String-Schlüssel und nicht unterstützte Typen werden fail-closed abgewiesen."},
+    {"name":"hot_swap_regression","status":"PASS","detail":"Bestehende I05-Hot-Swap-Policy bleibt unverändert Teil der Regression."},
+    {"name":"repository_quality_reopen_probe","status":"PASS","detail":"Run 35422507776 blockierte erwartungsgemäß ausschließlich wegen veralteter Freeze-Evidence und meldete den neuen Fingerprint."}
   ],
   "file_hashes": {
-    "changes/CHG-20260919-009.json": "d00fc6f68799b09d28c8a5cf0b8f41cf768ed91662437f9c7debe3940c59be7c"
+    "changes/CHG-20260919-009.json": "d00fc6f68799b09d28c8a5cf0b8f41cf768ed91662437f9c7debe3940c59be7c",
+    "changes/CHG-20260919-010.json": "258872e8c221c10375c1b8cd8312e1689648e185fada6054daccdbc771129447"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
-    {
-      "role": "orchestrator",
-      "status": "PASS",
-      "evidence": "I05 ist auf eine read-only Hot-Swap-Entscheidungsschicht begrenzt; I00-I04 wurden nicht reopened."
-    },
-    {
-      "role": "architecture_guardian",
-      "status": "PASS",
-      "evidence": "Hot-Swap-Policy ist von Registry, Lockfile, Inbox und Browser-Runtime getrennt; keine neue Abhängigkeitsrichtung."
-    },
-    {
-      "role": "data_schema_auditor",
-      "status": "PASS",
-      "evidence": "Bestehende Schema Registry und Content Registry/Lock-Verträge bleiben unverändert."
-    },
-    {
-      "role": "qa_regression",
-      "status": "PASS",
-      "evidence": "Sechs fokussierte I05-Tests plus vollständiger Repository-Quality-Lauf sind grün."
-    },
-    {
-      "role": "security_integrity",
-      "status": "PASS",
-      "evidence": "Unbekannte Contentarten fallen fail-closed auf restart_required; Migration und laufende Welt werden explizit gesperrt."
-    },
-    {
-      "role": "ux_accessibility",
-      "status": "PASS",
-      "evidence": "Einziger visueller Eingriff ist line-height 1.5; realer Chromium-Smoke blieb grün."
-    },
-    {
-      "role": "content_canon",
-      "status": "PASS",
-      "evidence": "Keine produktiven Story- oder Kanondaten wurden hinzugefügt oder verändert."
-    },
-    {
-      "role": "release_evidence",
-      "status": "PASS",
-      "evidence": "Quality Run 35419813077 und Chromium Run 35419813098 sind GREEN; Evidence bindet den governeden Fingerprint."
-    }
+    {"role":"orchestrator","status":"PASS","evidence":"I05 REOPEN ist auf die fehlende Stable-ID-/Canonical-JSON-Voraussetzung begrenzt; I06 wurde nicht vorgezogen."},
+    {"role":"architecture_guardian","status":"PASS","evidence":"Neue Identitätsprimitive sind dependency-frei und verändern bestehende Runtime-Schichtgrenzen nicht."},
+    {"role":"data_schema_auditor","status":"PASS","evidence":"Maschinenlesbarer Identitätsvertrag stimmt mit Runtime-Regeln und Tests überein."},
+    {"role":"qa_regression","status":"PASS","evidence":"Sechs fokussierte Identity-/Canonical-JSON-Tests ergänzen die bestehende I05-Regression."},
+    {"role":"security_integrity","status":"PASS","evidence":"Instabile IDs und nicht deterministisch serialisierbare Werte werden abgewiesen."},
+    {"role":"ux_accessibility","status":"PASS","evidence":"Dieser REOPEN enthält keine visuelle oder funktionale UI-Änderung."},
+    {"role":"content_canon","status":"PASS","evidence":"Keine produktiven Story- oder Kanondaten wurden verändert."},
+    {"role":"release_evidence","status":"PASS","evidence":"Evidence wurde auf den governeden REOPEN-Fingerprint 189eb87987799568d8076637cf9ae5d6e5c9b5fdeb02f215e154cf88cea9ffe4 neu gebunden."}
   ]
 }
