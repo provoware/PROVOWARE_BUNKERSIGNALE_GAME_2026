@@ -136,7 +136,89 @@ function renderGame(documentRef, gameShell) {
   return section;
 }
 
-function renderDiagnostics(documentRef, snapshot, onRefresh) {
+function formatBytes(value) {
+  if (!Number.isFinite(value) || value < 0) return "Unbekannt";
+  const units = ["B", "KiB", "MiB", "GiB", "TiB"];
+  let amount = value;
+  let unit = 0;
+  while (amount >= 1024 && unit < units.length - 1) {
+    amount /= 1024;
+    unit += 1;
+  }
+  const digits = unit === 0 ? 0 : amount >= 100 ? 0 : 1;
+  return `${amount.toFixed(digits)} ${units[unit]}`;
+}
+
+function storageCapacityPresentation(status) {
+  if (status === "normal") return { label: "Normal", chip: "ok" };
+  if (status === "warning") return { label: "Knapp", chip: "warning" };
+  if (status === "critical") return { label: "Kritisch", chip: "critical" };
+  return { label: "Unbekannt", chip: "info" };
+}
+
+function storagePersistenceLabel(status) {
+  if (status === "persistent") return "Dauerhaft geschützt";
+  if (status === "best_effort") return "Browser-Standard (Best Effort)";
+  if (status === "unsupported") return "Nicht unterstützt";
+  return "Unbekannt";
+}
+
+function renderStorageHealth(documentRef, storageHealth) {
+  const block = element(documentRef, "section", { className: "ssi-storage-health" });
+  block.setAttribute("aria-labelledby", "storage-health-title");
+  block.dataset.capacity = storageHealth.capacity_status;
+
+  const heading = element(documentRef, "div", { className: "ssi-storage-health-heading" });
+  const title = element(documentRef, "h3", { text: "Storage Health" });
+  title.id = "storage-health-title";
+  const presentation = storageCapacityPresentation(storageHealth.capacity_status);
+  heading.append(
+    title,
+    element(documentRef, "span", {
+      className: `ssi-status ssi-status--${presentation.chip}`,
+      text: presentation.label,
+    }),
+  );
+
+  const note = element(documentRef, "p", {
+    text: "Browser-Schätzung für diesen Ursprung; kein freier Speicher des gesamten Datenträgers.",
+  });
+  block.append(heading, note);
+
+  if (storageHealth.usage_ratio !== null) {
+    const percent = storageHealth.usage_ratio * 100;
+    const meter = element(documentRef, "progress", { className: "ssi-storage-meter" });
+    meter.max = 1;
+    meter.value = Math.min(1, storageHealth.usage_ratio);
+    meter.setAttribute("aria-label", "Geschätzte Speicherbelegung");
+    meter.setAttribute("aria-valuetext", `${percent.toFixed(1)} Prozent belegt`);
+    block.append(meter);
+  }
+
+  const meta = element(documentRef, "dl", { className: "ssi-meta ssi-storage-meta" });
+  const values = [
+    ["Belegt", formatBytes(storageHealth.usage_bytes)],
+    ["Quota", formatBytes(storageHealth.quota_bytes)],
+    ["Geschätzt frei", formatBytes(storageHealth.remaining_bytes)],
+    ["Persistenz", storagePersistenceLabel(storageHealth.persistence_status)],
+  ];
+  if (storageHealth.usage_ratio !== null) {
+    values.splice(1, 0, ["Auslastung", `${(storageHealth.usage_ratio * 100).toFixed(1)} %`]);
+  }
+  if (storageHealth.error_code) {
+    values.push(["Diagnosecode", storageHealth.error_code]);
+  }
+  for (const [label, value] of values) {
+    meta.append(
+      element(documentRef, "dt", { text: label }),
+      element(documentRef, "dd", { text: value }),
+    );
+  }
+  block.append(meta);
+  return block;
+}
+
+function renderDiagnostics(documentRef, snapshot, storageHealth, onRefresh) {
   const section = element(documentRef, "section", { className: "ssi-panel" });
   section.id = "diagnostics-panel";
   section.tabIndex = -1;
@@ -163,11 +245,18 @@ function renderDiagnostics(documentRef, snapshot, onRefresh) {
   const refresh = element(documentRef, "button", { className: "ssi-button", text: "Diagnose aktualisieren" });
   refresh.type = "button";
   refresh.addEventListener("click", () => onRefresh());
-  section.append(heading, intro, project, renderHealthList(documentRef, snapshot.runtime), refresh);
+  section.append(
+    heading,
+    intro,
+    project,
+    renderStorageHealth(documentRef, storageHealth),
+    renderHealthList(documentRef, snapshot.runtime),
+    refresh,
+  );
   return section;
 }
 
-export function renderApp(root, snapshot, { onRefresh, gameShell }) {
+export function renderApp(root, snapshot, { onRefresh, gameShell, storageHealth }) {
   const documentRef = root.ownerDocument;
   root.replaceChildren();
 
@@ -194,7 +283,7 @@ export function renderApp(root, snapshot, { onRefresh, gameShell }) {
   const panels = {
     overview: renderOverview(documentRef, snapshot),
     game: renderGame(documentRef, gameShell),
-    diagnostics: renderDiagnostics(documentRef, snapshot, onRefresh),
+    diagnostics: renderDiagnostics(documentRef, snapshot, storageHealth, onRefresh),
   };
   const buttons = {
     overview: overviewButton,

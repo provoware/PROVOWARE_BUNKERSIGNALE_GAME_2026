@@ -9,7 +9,7 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Bereich | Stand |
 | --- | --- |
 | Produktversion | `0.1.0-alpha.0` |
-| Aktueller Checkpoint | **I10 – Storage Health + Export Backup (P0: Game UI Regression Shell)** |
+| Aktueller Checkpoint | **I10 – Storage Health + Export Backup (A: Storage Health Foundation)** |
 | Nächster Checkpoint | **I11 – Hash Chain** |
 | Runtime | Browser, local-first |
 | Buildschritt | nicht erforderlich |
@@ -17,7 +17,8 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Persistente Eventdaten | **I08 aktiv – IndexedDB Event Store** |
 | Snapshot Cache | **I09 – verwerfbarer Cache; Eventlog bleibt Wahrheit** |
 | Spieloberfläche | **I10-P0 – read-only Regression Shell aktiv** |
-| Storage Health / Export | **I10-Kern noch nicht implementiert** |
+| Storage Health | **I10-A – read-only Estimate/Persistenzstatus + 75/90-%-Ampel** |
+| Export / Restore | **I10-Vertrag festgelegt; Produktlogik folgt in I10-B/C** |
 | Spiellogik | noch nicht aktiv |
 
 Bereits umgesetzt:
@@ -33,6 +34,7 @@ Bereits umgesetzt:
 - **I08** – transaktionaler IndexedDB Event Store mit Weltzuordnung als Storage-Metadatum, deterministischem Readback und vollständigem Rollback bei Abort, Duplicate sowie synchronen Queue-/Clone-Fehlern.
 - **I09** – verwerfbarer IndexedDB Snapshot Cache mit Fingerprint-Prüfung, vollständigem Replay-Fallback und Crash-/Abort-Schutz; das Eventlog bleibt alleinige Wahrheit.
 - **I10-P0** – read-only Game UI Regression Shell mit Figuren-, Szenen-, Detail- und Ereignisbereich; alle Spielaktionen bleiben deaktiviert.
+- **I10-A** – read-only Storage Health über Browser-Estimate/Persistenzstatus mit deterministischer Normal/Knapp/Kritisch-Klassifikation.
 
 ## Schnellstart
 
@@ -92,8 +94,9 @@ Dokumentationsindex: **[docs/README.md](docs/README.md)**
 - I08 persistiert Events transaktional in IndexedDB; die Weltzuordnung liegt außerhalb des unveränderten I06-Envelope-Vertrags als Storage-Metadatum.
 - I09 nutzt Snapshots ausschließlich als beschleunigenden Cache; fehlende, korrupte oder fingerprint-falsche Snapshots werden verworfen und vollständig replayt.
 - I10-P0 stellt ausschließlich eine read-only Spielansicht für DOM-/Layout-/Fokusregression bereit; sie erzeugt keine Commands, Events oder Persistenzmutationen.
+- I10-A liest ausschließlich Browser-Storage-Schätzwerte; 75 % beginnt `warning`, 90 % beginnt `critical`, Persistenzstatus bleibt davon getrennt.
 - Neue Runtime-Abhängigkeiten benötigen eine begründete Architekturentscheidung.
-- Der I10-Kern für Storage Health + Export Backup folgt erst nach dem P0-Regressionsgate; Hashketten, Crypto, produktive Contentpakete und echte Spiellogik werden weiterhin nicht vorgezogen.
+- I10-B/C für deterministischen Export und validate-before-mutate Restore folgen erst nach grünem Storage-Health-Block; Hashketten, Crypto, produktive Contentpakete und echte Spiellogik werden weiterhin nicht vorgezogen.
 
 ## Lizenzstatus
 
