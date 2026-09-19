@@ -38,6 +38,13 @@ function assertSnapshotRecord(record) {
   if (!isSnapshotRecord(record)) throw new TypeError("valid snapshot record is required");
 }
 
+function assertReadRequest(worldId, { eventFingerprint, rulesetVersion, eventCount }) {
+  if (typeof worldId !== "string" || !worldId) throw new TypeError("worldId is required");
+  if (typeof eventFingerprint !== "string" || !eventFingerprint) throw new TypeError("eventFingerprint is required");
+  if (typeof rulesetVersion !== "string" || !rulesetVersion) throw new TypeError("rulesetVersion is required");
+  if (!Number.isInteger(eventCount) || eventCount < 0) throw new TypeError("eventCount must be a non-negative integer");
+}
+
 export function createIndexedDbSnapshotCache({
   indexedDB,
   dbName = "provoware-bunkersignale-snapshots",
@@ -92,10 +99,7 @@ export function createIndexedDbSnapshotCache({
   }
 
   async function readValid(worldId, { eventFingerprint, rulesetVersion, eventCount }) {
-    if (typeof worldId !== "string" || !worldId) throw new TypeError("worldId is required");
-    if (typeof eventFingerprint !== "string" || !eventFingerprint) throw new TypeError("eventFingerprint is required");
-    if (typeof rulesetVersion !== "string" || !rulesetVersion) throw new TypeError("rulesetVersion is required");
-    if (!Number.isInteger(eventCount) || eventCount < 0) throw new TypeError("eventCount must be a non-negative integer");
+    assertReadRequest(worldId, { eventFingerprint, rulesetVersion, eventCount });
 
     const db = await open();
     let record;
@@ -124,8 +128,14 @@ export function createIndexedDbSnapshotCache({
 
   async function resolveState({ worldId, eventFingerprint, rulesetVersion, eventCount, replay }) {
     if (typeof replay !== "function") throw new TypeError("replay must be a function");
+    assertReadRequest(worldId, { eventFingerprint, rulesetVersion, eventCount });
     const started = now();
-    const snapshot = await readValid(worldId, { eventFingerprint, rulesetVersion, eventCount });
+    let snapshot = null;
+    try {
+      snapshot = await readValid(worldId, { eventFingerprint, rulesetVersion, eventCount });
+    } catch {
+      snapshot = null;
+    }
     if (snapshot !== null) {
       return Object.freeze({
         source: "snapshot",
