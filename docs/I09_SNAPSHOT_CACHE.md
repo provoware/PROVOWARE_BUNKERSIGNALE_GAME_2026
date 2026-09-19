@@ -36,6 +36,7 @@ Der `event_fingerprint` ist in I09 ein exakter, vom aufrufenden Eventlog-Kontext
 5. Replay-Fallback verändert den Event Store nicht.
 6. Snapshot und Replay müssen denselben abgeleiteten Zustand liefern.
 7. `resolveState()` schreibt nach Replay nicht automatisch zurück; Snapshot-Erzeugung bleibt eine explizite Operation.
+8. Ausfälle ausschließlich der verwerfbaren Snapshot-Datenbank dürfen die Wiederherstellung nicht blockieren; nach gültiger Argumentprüfung wird stattdessen vollständig aus dem Eventlog replayt.
 
 ## Großweltprofil
 
@@ -67,8 +68,9 @@ Die Messwerte sind Regression-Smokebudgets, keine Hardwaregarantie.
 6. korrupter Snapshot -> Snapshot wird verworfen -> vollständiger Replay identisch,
 7. Abort während Snapshot-Replacement -> letzter gültiger Snapshot bleibt lesbar,
 8. 1000-Schritt-Großweltprofil bleibt innerhalb der dokumentierten Smoke-Budgets,
-9. allgemeiner Chromium-Smoke bleibt grün,
-10. finaler Diff enthält keine I10+-Funktion und keinen I08-REOPEN.
+9. Ausfall der Snapshot-Datenbank beim Öffnen/Lesen/Löschen -> vollständiger Replay bleibt möglich,
+10. allgemeiner Chromium-Smoke bleibt grün,
+11. finaler Diff enthält keine I10+-Funktion und keinen I08-REOPEN.
 
 Verbindliche Gates: **G4 Persistenz/Recovery** und **G6 Integrität/Datenverlustschutz**.
 
@@ -83,6 +85,10 @@ Am 2026-09-19 waren für diesen unveränderten Head die triggerrelevanten GitHub
 - Repository-Quality-Job `i00`: success.
 
 Der Freeze bleibt bis zur grünen Wiederholung der durch diese Dokumentationsänderung ausgelösten relevanten Gates offen. Diese Evidence-Bindung ändert keine Produkt-, Persistenz-, Test- oder UI-Logik.
+
+## I09 REOPEN - Cache-Storage-Fallback
+
+Nach dem Merge von PR #22 wurde ein konkreter Fehler festgestellt: Ein Ausfall ausschließlich der separaten Snapshot-Datenbank konnte `resolveState()` abbrechen, bevor der vollständige Replay gestartet wurde. Der REOPEN begrenzt sich auf diesen Fehlerpfad. Argumentfehler bleiben fail-closed; nur Storagefehler des verwerfbaren Caches werden als Cache-Miss behandelt. I08-Event-Store, I06/I07-Verträge und I10+-Scope bleiben unverändert.
 
 ## Restrisiko
 
