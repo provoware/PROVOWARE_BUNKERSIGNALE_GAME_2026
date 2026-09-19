@@ -1,0 +1,52 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-018",
+  "checkpoint": "I09",
+  "title": "I09 Snapshot Cache Foundation",
+  "purpose": "Einen verwerfbaren Snapshot-Cache als reine Replay-Beschleunigung ergänzen, während das Eventlog alleinige fachliche Wahrheit bleibt.",
+  "scope": [
+    "separate IndexedDB-Snapshot-Datenbank mit atomarem Write pro Welt",
+    "Snapshot-Prüfung über Welt-ID, Ruleset-Version, Event-Fingerprint und Eventanzahl",
+    "automatisches Verwerfen fehlender, korrupter oder fingerprint-falscher Snapshots",
+    "vollständiger Replay-Fallback mit Messwerten",
+    "Crash-/Abort-Test gegen den letzten gültigen Snapshot",
+    "1000-Event-Großweltprofil für Replay-/Cache-Messung",
+    "exakt eine visuelle UX-Änderung: ruhigere Absatzumbrüche in Panels"
+  ],
+  "non_goals": [
+    "Snapshot ist nie fachliche Wahrheit",
+    "Keine Änderung am I08 Event Store",
+    "Keine Quota-/Persistenzstatus- oder Exportfunktion aus I10",
+    "Keine Hashverkettung oder Crypto-Funktion aus I11/I12",
+    "Keine Recovery-Startpipeline aus I13",
+    "Keine Gameplay- oder UI-Schreiblogik"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "I08 bleibt eingefroren; Snapshots werden in einer separaten IndexedDB-Datenbank gespeichert und können jederzeit verworfen werden, ohne das Eventlog zu verändern.",
+  "security": "Ungültige Snapshots werden nie als Weltzustand akzeptiert. Ein abgebrochener Snapshot-Write darf den letzten gültigen Snapshot nicht ersetzen.",
+  "test_plan": [
+    "fokussierte I09-Contract-Tests",
+    "Repository Quality",
+    "realer Chromium-Smoke für validen Cache, fehlenden Cache, falschen Fingerprint, korrupten Cache und Abort",
+    "1000-Event-Replay-/Readback-Messung",
+    "allgemeiner Browser-Smoke wegen exakt einer CSS-Änderung",
+    "finaler Diff auf I10+-Scope und I08-REOPEN prüfen"
+  ],
+  "rollback": "I09-Branch verwerfen; main und der eingefrorene I08-Stand bleiben unverändert.",
+  "evidence": [
+    "app/infrastructure/browser/indexeddb-snapshot-cache.js",
+    "tests/test_i09.py",
+    ".github/workflows/i09-snapshot-smoke.yml",
+    "tests/fixtures/snapshot/large-world-profile.json",
+    "docs/I09_SNAPSHOT_CACHE.md",
+    "app/ui/styles.css"
+  ],
+  "result": "GREEN"
+}
