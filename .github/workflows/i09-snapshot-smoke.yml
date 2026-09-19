@@ -89,6 +89,25 @@ jobs:
               throw new Error('cache storage failure did not fall back to full replay');
             }
 
+            let unhandled = 0;
+            const onUnhandled = event => { unhandled += 1; event.preventDefault(); };
+            addEventListener('unhandledrejection', onUnhandled);
+            const asyncReadFailureCache = createIndexedDbSnapshotCache({
+              indexedDB,
+              dbName: dbName + '-read-failure',
+              faultInjector: ({ phase, transaction }) => {
+                if (phase === 'after-read-queued') transaction.abort();
+              },
+            });
+            const asyncReadFailure = await asyncReadFailureCache.resolveState({
+              worldId, eventFingerprint, rulesetVersion, eventCount: fixture.count, replay: fullReplay
+            });
+            await new Promise(resolve => setTimeout(resolve, 0));
+            removeEventListener('unhandledrejection', onUnhandled);
+            if (asyncReadFailure.source !== 'replay' || unhandled !== 0) {
+              throw new Error('async read failure did not fall back cleanly');
+            }
+
             const missing = await cache.resolveState({
               worldId, eventFingerprint, rulesetVersion, eventCount: fixture.count, replay: fullReplay
             });
@@ -189,6 +208,8 @@ jobs:
               wrong_fingerprint_replayed: wrongFingerprint.source === 'replay',
               corrupt_replayed: corrupt.source === 'replay',
               storage_failure_replayed: storageFailure.source === 'replay',
+              async_read_failure_replayed: asyncReadFailure.source === 'replay',
+              async_read_unhandled_rejections: unhandled,
               abort_preserved: aborted,
             };
           })()`;
