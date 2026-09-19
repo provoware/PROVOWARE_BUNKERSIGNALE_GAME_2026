@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 import re
+from time import perf_counter
 from typing import Any
 
-from domain_identity import IdentityError, canonical_json_bytes, validate_stable_id
+from domain_identity import IdentityError, canonical_json_bytes, stable_id, validate_stable_id
 from schema_registry import SchemaRegistry, SchemaRegistryError
 from ssi_common import ROOT
 
@@ -60,3 +62,37 @@ def validate_event_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
 def event_envelope_bytes(envelope: dict[str, Any]) -> bytes:
     validate_event_envelope(envelope)
     return canonical_json_bytes(envelope)
+
+
+def read_event_envelope_bytes(data: bytes) -> dict[str, Any]:
+    """Read one complete canonical envelope; partial/truncated bytes never become valid state."""
+    if not isinstance(data, bytes) or not data:
+        raise EventEnvelopeError("SSI-EVENT-0002", "Envelope-Readback benötigt vollständige Bytes.")
+    try:
+        decoded = data.decode("utf-8")
+        envelope = json.loads(decoded)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise EventEnvelopeError("SSI-EVENT-0002", "Envelope-Readback ist unvollständig oder ungültig.") from exc
+    if not isinstance(envelope, dict):
+        raise EventEnvelopeError("SSI-EVENT-0002", "Envelope-Readback muss ein JSON-Objekt sein.")
+    validate_event_envelope(envelope)
+    if event_envelope_bytes(envelope) != data:
+        raise EventEnvelopeError("SSI-EVENT-0002", "Persistierter Envelope ist nicht kanonisch.")
+    return envelope
+
+
+def profile_event_envelope_readback(count: int, template: dict[str, Any]) -> dict[str, int | float]:
+    if not isinstance(count, int) or isinstance(count, bool) or count < 1:
+        raise EventEnvelopeError("SSI-EVENT-0002", "Profilanzahl muss mindestens 1 sein.")
+    started = perf_counter()
+    total_bytes = 0
+    for index in range(count):
+        envelope = dict(template)
+        envelope["event_id"] = stable_id("event", f"i06-profile:{index}")
+        envelope["sequence"] = index + 1
+        envelope["lamport"] = index
+        raw = event_envelope_bytes(envelope)
+        read_event_envelope_bytes(raw)
+        total_bytes += len(raw)
+    elapsed_ms = (perf_counter() - started) * 1000
+    return {"count": count, "bytes": total_bytes, "elapsed_ms": round(elapsed_ms, 3)}
