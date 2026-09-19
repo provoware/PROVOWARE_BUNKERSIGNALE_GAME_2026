@@ -6,6 +6,9 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
+- I02 Schema Registry mit explizitem Lifecycle und exakter Versionsauflösung.
+- Dependency-freie Draft-2020-12-Teilvalidierung für die im Repository verwendeten Keywords.
+- Schema-Positiv- und Negativfixtures einschließlich stabiler Fehlerklassifikation.
 - I01 dependency-freie Browser-App-Shell mit sicherem Bootstrap-Fallback.
 - Read-only Health- und Recovery-Diagnose mit Browser-Capability-Detection.
 - Tastatur-/Fokus-Basis, responsive Darstellung und `prefers-reduced-motion`-Schutz.

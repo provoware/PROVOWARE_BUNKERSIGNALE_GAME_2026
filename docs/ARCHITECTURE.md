@@ -37,8 +37,11 @@ Persistente Operationen müssen später atomar oder rückrollbar sein. Ein fehlg
 ## 8. Architekturdrift
 `tools/validate_repo.py` prüft lokale JavaScript-Importe gegen `manifests/architecture.boundaries.json`. Eine bewusst ungültige Negativfixture muss zuverlässig abgelehnt werden, sonst ist G1 rot.
 
-## 9. Erweiterungsregel
+## 9. Schema Registry I02
+`manifests/schema.registry.json` ist die einzige Zuordnung von Schemaname und exakter SemVer-Version zu einer lokalen Schemadatei. `latest`, Versionsbereiche und Netzwerkauflösung sind verboten. Der Lifecycle ist ausschließlich `active -> deprecated -> retired`: Deprecated Schemas benötigen eine bewusste Freigabe, retired Schemas sind nicht mehr auflösbar. `tools/schema_registry.py` auditiert Identität und Pfad und validiert Dokumente gegen den unterstützten Draft-2020-12-Keywordumfang. Persistenz und Spiellogik gehören ausdrücklich nicht zu dieser Schicht.
+
+## 10. Erweiterungsregel
 Ein neues Modul wird nur aufgenommen, wenn Owner, Eingaben, Ausgaben, Fehlerpfad, Tests, Versionierungswirkung und Rückwärtskompatibilität definiert sind.
 
-## 10. Entscheidungshoheit
+## 11. Entscheidungshoheit
 Architekturänderungen benötigen eine ADR, eine Auswirkungsanalyse und einen vollständigen Qualitätslauf. Der Orchestrator ist alleinige Merge-Instanz; Fachrollen liefern prüfbare Empfehlungen und Vetos.

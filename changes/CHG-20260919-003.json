@@ -1,0 +1,28 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-003",
+  "checkpoint": "I02",
+  "title": "Deterministische lokale Schema Registry",
+  "purpose": "Schema-Lifecycle, exakte Versionsauflösung und reproduzierbare Dokumentvalidierung vor Datenhaltung oder Spiellogik etablieren.",
+  "scope": [
+    "Maschinenlesbarer Registry-Vertrag",
+    "Lokale exakte Versionsauflösung",
+    "Lifecycle-Sperren",
+    "Positiv- und Negativfixtures",
+    "I00- und I01-Regression"
+  ],
+  "non_goals": [
+    "Keine Persistenz",
+    "Keine Spiellogik",
+    "Keine Content Registry",
+    "Keine Netzwerkauflösung",
+    "Keine externe Abhängigkeit"
+  ],
+  "affected_owners": ["orchestrator", "data_schema_auditor", "qa_regression", "security_integrity"],
+  "compatibility": "Additiver Tooling- und Vertragscheckpoint; die gefreezte I01-Browser-Runtime bleibt unverändert.",
+  "security": "Schema-Pfade bleiben innerhalb des Repositorys; implizite oder entfernte Auflösung ist ausgeschlossen.",
+  "test_plan": ["Registry-Audit", "I02-Positiv- und Negativtests", "vollständiger I00/I01-Regressionslauf", "Python-Kompilierung"],
+  "rollback": "I02-Commit revertieren; I01 bleibt die letzte gefreezte Runtime-Basis.",
+  "evidence": ["tests/test_i02.py", "tests/fixtures/schema", "manifests/schema.registry.json"],
+  "result": "GREEN"
+}

@@ -21,6 +21,7 @@ Jeder strukturierte Fehler besitzt mindestens:
 - `IO`: Datei- oder Speicheroperation.
 - `COMP`: Kompatibilität/Version.
 - `REG`: Regression.
+- `SCHEMA`: Registry, Versionsauflösung, Lifecycle oder Dokumentvalidierung.
 - `SEC`: Security-Grenze.
 - `INTL`: unerwarteter interner Fehler.
 

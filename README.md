@@ -2,7 +2,7 @@
 
 **Bunkersignale & Persönlichkeitsfraktale**
 
-Dieses Repository ist die technische Master-Baseline ab Checkpoint I00. I00 enthält absichtlich noch keine Spiellogik. Es etabliert ausschließlich Regeln, Struktur, maschinenlesbare Verträge, Validierung, Regression und Evidence.
+Dieses Repository ist die technische Master-Baseline ab Checkpoint I00. I02 enthält weiterhin keine Spiellogik oder Persistenz. Es ergänzt die gefreezte I01-Browser-Shell ausschließlich um eine deterministische, lokale Schema Registry.
 
 ## Ein-Kommando-Prüfung
 
@@ -33,7 +33,7 @@ Kein rotes Qualitätsgate wird durch Weiterentwicklung umgangen. Eine technische
 
 - Spezifikationsbasis: MASTER-Entwicklungsplan v0.4
 - Gefreezte Governance-/Architekturbasis: I00
-- Aktueller implementierter Runtime-Checkpoint: I01
+- Aktueller implementierter Vertrags-Checkpoint: I02
 - Produktversion: 0.1.0-alpha.0
-- Spiellogik: noch nicht Bestandteil von I01
-- Nächster Checkpoint: I02
+- Spiellogik und Persistenz: noch nicht Bestandteil von I02
+- Schema-Auflösung: nur explizite SemVer-Versionen, keine `latest`- oder Netzwerkauflösung
