@@ -121,7 +121,7 @@ jobs:
             const expectedKeys = ['content_lock_fingerprint','event_count','events','format','format_version','product_version','world_id'].sort().join(',');
             if (keys !== expectedKeys) throw new Error('backup top-level fields changed');
             if ('snapshot' in parsed || 'exported_at' in parsed || 'storage_health' in parsed) throw new Error('non-authoritative state leaked into backup');
-            if (!first.text.includes('line1\\nline2') || first.text.includes('line1\\r')) throw new Error('canonical line ending normalization failed');
+            if (parsed.events[0].payload.note !== 'line1\\nline2') throw new Error('canonical line ending normalization failed');
 
             const reordered = {
               events: parsed.events,
