@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-016",
+  "checkpoint": "I08",
+  "title": "I08 storage integrity reopen repair",
+  "purpose": "Nach dem Merge gemeldete konkrete I08-Integritätsfehler minimal beheben und den öffentlichen Checkpointstatus angleichen.",
+  "scope": [
+    "Weltzuordnung als Storage-Metadatum statt als nichtvertragliches Envelope-Feld",
+    "expliziter Transaktionsabort bei synchronen Queue-/Clone-Fehlern",
+    "realer Chromium-Regressionsfall für partiellen Queue-Fehler",
+    "README auf I08/I09-Status angleichen",
+    "exakt eine visuelle UX-Änderung: Kicker-Zeilenhöhe auf 1.4"
+  ],
+  "non_goals": [
+    "Keine Änderung am I06 Event-Envelope-Schema",
+    "Keine Änderung am I07 Reducer",
+    "Keine Snapshot-Funktion aus I09",
+    "Keine Quota-, Export-, Hash- oder Signaturfunktion",
+    "Keine Gameplay-Logik"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "I06/I07 bleiben semantisch unverändert; bestehende gültige Envelopes werden als unveränderte Event-Payload in Storage-Records eingebettet.",
+  "security": "Jeder synchrone Queue-/Clone-Fehler abortiert die laufende IndexedDB-Transaktion; kein vorher gequeued Event darf partiell committen.",
+  "test_plan": [
+    "Repository Quality",
+    "I08 Chromium-Smoke mit Abort, Duplicate, Queue-/Clone-Fehler und Reopen/Readback",
+    "allgemeiner Browser-Smoke",
+    "Diff auf I09-Scope und Änderungen eingefrorener I06/I07-Verträge prüfen"
+  ],
+  "rollback": "Reopen-Branch verwerfen; main bleibt auf dem zuvor gemergten I08-Stand.",
+  "evidence": [
+    "app/infrastructure/browser/indexeddb-event-store.js",
+    "tests/test_i08.py",
+    ".github/workflows/i08-indexeddb-smoke.yml",
+    "docs/I08_INDEXEDDB_EVENT_STORE.md",
+    "README.md",
+    "app/ui/styles.css"
+  ],
+  "result": "GREEN"
+}
