@@ -1,6 +1,6 @@
 {
   "checkpoint": "I04",
-  "generated_at_utc": "2026-09-19T01:21:30Z",
+  "generated_at_utc": "2026-09-19T01:23:10Z",
   "status": "GREEN",
   "fingerprint_sha256": "984bfbcf8de86b8f00fb7c916e8628f0f7a1f73c77b436e59a4bbdf0bef2638d",
   "checks": [
@@ -33,6 +33,16 @@
       "name": "chromium_regression",
       "status": "PASS",
       "detail": "Browser smoke remained independent of the evidence-only failure; no browser runtime code changed."
+    },
+    {
+      "name": "repository_quality_final",
+      "status": "PASS",
+      "detail": "GitHub Actions quality run 35412482151 completed SUCCESS on the exact evidence-bound fingerprint."
+    },
+    {
+      "name": "chromium_smoke_final",
+      "status": "PASS",
+      "detail": "Real Chromium smoke run 35412482180 completed SUCCESS on the same PR head."
     }
   ],
   "file_hashes": {
@@ -83,7 +93,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Evidence and status are bound to fingerprint 984bfbcf...f2638d plus six checkpoint-critical file hashes."
+      "evidence": "Final quality run 35412482151 and Chromium smoke 35412482180 are GREEN; evidence remains bound to fingerprint 984bfbcf...f2638d and six critical hashes."
     }
   ]
 }
