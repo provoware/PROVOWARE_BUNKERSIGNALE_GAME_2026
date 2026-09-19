@@ -3,6 +3,7 @@ name: i10-game-ui-shell-smoke
 on:
   pull_request:
     paths:
+      - 'index.html'
       - 'app/application/game-shell.js'
       - 'app/bootstrap/main.js'
       - 'app/ui/**'
