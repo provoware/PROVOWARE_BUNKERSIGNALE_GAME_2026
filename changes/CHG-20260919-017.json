@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-017",
+  "checkpoint": "I08",
+  "title": "I08 legacy v1 readback compatibility reopen",
+  "purpose": "Nach dem zweiten post-merge Review-Befund bestehende I08-v1-Raw-Records weiterhin verlustfrei lesbar halten, bevor I09 begonnen wird.",
+  "scope": [
+    "backward-compatible Readback für alte rohe I08-v1-Records",
+    "historisches world_id nur beim Legacy-Readback aus dem Event-Envelope entfernen",
+    "realer Chromium-Regressionsfall mit vorbestehendem v1-Record",
+    "exakt eine visuelle UX-Änderung: Kicker-Text erhält text-wrap: balance"
+  ],
+  "non_goals": [
+    "Keine Datenmigration mit Schreibzugriff",
+    "Keine Änderung am I06 Event-Envelope-Schema",
+    "Keine Änderung am I07 Reducer",
+    "Keine Snapshot-Funktion aus I09",
+    "Keine Quota-, Export-, Hash-, Signatur- oder Gameplay-Funktion"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "Neue Storage-Records bleiben unverändert; alte rohe v1-Records werden beim Lesen erkannt und in den I06-konformen Envelope zurückgeführt.",
+  "security": "Der Fix ist read-only kompatibel für Altbestände und führt keine automatische Rewrite-Migration durch.",
+  "test_plan": [
+    "Repository Quality",
+    "I08 Chromium-Smoke mit vorbestehendem v1-Raw-Record",
+    "bestehende Abort-/Duplicate-/Queue-Rollback-Regressionen",
+    "allgemeiner Browser-Smoke",
+    "Diff auf I09-Scope und Änderungen eingefrorener I06/I07-Verträge prüfen"
+  ],
+  "rollback": "Reopen-Branch verwerfen; main bleibt auf dem vorherigen I08-Freeze.",
+  "evidence": [
+    "app/infrastructure/browser/indexeddb-event-store.js",
+    "tests/test_i08.py",
+    ".github/workflows/i08-indexeddb-smoke.yml",
+    "docs/I08_INDEXEDDB_EVENT_STORE.md",
+    "app/ui/styles.css"
+  ],
+  "result": "GREEN"
+}
