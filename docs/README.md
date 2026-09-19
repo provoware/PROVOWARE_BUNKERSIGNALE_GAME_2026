@@ -26,6 +26,7 @@ Die Dokumentation ist nach Verbindlichkeit getrennt. Bei Widersprüchen haben ma
 - `I08_INDEXEDDB_EVENT_STORE.md` – transaktionaler Event Store und Readback.
 - `I09_SNAPSHOT_CACHE.md` – verwerfbarer Snapshot Cache und Replay-Fallback.
 - `I10_GAME_UI_REGRESSION_SHELL.md` – read-only Spieloberfläche als I10-P0 Regressionsreferenz.
+- `I10_STORAGE_HEALTH_EXPORT_BACKUP.md` – verbindlicher I10-Kernvertrag für Storage Health, Export Backup und Restore.
 
 ## Architekturentscheidungen
 
