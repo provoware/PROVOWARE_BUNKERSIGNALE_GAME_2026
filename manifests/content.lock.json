@@ -1,0 +1,5 @@
+{
+  "$schema": "../schemas/content-lock.schema.json",
+  "version": "1.0.0",
+  "entries": []
+}

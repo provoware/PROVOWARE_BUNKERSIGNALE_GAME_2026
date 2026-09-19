@@ -22,6 +22,7 @@ Jeder strukturierte Fehler besitzt mindestens:
 - `COMP`: Kompatibilität/Version.
 - `REG`: Regression.
 - `SCHEMA`: Registry, Versionsauflösung, Lifecycle oder Dokumentvalidierung.
+- `CONTENT`: Content Registry, Lockfile, Paketauflösung, Hash-Pins oder Registry/Lock-Drift.
 - `SEC`: Security-Grenze.
 - `INTL`: unerwarteter interner Fehler.
 

@@ -40,8 +40,11 @@ Persistente Operationen müssen später atomar oder rückrollbar sein. Ein fehlg
 ## 9. Schema Registry I02
 `manifests/schema.registry.json` ist die einzige Zuordnung von Schemaname und exakter SemVer-Version zu einer lokalen Schemadatei. `latest`, Versionsbereiche und Netzwerkauflösung sind verboten. Der Lifecycle ist ausschließlich `active -> deprecated -> retired`: Deprecated Schemas benötigen eine bewusste Freigabe, retired Schemas sind nicht mehr auflösbar. `tools/schema_registry.py` auditiert Identität und Pfad und validiert Dokumente gegen den unterstützten Draft-2020-12-Keywordumfang. Persistenz und Spiellogik gehören ausdrücklich nicht zu dieser Schicht.
 
-## 10. Erweiterungsregel
+## 10. Content Registry + Lockfile I03
+`manifests/content.registry.json` definiert ausschließlich exakt versionierte, lokale Contentpakete und deren Abhängigkeiten. `manifests/content.lock.json` pinnt Pfad und SHA-256 jedes registrierten Pakets. `tools/content_registry.py` löst Abhängigkeiten deterministisch und read-only auf, verbietet Repository-Escape-Pfade und prüft Datei-Hashes gegen das Lockfile. Registry und Lockfile besitzen zusätzlich einen gemeinsamen Drift-Fingerprint in `manifests/content.registry-lock.sha256`. I03 aktiviert oder importiert keine Pakete; Inbox, Quarantäne und atomare Aktivierung beginnen erst in I04.
+
+## 11. Erweiterungsregel
 Ein neues Modul wird nur aufgenommen, wenn Owner, Eingaben, Ausgaben, Fehlerpfad, Tests, Versionierungswirkung und Rückwärtskompatibilität definiert sind.
 
-## 11. Entscheidungshoheit
+## 12. Entscheidungshoheit
 Architekturänderungen benötigen eine ADR, eine Auswirkungsanalyse und einen vollständigen Qualitätslauf. Der Orchestrator ist alleinige Merge-Instanz; Fachrollen liefern prüfbare Empfehlungen und Vetos.

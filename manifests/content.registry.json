@@ -1,0 +1,6 @@
+{
+  "$schema": "../schemas/content-registry.schema.json",
+  "version": "1.0.0",
+  "resolution": "exact_version_only",
+  "packages": []
+}

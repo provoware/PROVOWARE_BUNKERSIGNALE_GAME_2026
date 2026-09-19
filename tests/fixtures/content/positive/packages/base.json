@@ -1,0 +1,8 @@
+{
+  "package_id": "core.base",
+  "version": "1.0.0",
+  "kind": "test-fixture",
+  "payload": {
+    "label": "Basis"
+  }
+}

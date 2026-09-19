@@ -13,6 +13,7 @@ from ssi_common import (
     scan_forbidden_markers,
 )
 from schema_registry import SchemaRegistry, SchemaRegistryError
+from content_registry import ContentRegistry, ContentRegistryError
 
 REQUIRED_FILES = [
     "VERSION",
@@ -41,18 +42,25 @@ REQUIRED_FILES = [
     "manifests/repository.layout.json",
     "manifests/standards.registry.json",
     "manifests/schema.registry.json",
+    "manifests/content.registry.json",
+    "manifests/content.lock.json",
+    "manifests/content.registry-lock.sha256",
     "agents/registry.json",
     "schemas/project-manifest.schema.json",
+    "schemas/content-registry.schema.json",
+    "schemas/content-lock.schema.json",
     "schemas/schema-registry.schema.json",
     "schemas/status-report.schema.json",
     "schemas/evidence-report.schema.json",
     "schemas/change-record.schema.json",
     "tools/schema_registry.py",
+    "tools/content_registry.py",
     "tools/ssi_common.py",
     "tools/validate_repo.py",
     "tools/run_i00_checks.py",
     "tests/test_i00.py",
     "tests/test_i02.py",
+    "tests/test_i03.py",
     "run_i00.sh",
 ]
 
@@ -225,6 +233,16 @@ def validate_schema_registry() -> list[Issue]:
         return [Issue(exc.code, "ERROR", "manifests/schema.registry.json", exc.message)]
 
 
+
+def validate_content_registry() -> list[Issue]:
+    try:
+        registry = ContentRegistry(ROOT)
+        registry.audit()
+        registry.audit_fingerprint()
+        return []
+    except ContentRegistryError as exc:
+        return [Issue(exc.code, "ERROR", "manifests/content.registry.json", exc.message)]
+
 def validate_repository() -> list[Issue]:
     checks = [
         validate_required_files,
@@ -238,6 +256,7 @@ def validate_repository() -> list[Issue]:
         validate_no_code_placeholders,
         validate_architecture_fixtures,
         validate_schema_registry,
+        validate_content_registry,
     ]
     issues: list[Issue] = []
     for check in checks:

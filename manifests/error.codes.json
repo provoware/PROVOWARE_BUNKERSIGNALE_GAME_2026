@@ -68,6 +68,26 @@
       "meaning": "Dokument verletzt den aufgelösten Schema-Vertrag."
     },
     {
+      "code": "SSI-CONTENT-0001",
+      "severity": "ERROR",
+      "meaning": "Content Registry oder Lockfile ist strukturell inkonsistent."
+    },
+    {
+      "code": "SSI-CONTENT-0002",
+      "severity": "ERROR",
+      "meaning": "Contentpaket oder exakt gepinnte Abhängigkeit ist unbekannt oder zyklisch."
+    },
+    {
+      "code": "SSI-CONTENT-0003",
+      "severity": "ERROR",
+      "meaning": "Contentdatei stimmt nicht mit dem Lockfile-Pin überein."
+    },
+    {
+      "code": "SSI-CONTENT-0004",
+      "severity": "ERROR",
+      "meaning": "Gemeinsamer Registry/Lock-Fingerprint zeigt Drift."
+    },
+    {
       "code": "SSI-INTL-0001",
       "severity": "FATAL",
       "meaning": "Unerwarteter interner Toolfehler."

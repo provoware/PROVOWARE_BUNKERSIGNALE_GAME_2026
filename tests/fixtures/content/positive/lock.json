@@ -1,0 +1,18 @@
+{
+  "$schema": "../../../../schemas/content-lock.schema.json",
+  "version": "1.0.0",
+  "entries": [
+    {
+      "package_id": "core.base",
+      "version": "1.0.0",
+      "path": "packages/base.json",
+      "sha256": "fccbce49135bd447617b1266f71b2d5ca52ab2497f6059ace9907bbbd655fa37"
+    },
+    {
+      "package_id": "feature.addon",
+      "version": "1.0.0",
+      "path": "packages/addon.json",
+      "sha256": "332ac426f8df75c647564c80ae55dbd497fe820ac493c47182c5738600ed1ba5"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "cases": [
+    {"name": "duplicate_package", "mutation": "duplicate_package", "expected_code": "SSI-CONTENT-0001"},
+    {"name": "missing_dependency", "mutation": "missing_dependency", "expected_code": "SSI-CONTENT-0002"},
+    {"name": "wrong_dependency_version", "mutation": "wrong_dependency_version", "expected_code": "SSI-CONTENT-0002"},
+    {"name": "tampered_lock_hash", "mutation": "tampered_lock_hash", "expected_code": "SSI-CONTENT-0003"},
+    {"name": "registry_lock_drift", "mutation": "registry_lock_drift", "expected_code": "SSI-CONTENT-0004"}
+  ]
+}
