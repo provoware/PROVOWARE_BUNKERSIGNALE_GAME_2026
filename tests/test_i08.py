@@ -15,10 +15,16 @@ class I08IndexedDbEventStoreTests(unittest.TestCase):
             'event: clonedEvent',
             'createIndex("by_world"',
             'createIndex("by_world_lamport"',
-            'return records.map(record => structuredClone(record.event))',
+            'legacyRecordEvent(record)',
+            'return records.map(record => structuredClone(legacyRecordEvent(record)))',
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, source)
+
+    def test_store_has_backward_compatible_v1_read_path(self) -> None:
+        source = STORE.read_text(encoding="utf-8")
+        self.assertIn('const { world_id: _worldId, ...event } = record;', source)
+        self.assertIn('record.event', source)
 
     def test_store_aborts_synchronous_queue_failures(self) -> None:
         source = STORE.read_text(encoding="utf-8")
