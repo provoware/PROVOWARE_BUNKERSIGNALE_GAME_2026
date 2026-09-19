@@ -6,6 +6,9 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
+- I09 verwerfbarer IndexedDB Snapshot Cache mit strikter Welt-/Ruleset-/Event-Fingerprint-Prüfung und vollständigem Replay-Fallback.
+- I09 Chromium-Härtung für fehlende, korrupte und fingerprint-falsche Snapshots, atomaren Abort sowie 1000-Schritt-Replay-/Readback-Messwerte.
+- I08 transaktionaler IndexedDB Event Store mit atomarem Batch-Append, deterministischem Welt-Readback und Legacy-v1-Kompatibilität.
 - I07 Pure Reducer Foundation mit deterministischem Replay ausschließlich aus Event-Envelopes und explizitem Ruleset.
 - I07 Purity-Guard, fail-closed Sequenz-/Lamport-/Ruleset-Prüfung und 1000-Event-Replay-Smoke.
 - I06 Event Envelope v1 mit Schema Registry, Sequenz-/Lamport-Invarianten und definierten Trace-Feldern.
@@ -27,6 +30,7 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 - I01-Strukturtests sowie realer Chromium-Boot-Smoke als Pull-Request-Gate.
 
 ### Changed
+- Panel-Absätze nutzen ausschließlich `text-wrap: pretty` für ruhigere Zeilenumbrüche; Layout- und Interaktionslogik bleiben unverändert.
 - Aktiver Browser-Tab wird zusätzlich typografisch hervorgehoben; Navigation und Interaktionslogik bleiben unverändert.
 - Verbliebene literale `\\n`-Sequenz zwischen I06-/I05-Changelog-Einträgen in echte Markdown-Zeilen getrennt.
 - I06 per dokumentiertem REOPEN um kanonischen Crash/Abort-Readback, Legacy-Readback und 1000-Envelope-Profil ergänzt.

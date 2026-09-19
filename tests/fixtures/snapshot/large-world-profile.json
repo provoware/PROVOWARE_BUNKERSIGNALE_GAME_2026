@@ -1,0 +1,7 @@
+{
+  "count": 1000,
+  "max_replay_ms": 5000,
+  "max_cache_read_ms": 2000,
+  "expected_last_name": "actor-999",
+  "description": "I09 large-world profile: deterministic full replay fallback and snapshot readback must preserve the same derived state."
+}
