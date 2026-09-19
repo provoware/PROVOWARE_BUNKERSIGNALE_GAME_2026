@@ -144,12 +144,17 @@ Nach grünem I10-A:
 
 ### I10-C - Restore
 
-Erst nach grünem I10-B:
+Nach grünem I10-B:
 
-- vollständige Preflight-Validierung,
-- no-clobber,
-- atomarer Restore,
-- Export -> Restore -> Replay-Parität.
+- vollständige Preflight-Validierung im Application-Layer,
+- exakte Content-Lock-Kompatibilitätsprüfung vor jeder Schreibfähigkeit,
+- atomare Infrastructure-Capability `restoreIfEmpty(worldId, events)`,
+- Zielwelt-Leerprüfung und kompletter Event-Batch in **derselben IndexedDB-Readwrite-Transaktion**,
+- vorhandene Zielwelt -> no-clobber ohne Mutation,
+- injizierter Abort -> null partielle Events,
+- Export -> Restore -> Re-Export byteidentisch,
+- byteidentischer autoritativer Eventstrom + eingefrorener deterministischer I07-Reducer -> identischer Replay-Zustand,
+- 1000-Event-Restore-/Paritäts-Smoke < **5000 ms**.
 
 ## Exit-Gates I10
 
@@ -174,9 +179,9 @@ Verbindliche Gates: **G1, G4, G6, G7 und G8**.
 
 - **I10-A Storage Health Foundation:** implementiert auf diesem Branch; read-only Estimate/Persistenzstatus, Grenzwertklassifikation, Diagnoseanzeige und Chromium-Gate.
 - **I10-B Export Backup:** implementiert: Schema/Registry, Validator, kanonischer Serializer, read-only I08-Readback und 1000-Event-Determinismus-Smoke; noch kein Download.
-- **I10-C Restore:** Vertrag festgelegt, noch keine Produktimplementierung.
+- **I10-C Restore:** implementiert: Preflight-Core, atomare no-clobber IndexedDB-Capability, Abort-Rollback und Export→Restore→Re-Export-Paritätsgate.
 
-I10 bleibt deshalb **ACTIVE** und darf nach I10-B ausdrücklich noch nicht eingefroren werden; I10-C Restore fehlt weiterhin.
+I10-C vervollständigt den fachlichen I10-Produktumfang. I10 bleibt bis zur finalen Evidence-Bindung und Refreeze-Prüfung **ACTIVE**.
 
 ## Restrisiko
 
