@@ -1,0 +1,14 @@
+{
+  "expected_code": "SSI-SCHEMA-0004",
+  "instance": {
+    "event_id": "event:111111111111111111111111",
+    "event_type": "character.created",
+    "payload": {},
+    "author_id": "actor:222222222222222222222222",
+    "sequence": 1,
+    "lamport": 0,
+    "ruleset_version": "1.0.0",
+    "metadata": {},
+    "unknown_field": true
+  }
+}

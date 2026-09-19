@@ -54,8 +54,11 @@ Der I04-Freeze ist zusätzlich kryptografisch gebunden: Evidence- und Status-Fin
 ## 13. Content Hot-Swap Policy I05
 `manifests/content.hot-swap.json` trennt die Hot-Swap-Sicherheitsentscheidung von Registry, Lockfile und Inbox. `tools/content_hot_swap.py` arbeitet ausschließlich read-only und definiert exakt vier Klassen: `immediate_safe`, `restart_required`, `migration_required` und `blocked_while_world_running`. Textwechsel liegen verbindlich in `immediate_safe`. Unbekannte Contentarten fallen fail-closed auf `restart_required` zurück. I05 führt selbst keine Aktivierung, Migration, Persistenz oder Weltmutation aus.
 
-## 14. Erweiterungsregel
+## 14. Event Envelope v1 I06
+`schemas/event-envelope.schema.json` definiert den ersten Event-Core-Vertrag. Pflichtfelder sind stabile Event-ID, Event-Typ, Payload, Actor-Autor, positive lokale Sequenz, nichtnegative Lamport-Zeit, exakte Ruleset-SemVer und Metadaten. Optional sind `command_id`, `correlation_id` und `causation_event_id`. Unbekannte Zusatzfelder werden abgewiesen. `tools/event_envelope.py` validiert den vollständigen Envelope vor Rückgabe und serialisiert ihn anschließend ausschließlich über den I05-Canonical-JSON-Vertrag. I06 enthält ausdrücklich noch keinen Event Store, Reducer oder Replay-Core.
+
+## 15. Erweiterungsregel
 Ein neues Modul wird nur aufgenommen, wenn Owner, Eingaben, Ausgaben, Fehlerpfad, Tests, Versionierungswirkung und Rückwärtskompatibilität definiert sind.
 
-## 15. Entscheidungshoheit
+## 16. Entscheidungshoheit
 Architekturänderungen benötigen eine ADR, eine Auswirkungsanalyse und einen vollständigen Qualitätslauf. Der Orchestrator ist alleinige Merge-Instanz; Fachrollen liefern prüfbare Empfehlungen und Vetos.

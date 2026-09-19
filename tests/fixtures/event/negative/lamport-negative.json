@@ -1,0 +1,13 @@
+{
+  "expected_code": "SSI-EVENT-0001",
+  "instance": {
+    "event_id": "event:111111111111111111111111",
+    "event_type": "character.created",
+    "payload": {},
+    "author_id": "actor:222222222222222222222222",
+    "sequence": 1,
+    "lamport": -1,
+    "ruleset_version": "1.0.0",
+    "metadata": {}
+  }
+}
