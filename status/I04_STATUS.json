@@ -1,9 +1,8 @@
 {
   "checkpoint": "I04",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-19T01:15:37Z",
+  "generated_at_utc": "2026-09-19T01:21:30Z",
   "overall_status": "GREEN",
-  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "gates": {
     "G0": "GREEN",
     "G1": "GREEN",
@@ -11,55 +10,57 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "f1529d45ae948fc260a3b86e80e2bde507d926ada91d237979b4ff8f2c3e3800",
+  "fingerprint_sha256": "984bfbcf8de86b8f00fb7c916e8628f0f7a1f73c77b436e59a4bbdf0bef2638d",
   "tests": {
-    "i04_test_discovery": "PASS",
-    "activation_no_clobber_race": "PASS",
-    "quarantine_no_clobber_race": "PASS",
-    "repository_quality": "PASS",
-    "chromium_smoke": "PASS",
+    "i04_tests_expected": 9,
+    "activation_target_race": "PASS",
+    "quarantine_target_race": "PASS",
+    "cleanup_failure_foreign_target_protection": "PASS",
+    "stale_evidence_rejection": "PASS",
+    "exact_evidence_acceptance": "PASS",
     "frozen_i03_predecessor": "UNCHANGED"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "I04 was reopened only for the two concrete review findings; I05 remained blocked and untouched."
+      "evidence": "I04 remains the only reopened checkpoint; I05 has not been started."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "The repair is confined to tooling, validation, tests and regression documentation; browser architecture boundaries are unchanged."
+      "evidence": "Only I04 tooling, validation, tests and regression documentation changed; browser layer boundaries remain unchanged."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "Registry, lockfile and schema contracts were not modified; exact identity and pin verification remain intact."
+      "evidence": "Registry, lockfile and schema contracts are unchanged; checkpoint evidence is bound to the governed fingerprint."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Both new deterministic race tests and the complete repository quality workflow passed."
+      "evidence": "I04 now contains target-race, cleanup-failure and stale-evidence regression coverage."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "No-clobber now relies on atomic hard-link creation; existing targets are never replaced and cross-filesystem publication fails closed."
+      "evidence": "Atomic hard-link publication never replaces an existing target; cleanup failure never deletes the destination."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "No browser UI or accessibility behavior changed in this REOPEN repair."
+      "evidence": "No UI or accessibility behavior changed during the I04 REOPEN."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "No productive content or canon data was added or altered."
+      "evidence": "No productive content or canon data changed."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "REOPEN change record, final CI runs and renewed I04 fingerprint are recorded consistently."
+      "evidence": "Evidence and status are bound to fingerprint 984bfbcf...f2638d plus six checkpoint-critical file hashes."
     }
-  ]
+  ],
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime"
 }

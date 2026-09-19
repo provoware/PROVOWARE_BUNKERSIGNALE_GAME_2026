@@ -1,25 +1,26 @@
 S.O.U.N.D. SYSTEM-IKER - I04 REOPEN Evidence Report
-Generated UTC: 2026-09-19T01:15:37Z
+Generated UTC: 2026-09-19T01:21:30Z
 Status: GREEN
-Fingerprint SHA-256: f1529d45ae948fc260a3b86e80e2bde507d926ada91d237979b4ff8f2c3e3800
+Governed fingerprint SHA-256: 984bfbcf8de86b8f00fb7c916e8628f0f7a1f73c77b436e59a4bbdf0bef2638d
 
-REOPEN-GRUND
-- Review-Befund 1: No-Clobber war mit exists() + os.replace() unter einem Ziel-Race nicht garantiert.
-- Review-Befund 2: I04-Implementierung und I04-Test waren im Pflichtdatei-Gate nicht explizit erzwungen.
+REOPEN-BEFUNDE
+- No-Clobber musste auch unter Ziel-Races garantiert werden.
+- I04-Artefakte mussten vom Repository-Gate erzwungen werden.
+- Evidence durfte nicht nur vorhanden, sondern musste aktuell und kryptografisch an den governeden Stand gebunden sein.
+- Ein Cleanup-Fehler durfte niemals ein inzwischen fremd ersetztes Ziel löschen.
 
-REPARATUR
-- Aktivierung und Quarantäne verwenden atomare No-Clobber-Zielerzeugung via os.link().
-- FileExistsError schlägt fail-closed fehl; vorhandene Ziele bleiben unverändert.
-- Cross-Filesystem-Veröffentlichung wird abgewiesen statt nicht-atomar kopiert.
-- tools/content_inbox.py, tests/test_i04.py, I04-Evidence und I04-Status sind Pflichtartefakte.
-- I04-Regressionspolicy fordert explizit Schutz gegen Ziel-Races.
+HÄRTUNG
+- Aktivierung und Quarantäne: atomare No-Clobber-Zielanlage per Hardlink.
+- Cross-Filesystem: fail-closed statt nicht-atomarer Kopie.
+- Source-Cleanup-Fehler: Ziel bleibt unangetastet.
+- Freeze-Guard: Evidence- und Status-Fingerprint müssen aktuell sein.
+- Sechs I04-kritische Dateien werden zusätzlich einzeln per SHA-256 belegt.
+- Negative Evidence-Probe: Run 35412393774 wurde erwartungsgemäß mit SSI-INT-0001 gestoppt.
 
-VALIDIERUNG
-- GitHub quality run 35412086985: SUCCESS
-- Real browser smoke run 35412086983: SUCCESS
-- I04-Testbestand: 6 Tests, einschließlich Aktivierungs-Race und Quarantäne-Race
-- Repository-Fingerprint: f1529d45ae948fc260a3b86e80e2bde507d926ada91d237979b4ff8f2c3e3800
-- I00-I03: nicht reopened; Gesamtlauf GREEN
+I04-TESTBESTAND
+- 9 Tests im I04-Modul, einschließlich Ziel-Races, Cleanup-Failure und Evidence-Integrität.
 
-FREEZE
-I04 kann nach diesem REOPEN wieder eingefroren werden. I05 bleibt der nächste eigenständige Checkpoint.
+FINALER FREEZE-GATE
+- Diese Evidence beschreibt exakt den governeden Fingerprint 984bfbcf8de86b8f00fb7c916e8628f0f7a1f73c77b436e59a4bbdf0bef2638d.
+- Merge bleibt gesperrt, bis der Qualitätslauf auf dieser Evidence vollständig GREEN ist.
+- I05 bleibt unangetastet.
