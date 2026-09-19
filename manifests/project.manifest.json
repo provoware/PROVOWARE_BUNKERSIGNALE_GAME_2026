@@ -7,7 +7,7 @@
   "specification_baseline": "0.4.0",
   "checkpoint": "I10",
   "checkpoint_title": "Storage Health + Export Backup",
-  "status": "active_i10",
+  "status": "frozen_i10",
   "runtime_strategy": "browser_local_first",
   "tooling_python_min": "3.12",
   "license_state": "UNLICENSED",
