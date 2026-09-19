@@ -19,6 +19,7 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 - I01-Strukturtests sowie realer Chromium-Boot-Smoke als Pull-Request-Gate.
 
 ### Changed
+- I04-Architekturvertrag an die tatsächlich geprüfte Hardlink-No-Clobber-Implementierung angepasst; Freeze-Evidence erfasst nun automatisch alle I04-Change-Records.
 - Repository-Einstieg und Bereichs-READMEs auf den tatsächlichen I02-Stand ausgerichtet.
 - Projektmanifest auf `I02 -> I03` aktualisiert und Checkpoint-Schema zukunftsfähig gemacht.
 - Dokumentationsindex und klarer Referenzbereich für historische Arbeitsanweisungen ergänzt.

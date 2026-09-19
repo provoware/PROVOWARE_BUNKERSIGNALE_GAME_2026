@@ -1,29 +1,28 @@
-S.O.U.N.D. SYSTEM-IKER - I04 REOPEN Evidence Report
-Generated UTC: 2026-09-19T01:23:10Z
+S.O.U.N.D. SYSTEM-IKER - I04 Documentation REOPEN Evidence
+Generated UTC: 2026-09-19T01:27:59Z
 Status: GREEN
-Governed fingerprint SHA-256: 984bfbcf8de86b8f00fb7c916e8628f0f7a1f73c77b436e59a4bbdf0bef2638d
+Governed fingerprint SHA-256: 2cb628f4f0d841768d7c2b701f1c6d7488f48f79e92f887621589ad586383cc3
 
-REOPEN-BEFUNDE
-- No-Clobber musste auch unter Ziel-Races garantiert werden.
-- I04-Artefakte mussten vom Repository-Gate erzwungen werden.
-- Evidence durfte nicht nur vorhanden, sondern musste aktuell und kryptografisch an den governeden Stand gebunden sein.
-- Ein Cleanup-Fehler durfte niemals ein inzwischen fremd ersetztes Ziel löschen.
+BEFUND
+- Der normative I04-Architekturtext beschrieb noch os.replace, obwohl die eingefrorene Implementierung bereits auf atomare Hardlink-No-Clobber-Zielanlage gehärtet war.
+- Die kritische Evidence-Hashliste führte I04-Change-Records fest verdrahtet statt dynamisch.
 
-HÄRTUNG
-- Aktivierung und Quarantäne: atomare No-Clobber-Zielanlage per Hardlink.
-- Cross-Filesystem: fail-closed statt nicht-atomarer Kopie.
-- Source-Cleanup-Fehler: Ziel bleibt unangetastet.
-- Freeze-Guard: Evidence- und Status-Fingerprint müssen aktuell sein.
-- Sechs I04-kritische Dateien werden zusätzlich einzeln per SHA-256 belegt.
-- Negative Evidence-Probe: Run 35412393774 wurde erwartungsgemäß mit SSI-INT-0001 gestoppt.
+KORREKTUR
+- docs/ARCHITECTURE.md beschreibt jetzt exakt die geprüfte Hardlink-Semantik:
+  freies Ziel atomar anlegen, vorhandene/konkurrierende Ziele nie ersetzen,
+  Cross-Filesystem fail-closed, Source-Cleanup-Fehler löscht das Ziel nicht.
+- Evidence-Guard entdeckt automatisch sämtliche Change Records des aktuellen Checkpoints.
+- Bestehender Evidence-Akzeptanztest weist einen dynamischen I04-Change-Record nach.
+- CHG-20260919-008 dokumentiert diesen eng begrenzten REOPEN.
+- Laufzeitcode der Content Inbox wurde nicht verändert.
 
-ABSCHLUSSPRÜFUNG
-- GitHub Actions quality run 35412482151: SUCCESS.
-- Real Chromium smoke run 35412482180: SUCCESS.
-- Quality-Fingerprint bestätigt: 984bfbcf8de86b8f00fb7c916e8628f0f7a1f73c77b436e59a4bbdf0bef2638d.
-- I04-Testmodul: 9 Tests einschließlich Ziel-Races, Cleanup-Failure und Evidence-Integrität.
-- I00-I03 bleiben unverändert und wurden nicht reopened.
+NEGATIVNACHWEIS
+- Quality run 35412727792: erwartungsgemäß RED.
+- Ausschließlich Freeze-Evidence war veraltet:
+  Fingerprint, CHG-20260919-008 und Hashes der zwei geänderten kritischen Dateien.
+- Gemeldeter governter Fingerprint: 2cb628f4f0d841768d7c2b701f1c6d7488f48f79e92f887621589ad586383cc3.
 
 FREEZE
-- I04 ist auf diesem Stand wieder vollständig beweisbar und freeze-fähig.
-- I05 bleibt der nächste eigenständige Checkpoint und wurde nicht vorgezogen.
+- Diese Evidence ist auf 2cb628f4f0d841768d7c2b701f1c6d7488f48f79e92f887621589ad586383cc3 erneuert.
+- I05 wurde nicht begonnen.
+- Merge ist erst nach erneut vollständig grünem Quality- und Chromium-Gate zulässig.

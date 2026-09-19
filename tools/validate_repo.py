@@ -79,10 +79,21 @@ CHECKPOINT_EVIDENCE_FILES = {
         "tools/validate_repo.py",
         "tests/test_i04.py",
         "docs/REGRESSION_POLICY.md",
-        "changes/CHG-20260919-006.json",
-        "changes/CHG-20260919-007.json",
     ],
 }
+
+
+def checkpoint_evidence_files(root, checkpoint: str) -> list[str]:
+    """Return static checkpoint artifacts plus every Change Record for that checkpoint."""
+    required = list(CHECKPOINT_EVIDENCE_FILES.get(checkpoint, []))
+    for path in sorted((root / "changes").glob("CHG-*.json")):
+        try:
+            data = read_json(path)
+        except Exception:
+            continue
+        if str(data.get("checkpoint", "")) == checkpoint:
+            required.append(path.relative_to(root).as_posix())
+    return required
 
 
 def validate_required_files() -> list[Issue]:
@@ -298,7 +309,7 @@ def validate_checkpoint_evidence(root=ROOT) -> list[Issue]:
     if not isinstance(recorded_hashes, dict):
         issues.append(Issue("SSI-INT-0001", "ERROR", evidence_path.relative_to(root).as_posix(), "Evidence-Dateihashes fehlen oder sind ungültig."))
     else:
-        required_hash_paths = CHECKPOINT_EVIDENCE_FILES.get(checkpoint, [])
+        required_hash_paths = checkpoint_evidence_files(root, checkpoint)
         missing_hashes = [path for path in required_hash_paths if path not in recorded_hashes]
         stale_hashes = [
             path
