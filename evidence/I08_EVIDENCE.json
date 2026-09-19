@@ -1,0 +1,90 @@
+{
+  "checkpoint": "I08",
+  "generated_at_utc": "2026-09-19T16:41:00Z",
+  "status": "GREEN",
+  "fingerprint_sha256": "92b5443d7894d4543ba5cf4a3b7d128e85dff646383aac19b86c268f5af60643",
+  "checks": [
+    {
+      "name": "envelope_contract_compatibility",
+      "status": "PASS",
+      "detail": "Weltzuordnung liegt im Storage-Record; gespeicherte Events bleiben gültige unveränderte I06-Envelopes."
+    },
+    {
+      "name": "synchronous_queue_atomicity",
+      "status": "PASS",
+      "detail": "Realer Chromium-Smoke #8: Clone-/Queue-Fehler nach bereits gequeued Write abortiert die gesamte Transaktion."
+    },
+    {
+      "name": "abort_atomicity",
+      "status": "PASS",
+      "detail": "Realer Chromium-Smoke #8: injizierter Abort hinterlässt keine partiellen Events."
+    },
+    {
+      "name": "duplicate_atomicity",
+      "status": "PASS",
+      "detail": "Realer Chromium-Smoke #8: Duplicate-Constraint rollt den gesamten Batch zurück."
+    },
+    {
+      "name": "reopen_readback",
+      "status": "PASS",
+      "detail": "Realer Chromium-Smoke #8: erfolgreicher Batch bleibt nach Reopen deterministisch lesbar."
+    },
+    {
+      "name": "repository_quality",
+      "status": "PASS",
+      "detail": "Repository Quality #199 und #200 auf refrozen_i08 GREEN."
+    },
+    {
+      "name": "browser_smoke",
+      "status": "PASS",
+      "detail": "Allgemeiner Chromium-Smoke #53 GREEN."
+    },
+    {
+      "name": "public_status",
+      "status": "PASS",
+      "detail": "README weist I08 als aktuellen Checkpoint und I09 als nächsten Checkpoint aus."
+    },
+    {
+      "name": "visual_ux_scope",
+      "status": "PASS",
+      "detail": "Exakt eine neue visuelle UX-Änderung: .ssi-kicker line-height 1.4."
+    }
+  ],
+  "file_hashes": {
+    "changes/CHG-20260919-015.json": "c1011087463e29e90187687bf2668c2cc71f95e4497beb3cedbbbf1436efc2c5",
+    "changes/CHG-20260919-016.json": "a8aa28df3b712c162c375cef2ea88b404e64ab6fc2d6f8c75f00606a6305baaf"
+  },
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "Expliziter I08-REOPEN nur für zwei post-merge P1-Integritätsfehler und README-Drift; I09 bleibt gesperrt."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "I06 Envelope bleibt unverändert; Weltzuordnung wird ausschließlich als Storage-Metadatum gespeichert."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Quality #199/#200, I08 Chromium #8 und Browser-Smoke #53 sind GREEN."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "Abort-, Duplicate- und synchroner Queue-/Clone-Fehler beweisen vollständigen Batch-Rollback."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "Exakt eine neue visuelle Änderung im REOPEN-Lauf: Kicker line-height 1.4."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "Reparierter I08-Fingerprint 92b5443d7894d4543ba5cf4a3b7d128e85dff646383aac19b86c268f5af60643 und beide I08 Change Records sind gebunden."
+    }
+  ]
+}
