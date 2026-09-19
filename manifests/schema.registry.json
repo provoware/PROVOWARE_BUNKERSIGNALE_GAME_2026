@@ -63,6 +63,14 @@
       "introduced_in": "I00"
     },
     {
+      "name": "event-envelope",
+      "version": "1.0.0",
+      "schema_id": "https://sound-system-iker.local/schema/event-envelope/1.0.0",
+      "path": "schemas/event-envelope.schema.json",
+      "status": "active",
+      "introduced_in": "I06"
+    },
+    {
       "name": "evidence-report",
       "version": "1.0.0",
       "schema_id": "https://sound-system-iker.local/schema/evidence-report/1.0.0",
