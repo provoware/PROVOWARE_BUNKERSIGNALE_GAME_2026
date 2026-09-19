@@ -9,12 +9,13 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Bereich | Stand |
 | --- | --- |
 | Produktversion | `0.1.0-alpha.0` |
-| Aktueller Checkpoint | **I08 – IndexedDB Event Store** |
-| Nächster Checkpoint | **I09 – Snapshot Cache** |
+| Aktueller Checkpoint | **I09 – Snapshot Cache** |
+| Nächster Checkpoint | **I10 – Storage Health + Export Backup** |
 | Runtime | Browser, local-first |
 | Buildschritt | nicht erforderlich |
 | Paketmanager | nicht erforderlich |
 | Persistente Eventdaten | **I08 aktiv – IndexedDB Event Store** |
+| Snapshot Cache | **I09 – verwerfbarer Cache; Eventlog bleibt Wahrheit** |
 | Spiellogik | noch nicht aktiv |
 
 Bereits umgesetzt:
@@ -28,6 +29,7 @@ Bereits umgesetzt:
 - **I06** – Event Envelope v1 mit Schema, Sequenz-/Lamport-Invarianten, Trace-Feldern und Negative Fixtures.
 - **I07** – deterministische Pure-Reducer-Grundlage mit fail-closed Replay-Invarianten und Purity-Guard.
 - **I08** – transaktionaler IndexedDB Event Store mit Weltzuordnung als Storage-Metadatum, deterministischem Readback und vollständigem Rollback bei Abort, Duplicate sowie synchronen Queue-/Clone-Fehlern.
+- **I09** – verwerfbarer IndexedDB Snapshot Cache mit Fingerprint-Prüfung, vollständigem Replay-Fallback und Crash-/Abort-Schutz; das Eventlog bleibt alleinige Wahrheit.
 
 ## Schnellstart
 
@@ -85,8 +87,9 @@ Dokumentationsindex: **[docs/README.md](docs/README.md)**
 - I06 validiert vollständige Event Envelopes, persistiert aber noch keine Events.
 - I07 reduziert ausschließlich aus Events + Ruleset und besitzt keine Zeit-, Zufalls-, Storage-/Datei- oder Netzwerkabhängigkeit.
 - I08 persistiert Events transaktional in IndexedDB; die Weltzuordnung liegt außerhalb des unveränderten I06-Envelope-Vertrags als Storage-Metadatum.
+- I09 nutzt Snapshots ausschließlich als beschleunigenden Cache; fehlende, korrupte oder fingerprint-falsche Snapshots werden verworfen und vollständig replayt.
 - Neue Runtime-Abhängigkeiten benötigen eine begründete Architekturentscheidung.
-- Snapshots, Quota-/Export-Funktionen, produktive Contentpakete und Spiellogik werden nicht vorgezogen.
+- Quota-/Export-Funktionen, Hashketten, Crypto, produktive Contentpakete und Spiellogik werden nicht vorgezogen.
 
 ## Lizenzstatus
 
