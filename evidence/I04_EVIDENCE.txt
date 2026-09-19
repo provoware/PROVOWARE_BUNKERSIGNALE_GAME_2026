@@ -1,0 +1,21 @@
+S.O.U.N.D. SYSTEM-IKER - I04 Evidence Report
+Generated UTC: 2026-09-19T00:48:32Z
+Status: GREEN
+Fingerprint SHA-256: e816c527b230b32e7c1d55efb1eef02853267ceb5f42e2f2bbaca3cd21f96f2f
+
+SCOPE
+- Local Content Inbox with simple candidate names
+- Registry identity, exact version, dependency graph and SHA-256 lock-pin verification
+- Quarantine of invalid candidates with stable reason codes
+- Atomic activation only into a free registered destination
+- No productive content, world persistence, gameplay, synchronization or new dependency
+
+VALIDATION
+- python3 -S -m unittest tests.test_i04 -v: PASS (4 tests)
+- ./run_i00.sh: PASS
+- Existing activation target remains unchanged: PASS
+- Path escape remains outside Inbox and unchanged: PASS
+- Tampered and invalid JSON candidates are quarantined: PASS
+
+NEXT CHECKPOINT
+I05 - remains intentionally outside I04.

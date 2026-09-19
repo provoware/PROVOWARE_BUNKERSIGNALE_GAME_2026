@@ -1,0 +1,168 @@
+{
+  "checkpoint": "I04",
+  "generated_at_utc": "2026-09-19T00:48:32Z",
+  "status": "GREEN",
+  "fingerprint_sha256": "e816c527b230b32e7c1d55efb1eef02853267ceb5f42e2f2bbaca3cd21f96f2f",
+  "checks": [
+    {
+      "name": "repository_quality",
+      "status": "PASS",
+      "detail": "Local ./run_i00.sh completed successfully with all repository and checkpoint regressions."
+    },
+    {
+      "name": "content_inbox",
+      "status": "PASS",
+      "detail": "A correctly pinned local candidate is atomically moved to its registered free destination."
+    },
+    {
+      "name": "quarantine",
+      "status": "PASS",
+      "detail": "Tampered and unreadable JSON candidates are moved to quarantine with stable SSI-CONTENT reason codes."
+    },
+    {
+      "name": "write_safety",
+      "status": "PASS",
+      "detail": "Path escapes, missing candidates and existing activation or quarantine destinations do not overwrite data."
+    },
+    {
+      "name": "scope",
+      "status": "PASS",
+      "detail": "No productive content, world persistence, gameplay, network synchronization or runtime dependency was introduced."
+    }
+  ],
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "I04 scope is limited to local Inbox verification, quarantine and non-overwriting activation."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "The additive tooling module preserves browser-runtime layer boundaries and introduces no dependency."
+    },
+    {
+      "role": "data_schema_auditor",
+      "status": "PASS",
+      "evidence": "Candidate identity, exact version and registered lock pin are verified before activation."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Targeted I04 tests and the complete repository quality run passed."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "Path escapes and existing destinations are rejected without mutation; invalid candidates are quarantined."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "No browser UI behavior changed in I04."
+    },
+    {
+      "role": "content_canon",
+      "status": "PASS",
+      "evidence": "No productive content was added; activation tests use isolated temporary fixtures."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "I04 scope, validation, fingerprint and rollback are recorded."
+    }
+  ],
+  "file_hashes": {
+    ".editorconfig": "85bccbd23a9070becfe1dc0dbb9ad7305fb2bb98f92f54cb9856d7d6eca4ebfe",
+    ".gitattributes": "3c2e5261e4ae7f3c5a0fc719431273861c01415220966ecc8ee9840cc7bf72d6",
+    ".github/workflows/i01-browser-smoke.yml": "20bea1e0d40551c1b8b947df14306888298a8e2f8947b93ac1adb584db79fe6f",
+    ".github/workflows/quality.yml": "b6cf755a8e2051e4458b94038647d2aabe15d460b28a28a392916d18a6745bfd",
+    ".gitignore": "622da777d7bc82bdd33056f994036b005fbd770199c90cc6f7aed2c6f14ec8e4",
+    "CHANGELOG.md": "d8a8c3cb0570da9c89e509cdead6e64051f505d6997b3357e993256305e8f38e",
+    "README.md": "5db668f60a3dbe9898b8bc6d09ceadea38072d65fb2af62a4bad4ff04e3c867f",
+    "VERSION": "f7f29db8e09380162af23ef284c6565461be67f567d5f32d50e712b1a525c328",
+    "agents/registry.json": "24076d00111ed84839b8d236ad7f641798c4ddd1692fe6cde7757ae9d3bf6ab6",
+    "app/README.md": "262cbdeb5cb1be591991fcfbc6d20e2f11b71158b8e50361648ee2d2240c08d4",
+    "app/application/health.js": "86d2dd1d03ff28a573d0731829c676c6cbacca1365435c220f1463d3dcbb93b7",
+    "app/bootstrap/main.js": "740840c8cff67d8117c20c43ef5ef90750b079d9e2f3a42f01d91ce8fe2f290c",
+    "app/infrastructure/browser/capabilities.js": "e61b98171c25f6fc2d7d8951408d352a8217346f479b1c3dbb11f207789b5951",
+    "app/infrastructure/runtime/build-info.js": "52045ca597df1194105da91d235266de79a0b37066fce640b01ea215237c5691",
+    "app/ui/app.js": "cca015d94235a68008e03d6b2009479ebe255d5a5be4981150960cc21bf9af4e",
+    "app/ui/styles.css": "b979663f732363297a4ca316ddd7787faec6180040658bc38ddae8b9ad5141c0",
+    "changes/CHG-20260918-001.json": "b9775dfc0cedc4b2a3df62d4bf76a0837b365f57333a1dc78d7864bacedb3546",
+    "changes/CHG-20260919-002.json": "67fe3bab298810f434d84f40119dbe2da845c6e3e2253279c06f19ce59e31106",
+    "changes/CHG-20260919-003.json": "99e7f1392718200be803fc082fb2e4289fb5ec6a9294aa5a1279a1bb1054ca82",
+    "changes/CHG-20260919-004.json": "3632d4e6cb4e8230f7499e09618db1501104b63456e262e8ff82a33bc06a4021",
+    "changes/CHG-20260919-005.json": "73202fb8232abdf231788deddb62532bf0e80695b05fa2013b6c79e921e2069b",
+    "changes/CHG-20260919-006.json": "0795ba4a25f6a691bbcb944e5502e1f86bb81bbc238b76826f4689a1f3c1f803",
+    "content/README.md": "dac3bbfc3c1fdf914ca0d67a498bb2dc5eb907352c4b293e102fd0386c328990",
+    "data/README.md": "7cefaec81dbb8fb7195ec2df17c18769da8214683c2fd6797d99e16d24fa4bcd",
+    "docs/ARCHITECTURE.md": "36210225a2202bc053284eac9ab1852340256b46719c0d0c54789bfaef133284",
+    "docs/CHANGE_CONTROL.md": "8d9448964bfe8e380ea9746732e1dce6d951a578beb2d2ac101033cc3c11b828",
+    "docs/DEVELOPMENT_RULES.md": "64b6bd536dd641108e7167f829e656e60524af83b3e60cfc12617316e67ebe86",
+    "docs/ERROR_HANDLING.md": "94e23753dd7dccf539f3a5a229b5fa5289cf5df7ac8133237946e074af528262",
+    "docs/GLOBAL_STANDARDS.md": "81c71cd83cf7cba457514d642698dbfe7cb43b76deb9052818b4dabc8e2d7721",
+    "docs/QUALITY_GATES.md": "6279361d5ba61d1591d29608668b3a03fc3304334ff2d18d899202425ba539c2",
+    "docs/README.md": "e45ae0dac11bb81ef25bc7eafc7e1d68c5c811e908b49b6f98ca93939241ce09",
+    "docs/REGRESSION_POLICY.md": "f250b7375cb6292889696678b108fffa93aa0e74e70485ac75fe7f57baaa72fb",
+    "docs/SUBAGENT_PROTOCOL.md": "1e812b925b88b21d3cf89916d3a831b8648bbb22cd64a26f6982fe6058e97794",
+    "docs/decisions/ADR-0001-baseline-architecture.md": "f3b05b9cb4e0f9c80fd4a589e162309960e94619a11e740a68e241463cea59c6",
+    "docs/reference/README.md": "5df7a0be7a207e40cf77c7bf7dc650511401239d911777e8bba2bfd569b8bd65",
+    "index.html": "3bd2afb6ea5b24f5c05608b111ac26b208cd77d30c20751e8a48e93953ea8ede",
+    "manifests/architecture.boundaries.json": "9ceda391edf0be3ebfcdbbf9a81206d516b9e09196cc9bce436436ac8dba062e",
+    "manifests/content.lock.json": "cba873ed61905be7fc7fc870f27c29869389cb114a4b60a3ac71bcff46aac05c",
+    "manifests/content.registry.json": "5248c7e0c785dc3eb8598c943633f7527b87a97840e03ba74b8f75668953ea0a",
+    "manifests/error.codes.json": "a78eb64d4e377c11b07ee0448d9a783cd8972ae37648621a97cdbfdf161f1642",
+    "manifests/product.dna.json": "e9f7fbb180179ba550f691746a8cb50dfed1f0ad42fcc5fc86ac58c7ee101917",
+    "manifests/project.manifest.json": "2118c9595a046790000bb29b3d89829fd050f0d03e4cca4085bc32fa1d47026f",
+    "manifests/quality.gates.json": "854512813e9a032d6ec681db606e6c61c974ec4043dcd273eb22cc471efdaf05",
+    "manifests/repository.layout.json": "d1d0d147ba398abc0bb430e38b097cdd45ba20622ba6d3fa90ac8c28cab21a23",
+    "manifests/schema.registry.json": "3217176f64c83dd9879096bdc3c3220f9fe32f9bf4e45a4495799e940f8ea67b",
+    "manifests/standards.registry.json": "7e913833c27327a6268d137f7a3c72c08765d43e66a8d2bb0f9801e6b5f984bc",
+    "manifests/toolchain.json": "61dbddaefd17bdd5b7d7f5cad02c67053ebea6b84abe9918603ce93ec22d72f4",
+    "run_i00.sh": "f8933f5ede7794c44d419f91d50e61326f08408253b3c7abedf32269fac4305f",
+    "schemas/agent-registry.schema.json": "0dd93e32872287d33a6b18952f350953b4918c5ff67d04566e6ac27ba1899dc3",
+    "schemas/architecture-boundaries.schema.json": "dec5cda97b0fcbe11231c58c8054f1413efab8cd1a5e783894c31e4d23c002e0",
+    "schemas/change-record.schema.json": "ec80c0c13284495e289704d0172b42f1d6f2fc87249775bc0cca3c820fea7c06",
+    "schemas/content-lock.schema.json": "711e5356a55b81fd5ab31655787d98c2c765500f4f892403e86ed7f4fc10c53e",
+    "schemas/content-registry.schema.json": "595ae09b25d4e7e4751d42827f4f5b7c5f9426416e1ba58672b28bec01306f99",
+    "schemas/error-codes.schema.json": "871d87f69e97fbc13576cea82a644040be84abd4430bb804ccb52436e8228b75",
+    "schemas/evidence-report.schema.json": "0775f50e2443f8d0a1f1ce401e37aaf5b37a9a8c0370df6969d3ce452325c622",
+    "schemas/product-dna.schema.json": "5573d3d4779d4b525e1baa379a9ed74a9bf69e21a4b6d60bcae0492ef3074613",
+    "schemas/project-manifest.schema.json": "8156c2021bbc479f8386aa48997efde0f833285d68a1acc14d34f923b385e6fc",
+    "schemas/quality-gates.schema.json": "7dcf7c3c916518ad09225c223f3287934d6af263e1c5a1e48d2f19189d7d21bc",
+    "schemas/repository-layout.schema.json": "c160a7548c00091a88a8cacd5f86fa4933c3312eb80fb07bcbbc0503fd9c6614",
+    "schemas/schema-registry.schema.json": "8d1ba67a1da598f5e428b16cd3c4a9e68b092a7cfffee5f4abeca0022d7191ef",
+    "schemas/standards-registry.schema.json": "d764ca0faa1cf54bc8f404ea3ee3dd230761e6749a301aad351c68e2e53b09b1",
+    "schemas/status-report.schema.json": "1801855685f3221979ac42fe3ca5b63a4a33bb24163bfbf2f048edf3a878abf3",
+    "schemas/toolchain.schema.json": "0ec5bc2b694182419e3b8e79eeb4069144160fa6218f71dea95c8adf113f01cd",
+    "tests/fixtures/architecture/negative/app/infrastructure/repository.js": "176ded56e8ed5710379c0ce0ee5a5024b25c94e34e4945665c2b6d9715c3988c",
+    "tests/fixtures/architecture/negative/app/ui/view.js": "d1c9bc088f4192b19a213ca779629a4cada0135475e635a80e664effa3020ae4",
+    "tests/fixtures/architecture/positive/app/application/session.js": "7c63de806cbf2a4e2480121225215669eac76cfa7f627a29ea28323fe18ea83c",
+    "tests/fixtures/architecture/positive/app/bootstrap/main.js": "148b439a2b5012f838fb092b105554b2776b10504dffb755e635e1816ff85b7c",
+    "tests/fixtures/architecture/positive/app/domain/model.js": "1e19db1ed4da2327f19fb90a3df89dfb97a8629f01848d5500894d3bb3c513e3",
+    "tests/fixtures/architecture/positive/app/infrastructure/repository.js": "50633fb251a26856740f165b56c30156ecdcf9d8815dc18dc2f1e9cebd27ac78",
+    "tests/fixtures/architecture/positive/app/ui/view.js": "139d2b2f1ed33945c4fe7f06f2d4ec9c29e9b096ab25a9a1e223ab773362100b",
+    "tests/fixtures/content/negative/cases.json": "790fa5ac413cb448147086049ff5d123630821bdac5ce1d9f0c7c4bae250beea",
+    "tests/fixtures/content/positive/lock.json": "f07c343e61272460b6e10f139f688e58320cc94246231b54d15091213e5b6043",
+    "tests/fixtures/content/positive/packages/addon.json": "332ac426f8df75c647564c80ae55dbd497fe820ac493c47182c5738600ed1ba5",
+    "tests/fixtures/content/positive/packages/base.json": "fccbce49135bd447617b1266f71b2d5ca52ab2497f6059ace9907bbbd655fa37",
+    "tests/fixtures/content/positive/registry.json": "43cbfe72103b9ddeed5b70e13b240061bc3da84d8011b65d455eff63b9851867",
+    "tests/fixtures/schema/negative/missing-required.json": "45e99f35b53363de70d9c53a95f784fc49c23f9bcbbadfd255b2abf41a66769c",
+    "tests/fixtures/schema/negative/unknown-property.json": "0f9daeced5277beb3a45b8e2a517b40508d078ddf8f397211ad41104a6c8329f",
+    "tests/fixtures/schema/negative/wrong-const.json": "044a18b674b9f80d3cd02f84220c2cf8d4b2e7b4280a71085c28cfd8dfcd4279",
+    "tests/fixtures/schema/positive/project-manifest.json": "2be1296b83f299187d95f257f9272c194137dc1aeab686550f2d7b4ef1778155",
+    "tests/test_i00.py": "ded1417251797f82498b7e76e37d73c92ccbb13065d833ab91df855dc333d44e",
+    "tests/test_i01.py": "c0421444bbd7fcb1000c242f05c556ae3082ae07e76d5bf467b018d8d56860ee",
+    "tests/test_i02.py": "8c3274c7d2be92f658f27c3b76daae649aac5d2258827d862aceb2ea6aacd28c",
+    "tests/test_i03.py": "000e18951f3326f584bd240bc61baff3a0e968e06d7aae091802a7c4aab08cc2",
+    "tests/test_i04.py": "b0ff4ebe449262dd437d4710e7e2a3a09b5dc09968ad086f53efe57081f15d59",
+    "tools/content_inbox.py": "7031d5bec181a623c910db0ec11f428e6fa5dcac34b7b1d6f1a711850889a694",
+    "tools/content_registry.py": "920d7062769ca79ed5392b39850381223d320aeb3de79b2175e586245187a33e",
+    "tools/run_i00_checks.py": "57feec32cbc3016b30ab8d9fdd08180468647d2ba9b72b997cd87ff9cfc3a5f3",
+    "tools/schema_registry.py": "449e57f4fc170fccc0021bdf11c6481945ec35485513f149b7ab74080ffb8b04",
+    "tools/ssi_common.py": "d0c263f12081b4d0f832f800ca087b6dcba0ccfe03d628b5a5064cbf240437d7",
+    "tools/validate_repo.py": "126daaafe902ff29b5b5f0c3c9dcf82b33031a8eab5b40acf1d82a3078835e20"
+  }
+}
