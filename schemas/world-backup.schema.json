@@ -13,18 +13,88 @@
     "events"
   ],
   "properties": {
-    "format": {"const": "ssi-world-backup"},
-    "format_version": {"const": 1},
-    "world_id": {"type":"string","pattern":"^world:[0-9a-f]{24}$"},
-    "product_version": {
-      "type":"string",
-      "pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    "format": {
+      "const": "ssi-world-backup"
     },
-    "content_lock_fingerprint": {"type":"string","pattern":"^[0-9a-f]{64}$"},
-    "event_count": {"type":"integer","minimum":0},
+    "format_version": {
+      "const": 1
+    },
+    "world_id": {
+      "type": "string",
+      "pattern": "^world:[0-9a-f]{24}$"
+    },
+    "product_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "content_lock_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "event_count": {
+      "type": "integer",
+      "minimum": 0
+    },
     "events": {
-      "type":"array",
-      "items":{"type":"object"}
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "event_id",
+          "event_type",
+          "payload",
+          "author_id",
+          "sequence",
+          "lamport",
+          "ruleset_version",
+          "metadata"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "pattern": "^event:[0-9a-f]{24}$"
+          },
+          "event_type": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+          },
+          "payload": {
+            "type": "object"
+          },
+          "author_id": {
+            "type": "string",
+            "pattern": "^actor:[0-9a-f]{24}$"
+          },
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "lamport": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "ruleset_version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "command_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "correlation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "causation_event_id": {
+            "type": "string",
+            "pattern": "^event:[0-9a-f]{24}$"
+          }
+        },
+        "additionalProperties": false
+      }
     }
   },
   "additionalProperties": false

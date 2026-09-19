@@ -43,6 +43,10 @@ class I10WorldBackupTests(unittest.TestCase):
             "events": [event()],
         }
         registry.validate("world-backup", "1.0.0", instance)
+        invalid = json.loads(json.dumps(instance))
+        invalid["events"] = [{}]
+        with self.assertRaises(Exception):
+            registry.validate("world-backup", "1.0.0", invalid)
         entries = json.loads(REGISTRY.read_text(encoding="utf-8"))["entries"]
         self.assertTrue(any(item["name"] == "world-backup" and item["introduced_in"] == "I10" for item in entries))
 
@@ -73,6 +77,11 @@ class I10WorldBackupTests(unittest.TestCase):
         self.assertIn("serializeWorldBackup", source)
         self.assertIn("canonicalJson", source)
 
+    def test_canonicalizer_preserves_proto_named_json_keys(self) -> None:
+        source = BACKUP.read_text(encoding="utf-8")
+        self.assertIn("Object.create(null)", source)
+        self.assertIn("Object.defineProperty(normalized, key", source)
+
     def test_runtime_validator_covers_i06_event_invariants(self) -> None:
         source = BACKUP.read_text(encoding="utf-8")
         for marker in (
@@ -84,6 +93,8 @@ class I10WorldBackupTests(unittest.TestCase):
             "event_count does not match events",
             "events are not in deterministic world order",
             "event_id must be unique",
+            "event sequence must strictly increase",
+            "event lamport must not decrease",
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, source)

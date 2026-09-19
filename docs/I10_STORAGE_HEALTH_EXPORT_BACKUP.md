@@ -135,8 +135,8 @@ Kleinster Produktblock:
 Nach grünem I10-A:
 
 - registriertes `world-backup/1.0.0`-Schema,
-- Runtime-Validator für exakte Top-Level-Felder und I06-Event-Invarianten,
-- kanonischer JSON-Serializer mit LF-Normalisierung und stabiler Schlüsselreihenfolge,
+- Runtime-Validator für exakte Top-Level-Felder, vollständige I06-Event-Invarianten und streng steigende Replay-Sequenz,
+- kanonischer JSON-Serializer mit LF-Normalisierung, stabiler Schlüsselreihenfolge und verlustfreier Behandlung aller legalen JSON-Schlüssel einschließlich `__proto__`,
 - read-only Welt-Readback ausschließlich über injiziertes I08-`readWorld(worldId)`,
 - deterministische Exportbytes bei identischem autoritativem Weltstand,
 - 1000-Event-Chromium-Smoke: zwei vollständige Exporte zusammen < **5000 ms**,

@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-008",
+  "checkpoint": "I10",
+  "title": "I10-B backup integrity hardening",
+  "purpose": "Drei post-merge Review-Befunde schließen, bevor Restore begonnen wird: legale __proto__-JSON-Schlüssel verlustfrei erhalten, nicht replaybare Sequenzen ablehnen und das registrierte Backup-Schema auf vollständige Event-Envelopes härten.",
+  "scope": [
+    "Canonical JSON baut Objekte mit Null-Prototyp und eigenen Datenproperties",
+    "Backup-Validator verlangt streng steigende sequence und nicht fallende lamport-Werte",
+    "world-backup Schema verlangt vollständige I06-Eventfelder und verbietet Zusatzfelder",
+    "Chromium-Regressionsfälle für __proto__-Roundtrip und doppelte Sequenz"
+  ],
+  "non_goals": [
+    "Kein Restore/Import",
+    "Kein Download/File-Picker",
+    "Keine Änderung am I08 Event Store oder I09 Snapshot Cache",
+    "Keine UI-/Game-Shell-/Storage-Health-Änderung",
+    "Keine I11+-Funktion"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Gültige, replaybare Backup-v1-Dokumente bleiben kompatibel; zuvor still datenverlustbehaftete oder nicht replaybare Dokumente werden nun korrekt erhalten bzw. abgewiesen.",
+  "security": "Kein Schreibpfad. Der Exportvertrag wird vor I10-C fail-closed gehärtet.",
+  "test_plan": [
+    "Repository Quality und Schema-Registry-Audit",
+    "I10 Export Backup Chromium-Smoke",
+    "__proto__-Roundtrip",
+    "nicht streng steigende Sequenz wird abgewiesen",
+    "SchemaRegistry lehnt unvollständige Eventobjekte ab"
+  ],
+  "rollback": "Branch verwerfen; main bleibt auf dem gemergten I10-B-Stand.",
+  "evidence": [
+    "app/application/world-backup.js",
+    "schemas/world-backup.schema.json",
+    "tests/test_i10_backup.py",
+    ".github/workflows/i10-export-backup-smoke.yml",
+    "docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md"
+  ],
+  "result": "GREEN"
+}

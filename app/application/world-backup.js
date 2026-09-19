@@ -62,9 +62,14 @@ function normalizeCanonical(value) {
   }
   if (Array.isArray(value)) return value.map(normalizeCanonical);
   if (isPlainObject(value)) {
-    const normalized = {};
+    const normalized = Object.create(null);
     for (const key of Object.keys(value).sort()) {
-      normalized[key] = normalizeCanonical(value[key]);
+      Object.defineProperty(normalized, key, {
+        value: normalizeCanonical(value[key]),
+        enumerable: true,
+        writable: true,
+        configurable: true,
+      });
     }
     return normalized;
   }
@@ -138,6 +143,8 @@ export function validateWorldBackup(backup) {
 
   const seen = new Set();
   let previous = null;
+  let lastSequence = 0;
+  let lastLamport = -1;
   for (const event of backup.events) {
     validateEventEnvelope(event);
     if (seen.has(event.event_id)) throw new TypeError("event_id must be unique");
@@ -145,7 +152,15 @@ export function validateWorldBackup(backup) {
     if (previous !== null && compareEventOrder(previous, event) > 0) {
       throw new TypeError("events are not in deterministic world order");
     }
+    if (event.sequence <= lastSequence) {
+      throw new TypeError("event sequence must strictly increase");
+    }
+    if (event.lamport < lastLamport) {
+      throw new TypeError("event lamport must not decrease");
+    }
     previous = event;
+    lastSequence = event.sequence;
+    lastLamport = event.lamport;
   }
 
   normalizeCanonical(backup);
