@@ -38,3 +38,6 @@ I04 ist nur grün, wenn alle bisherigen Regressionen bestehen bleiben, Kandidate
 
 ## I05 Exit
 I05 ist nur grün, wenn stabile world/actor/object/event IDs deterministisch erzeugt und typgeprüft werden, Canonical JSON für Schlüsselreihenfolge, UTF-8, Unicode, Zahlen und LF-Normalisierung byteidentisch bleibt und instabile Werte fail-closed abweist. Zusätzlich müssen die bereits eingefrorenen Hot-Swap-Klassen unverändert grün bleiben. G1/G2/G3 sowie die relevanten G6/G8-Anteile müssen grün sein.
+
+## I06 Exit
+I06 ist nur grün, wenn Event Envelope v1 alle Pflichtfelder und die optionalen Trace-Felder eindeutig definiert, stabile ID-Typen erzwingt, sequence >= 1 und lamport >= 0 garantiert, unbekannte Zusatzfelder fail-closed abweist und identische Envelopes über Canonical JSON byteidentisch serialisiert werden. G1/G2/G3 müssen grün sein; persistenter Event Store, Reducer und Replay bleiben außerhalb dieses Checkpoints.
