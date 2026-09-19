@@ -41,3 +41,6 @@ I05 ist nur grün, wenn stabile world/actor/object/event IDs deterministisch erz
 
 ## I06 Exit
 I06 ist nur grün, wenn Event Envelope v1 alle Pflichtfelder und die optionalen Trace-Felder eindeutig definiert, stabile ID-Typen erzwingt, sequence >= 1 und lamport >= 0 garantiert, unbekannte Zusatzfelder fail-closed abweist und identische Envelopes über Canonical JSON byteidentisch serialisiert werden. G1/G2/G3 müssen grün sein; trunkierte/nicht-kanonische Readbacks müssen abgewiesen werden und Legacy-/Großwelt-Readback muss innerhalb des dokumentierten Smokebudgets bleiben. Persistenter Event Store, Reducer und Replay bleiben außerhalb dieses Checkpoints.
+
+## I09 Exit
+I09 ist nur grün, wenn Snapshots ausschließlich als verwerfbarer Cache behandelt werden, valide Snapshots denselben abgeleiteten Zustand wie ein vollständiger Replay liefern und fehlende, korrupte oder fingerprint-falsche Snapshots automatisch verworfen werden. Ein abgebrochener Snapshot-Write darf den letzten gültigen Snapshot nicht ersetzen. Das dokumentierte 1000-Schritt-Großweltprofil muss die Replay-/Readback-Smokebudgets einhalten; I08-Event-Store und I10+-Funktionen bleiben unverändert. G4 und G6 müssen grün sein.

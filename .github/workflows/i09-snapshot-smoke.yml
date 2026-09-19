@@ -1,0 +1,188 @@
+name: i09-snapshot-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'app/infrastructure/browser/indexeddb-snapshot-cache.js'
+      - '.github/workflows/i09-snapshot-smoke.yml'
+      - 'tests/test_i09.py'
+      - 'tests/fixtures/snapshot/large-world-profile.json'
+      - 'docs/I09_SNAPSHOT_CACHE.md'
+
+jobs:
+  snapshot-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Snapshot validation, discard, replay and abort in real Chromium
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser"
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i09-http.log" 2>&1 &
+          server_pid=$!
+          "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --remote-debugging-address=127.0.0.1 --remote-debugging-port=9222 about:blank >"$RUNNER_TEMP/i09-chromium.log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$server_pid" "$browser_pid" 2>/dev/null || true' EXIT
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break
+            sleep 0.1
+          done
+          node <<'NODE'
+          const debugBase = 'http://127.0.0.1:9222';
+          const target = await fetch(`${debugBase}/json/new?${encodeURIComponent('http://127.0.0.1:8765/index.html')}`, {method:'PUT'}).then(r => r.json());
+          const ws = new WebSocket(target.webSocketDebuggerUrl);
+          await new Promise((resolve, reject) => {
+            ws.addEventListener('open', resolve, {once:true});
+            ws.addEventListener('error', reject, {once:true});
+          });
+          let seq = 0;
+          const pending = new Map();
+          ws.addEventListener('message', event => {
+            const msg = JSON.parse(event.data);
+            if (msg.id && pending.has(msg.id)) {
+              const p = pending.get(msg.id);
+              pending.delete(msg.id);
+              msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg.result ?? {});
+            }
+          });
+          const call = (method, params={}) => new Promise((resolve, reject) => {
+            const id = ++seq;
+            pending.set(id, {resolve, reject});
+            ws.send(JSON.stringify({id, method, params}));
+          });
+          await call('Runtime.enable');
+          const expression = `(async () => {
+            const { createIndexedDbSnapshotCache } = await import('/app/infrastructure/browser/indexeddb-snapshot-cache.js');
+            const fixture = await fetch('/tests/fixtures/snapshot/large-world-profile.json').then(r => r.json());
+            const dbName = 'i09-snapshot-' + crypto.randomUUID();
+            const worldId = 'world:000000000000000000000001';
+            const rulesetVersion = '1.0.0';
+            const eventFingerprint = 'fp:large-world-v1';
+
+            const fullReplay = async () => {
+              const state = { name: 'unbekannt', processed: 0 };
+              for (let index = 0; index < fixture.count; index += 1) {
+                state.name = 'actor-' + index;
+                state.processed = index + 1;
+              }
+              return state;
+            };
+            const baselineStarted = performance.now();
+            const baseline = await fullReplay();
+            const baselineMs = performance.now() - baselineStarted;
+            if (baseline.name !== fixture.expected_last_name || baseline.processed !== fixture.count) {
+              throw new Error('large-world baseline mismatch');
+            }
+            if (baselineMs > fixture.max_replay_ms) throw new Error('large-world replay budget exceeded');
+
+            const cache = createIndexedDbSnapshotCache({ indexedDB, dbName });
+
+            const missing = await cache.resolveState({
+              worldId, eventFingerprint, rulesetVersion, eventCount: fixture.count, replay: fullReplay
+            });
+            if (missing.source !== 'replay' || JSON.stringify(missing.state) !== JSON.stringify(baseline)) {
+              throw new Error('missing snapshot did not fall back to full replay');
+            }
+
+            await cache.write({
+              world_id: worldId,
+              ruleset_version: rulesetVersion,
+              event_fingerprint: eventFingerprint,
+              event_count: fixture.count,
+              state: baseline,
+            });
+            const cached = await cache.resolveState({
+              worldId, eventFingerprint, rulesetVersion, eventCount: fixture.count,
+              replay: async () => { throw new Error('valid snapshot unexpectedly replayed'); }
+            });
+            if (cached.source !== 'snapshot' || JSON.stringify(cached.state) !== JSON.stringify(baseline)) {
+              throw new Error('valid snapshot readback mismatch');
+            }
+            if (cached.elapsed_ms > fixture.max_cache_read_ms) throw new Error('snapshot read budget exceeded');
+
+            const wrongFingerprint = await cache.resolveState({
+              worldId, eventFingerprint: 'fp:intentionally-wrong', rulesetVersion,
+              eventCount: fixture.count, replay: fullReplay
+            });
+            if (wrongFingerprint.source !== 'replay' || JSON.stringify(wrongFingerprint.state) !== JSON.stringify(baseline)) {
+              throw new Error('wrong fingerprint did not fall back to full replay');
+            }
+            if (await cache.readValid(worldId, { eventFingerprint, rulesetVersion, eventCount: fixture.count }) !== null) {
+              throw new Error('wrong-fingerprint snapshot was not discarded');
+            }
+
+            const rawDb = await new Promise((resolve, reject) => {
+              const request = indexedDB.open(dbName, 1);
+              request.onsuccess = () => resolve(request.result);
+              request.onerror = () => reject(request.error);
+            });
+            await new Promise((resolve, reject) => {
+              const tx = rawDb.transaction('snapshots', 'readwrite');
+              tx.objectStore('snapshots').put({
+                world_id: worldId,
+                ruleset_version: rulesetVersion,
+                event_fingerprint: eventFingerprint,
+                event_count: fixture.count
+              });
+              tx.oncomplete = resolve;
+              tx.onerror = () => reject(tx.error);
+              tx.onabort = () => reject(tx.error || new Error('corrupt seed aborted'));
+            });
+            rawDb.close();
+            const corrupt = await cache.resolveState({
+              worldId, eventFingerprint, rulesetVersion, eventCount: fixture.count, replay: fullReplay
+            });
+            if (corrupt.source !== 'replay' || JSON.stringify(corrupt.state) !== JSON.stringify(baseline)) {
+              throw new Error('corrupt snapshot did not fall back to full replay');
+            }
+
+            await cache.write({
+              world_id: worldId,
+              ruleset_version: rulesetVersion,
+              event_fingerprint: 'fp:stable',
+              event_count: fixture.count,
+              state: baseline,
+            });
+            const aborting = createIndexedDbSnapshotCache({
+              indexedDB,
+              dbName,
+              faultInjector: ({ transaction }) => transaction.abort(),
+            });
+            let aborted = false;
+            try {
+              await aborting.write({
+                world_id: worldId,
+                ruleset_version: rulesetVersion,
+                event_fingerprint: 'fp:broken',
+                event_count: fixture.count,
+                state: { name: 'BROKEN', processed: 1 },
+              });
+            } catch {
+              aborted = true;
+            }
+            if (!aborted) throw new Error('aborted snapshot write did not reject');
+            const preserved = await cache.readValid(worldId, {
+              eventFingerprint: 'fp:stable', rulesetVersion, eventCount: fixture.count
+            });
+            if (!preserved || JSON.stringify(preserved.state) !== JSON.stringify(baseline)) {
+              throw new Error('aborted snapshot write replaced the last valid snapshot');
+            }
+
+            indexedDB.deleteDatabase(dbName);
+            return {
+              count: fixture.count,
+              baseline_ms: baselineMs,
+              replay_ms: missing.elapsed_ms,
+              snapshot_ms: cached.elapsed_ms,
+              wrong_fingerprint_replayed: wrongFingerprint.source === 'replay',
+              corrupt_replayed: corrupt.source === 'replay',
+              abort_preserved: aborted,
+            };
+          })()`;
+          const result = await call('Runtime.evaluate', { expression, awaitPromise:true, returnByValue:true });
+          if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
+          console.log('I09 Snapshot smoke: PASS', JSON.stringify(result.result?.value));
+          ws.close();
+          NODE
