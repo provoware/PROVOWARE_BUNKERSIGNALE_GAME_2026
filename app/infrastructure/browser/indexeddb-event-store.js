@@ -31,17 +31,30 @@ export function createIndexedDbEventStore({ indexedDB, dbName = "provoware-bunke
     return requestResult(request);
   }
 
-  async function append(events) {
+  async function append(worldId, events) {
+    if (typeof worldId !== "string" || !worldId) throw new TypeError("worldId is required");
     if (!Array.isArray(events) || events.length === 0) throw new TypeError("append requires at least one event");
     const db = await open();
     try {
       const transaction = db.transaction(STORE, "readwrite");
       const done = transactionDone(transaction);
       const store = transaction.objectStore(STORE);
-      events.forEach((event, index) => {
-        store.add(structuredClone(event));
-        faultInjector?.({ phase: "after-write-queued", writeCount: index + 1, transaction });
-      });
+      try {
+        events.forEach((event, index) => {
+          const clonedEvent = structuredClone(event);
+          store.add({
+            world_id: worldId,
+            event_id: clonedEvent.event_id,
+            lamport: clonedEvent.lamport,
+            event: clonedEvent,
+          });
+          faultInjector?.({ phase: "after-write-queued", writeCount: index + 1, transaction });
+        });
+      } catch (error) {
+        try { transaction.abort(); } catch {}
+        try { await done; } catch {}
+        throw error;
+      }
       await done;
     } finally {
       db.close();
@@ -56,9 +69,9 @@ export function createIndexedDbEventStore({ indexedDB, dbName = "provoware-bunke
       const done = transactionDone(transaction);
       const index = transaction.objectStore(STORE).index("by_world_lamport");
       const range = IDBKeyRange.bound([worldId, 0, ""], [worldId, Number.MAX_SAFE_INTEGER, "\uffff"]);
-      const events = await requestResult(index.getAll(range));
+      const records = await requestResult(index.getAll(range));
       await done;
-      return events.map(event => structuredClone(event));
+      return records.map(record => structuredClone(record.event));
     } finally {
       db.close();
     }
