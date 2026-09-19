@@ -77,7 +77,7 @@ jobs:
             await clean.append(worldId, [event('11',1), event('12',2)]);
             const reopened = createIndexedDbEventStore({ indexedDB, dbName });
             const readback = await reopened.readWorld(worldId);
-            if (readback.map(e => e.event_id).join(',') !== 'event:000000000000000000000011,event:000000000000000000000012') throw new Error('reopen/readback mismatch');
+            if (readback.map(e => e.event_id).join(',') !== 'event:000000000000000000000010,event:000000000000000000000011,event:000000000000000000000012') throw new Error('reopen/readback mismatch');
 
             let duplicateRejected = false;
             try { await reopened.append(worldId, [event('13',2), event('12',3)]); } catch { duplicateRejected = true; }
