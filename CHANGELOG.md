@@ -6,6 +6,8 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
+- I04 Content Inbox mit Lock-Pin-Prüfung, sicherer Quarantäne und atomarer Aktivierung.
+- I04-Regressionstests für Aktivierung, manipulierte und unlesbare Kandidaten, Pfad-Escapes sowie vorhandene Ziele.
 - I03 Content Registry + Lockfile mit exakter Paketauflösung, SHA-256-Pins und deterministischem Dependency-Resolver.
 - Gemeinsamer Registry/Lock-Drift-Fingerprint sowie positive und manipulierte Content-Fixtures.
 - I02 Schema Registry mit explizitem Lifecycle und exakter Versionsauflösung.

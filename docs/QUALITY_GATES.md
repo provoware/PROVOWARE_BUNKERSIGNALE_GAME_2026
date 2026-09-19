@@ -33,3 +33,6 @@ I00 ist nur grün, wenn G0, G1 und G8 vollständig grün sowie die I00-Anteile v
 
 ## I03 Exit
 I03 ist nur grün, wenn G1, G2 und G8 vollständig grün sind, die I02-Schema-Regression bestehen bleibt, Registry und Lockfile gemeinsam gegen Drift geprüft werden und keine I04-Funktion (Inbox, Quarantäne, Aktivierung) eingeführt wurde.
+
+## I04 Exit
+I04 ist nur grün, wenn G1, G6 und G8 vollständig grün sind, alle I03-Garantien bestehen bleiben, valide Inbox-Kandidaten atomar an ihr freies registriertes Ziel verschoben werden und invalide Kandidaten mit stabilem Fehlercode in Quarantäne landen. Vorhandene Aktivierungs- oder Quarantäneziele dürfen nicht überschrieben werden.

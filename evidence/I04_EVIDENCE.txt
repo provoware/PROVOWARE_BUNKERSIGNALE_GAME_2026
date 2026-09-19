@@ -1,0 +1,21 @@
+S.O.U.N.D. SYSTEM-IKER - I04 Evidence Report
+Generated UTC: 2026-09-19T00:52:55Z
+Status: GREEN
+Fingerprint SHA-256: e424f04cc68495dbbf7bd486010c20d35f0f86845a62307d836e30ff297a5a02
+
+Checks:
+- repository_quality: PASS - Vollständiger lokaler Repository-Qualitätslauf bestanden.
+- content_inbox_activation: PASS - Exakt gepinnter Kandidat atomar aktiviert.
+- quarantine: PASS - Manipulierte und unlesbare Kandidaten mit stabilem Fehlercode isoliert.
+- write_safety: PASS - Pfad-Escapes und vorhandene Ziele ohne Überschreiben abgewiesen.
+- predecessor_regression: PASS - Alle vorhandenen I00-I03-Tests gemeinsam mit I04 bestanden.
+
+Scope:
+- Lokale Content Inbox für einzelne registrierte Kandidaten.
+- Identitäts- und SHA-256-Lock-Pin-Prüfung vor jeder Verschiebung.
+- Sichere Quarantäne oder atomare Aktivierung ohne Registry-/Lock-Mutation.
+
+Nicht enthalten:
+- Persistente Weltdaten oder Spielstände.
+- Produktive Story- oder Gameplay-Inhalte.
+- Netzwerkimport oder Synchronisierung.

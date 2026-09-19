@@ -1,0 +1,50 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-006",
+  "checkpoint": "I04",
+  "title": "Content Inbox, Quarantäne und atomare Aktivierung",
+  "purpose": "Lokale Contentkandidaten vor jeder Aktivierung gegen registrierte Identität und SHA-256-Lock-Pin prüfen, ungültige Kandidaten sicher isolieren und valide Pakete ohne Zwischenzustand aktivieren.",
+  "scope": [
+    "lokale Inbox für einzelne Contentkandidaten",
+    "Identitäts- und Lock-Pin-Prüfung vor Aktivierung",
+    "Quarantäne mit stabilem CONTENT-Fehlercode",
+    "atomare Aktivierung an das registrierte Ziel",
+    "Schutz vor Pfad-Escapes und dem Überschreiben vorhandener Ziele",
+    "Integration in die bestehende Repository-Qualitätsprüfung"
+  ],
+  "non_goals": [
+    "Keine persistente Welt oder Spielstände",
+    "Keine produktiven Story- oder Gameplay-Inhalte",
+    "Keine Netzwerkimporte oder Synchronisierung",
+    "Keine Änderung von Registry oder Lockfile durch die Inbox",
+    "Keine neue Runtime-Abhängigkeit"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "Additiver lokaler Aktivierungscheckpoint auf I03; Schema Registry, Contentverträge und Browser-Runtime bleiben funktional unverändert.",
+  "security": "Einfache Dateinamen und aufgelöste Zielpfade begrenzen den Dateizugriff; Hash- und Identitätsprüfung erfolgen vor jeder Verschiebung; vorhandene Ziele werden nie überschrieben.",
+  "test_plan": [
+    "vollständiger Repository-Qualitätslauf",
+    "I00-I03 Regression",
+    "gepinnten Kandidaten atomar aktivieren",
+    "manipulierten und unlesbaren Kandidaten quarantänisieren",
+    "Pfad-Escape und vorhandenes Aktivierungsziel ohne Mutation ablehnen",
+    "Registry/Lock-Audit nach Aktivierung erneut ausführen"
+  ],
+  "rollback": "I04-Commit revertieren; I03 bleibt der letzte gefreezte Vorgängerstand.",
+  "evidence": [
+    "tests/test_i04.py",
+    "tools/content_inbox.py",
+    "tools/content_registry.py",
+    "evidence/I04_EVIDENCE.json",
+    "status/I04_STATUS.json"
+  ],
+  "result": "GREEN"
+}
