@@ -160,7 +160,7 @@ jobs:
             if (!orderRejected) throw new Error('non-deterministic event order was accepted');
 
             const maxElapsedMs = 5000;
-            if (elapsedMs >= maxElapsedMs) throw new Error(`1000-event repeat export exceeded budget: ${elapsedMs.toFixed(1)} ms`);
+            if (elapsedMs >= maxElapsedMs) throw new Error('1000-event repeat export exceeded budget: ' + elapsedMs.toFixed(1) + ' ms');
 
             indexedDB.deleteDatabase(dbName);
             return {
