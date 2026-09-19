@@ -48,11 +48,14 @@ Persistente Operationen müssen später atomar oder rückrollbar sein. Ein fehlg
 
 Der I04-Freeze ist zusätzlich kryptografisch gebunden: Evidence- und Status-Fingerprint müssen dem aktuellen governeden Repository-Stand entsprechen; checkpoint-kritische Einzelhashes umfassen die statischen I04-Artefakte und automatisch alle I04-Change-Records.
 
-## 12. Content Hot-Swap Policy I05
+## 12. Stable IDs + Canonical JSON I05
+`manifests/domain.identity.json` definiert die stabilen ID-Klassen `world`, `actor`, `object` und `event`. `tools/domain_identity.py` erzeugt IDs deterministisch aus ID-Klasse und normalisiertem stabilen Schlüssel und validiert die Typzuordnung. Canonical JSON sortiert Objektschlüssel lexikografisch, serialisiert UTF-8 ohne Formatierungswhitespace, normalisiert CRLF/CR in Strings auf LF und weist NaN, Infinity, Nicht-String-Schlüssel sowie nicht unterstützte Typen fail-closed zurück.
+
+## 13. Content Hot-Swap Policy I05
 `manifests/content.hot-swap.json` trennt die Hot-Swap-Sicherheitsentscheidung von Registry, Lockfile und Inbox. `tools/content_hot_swap.py` arbeitet ausschließlich read-only und definiert exakt vier Klassen: `immediate_safe`, `restart_required`, `migration_required` und `blocked_while_world_running`. Textwechsel liegen verbindlich in `immediate_safe`. Unbekannte Contentarten fallen fail-closed auf `restart_required` zurück. I05 führt selbst keine Aktivierung, Migration, Persistenz oder Weltmutation aus.
 
-## 13. Erweiterungsregel
+## 14. Erweiterungsregel
 Ein neues Modul wird nur aufgenommen, wenn Owner, Eingaben, Ausgaben, Fehlerpfad, Tests, Versionierungswirkung und Rückwärtskompatibilität definiert sind.
 
-## 14. Entscheidungshoheit
+## 15. Entscheidungshoheit
 Architekturänderungen benötigen eine ADR, eine Auswirkungsanalyse und einen vollständigen Qualitätslauf. Der Orchestrator ist alleinige Merge-Instanz; Fachrollen liefern prüfbare Empfehlungen und Vetos.

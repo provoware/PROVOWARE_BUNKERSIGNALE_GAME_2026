@@ -1,0 +1,32 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-010",
+  "checkpoint": "I05",
+  "title": "REOPEN I05: fehlende Stable-ID- und Canonical-JSON-Voraussetzung",
+  "purpose": "Den verbindlichen I05-Vertrag aus MASTER-Entwicklungsplan v0.4 nachziehen, damit I06 Event Envelope nicht auf einer fehlenden Identitäts- und Serialisierungsbasis aufbaut.",
+  "scope": [
+    "I05 explizit für stabile world/actor/object/event IDs wieder öffnen",
+    "deterministischen Stable-ID-Generator und strikte ID-Validierung ergänzen",
+    "Canonical-JSON-Serialisierung mit LF-Normalisierung, UTF-8 und deterministischer Schlüsselreihenfolge ergänzen",
+    "maschinenlesbaren Identitätsvertrag und fokussierte Golden-/Negativtests ergänzen",
+    "I05-Dokumentation auf den kombinierten tatsächlich vorhandenen Scope korrigieren"
+  ],
+  "non_goals": [
+    "Keine Änderung an bestehender I05-Hot-Swap-Policy",
+    "Kein Event Envelope, Reducer, Event Store oder IndexedDB",
+    "Keine Änderung an I03 Registry/Lockfile oder I04 Inbox/Quarantäne",
+    "Keine visuelle UX-Änderung in diesem REOPEN"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "data_schema_auditor", "qa_regression", "release_evidence"],
+  "compatibility": "Der neue Vertrag ist rein additiv; bestehende Content- und Browserpfade bleiben unverändert.",
+  "security": "Nichtdeterministische Werte, NaN/Infinity, Nicht-String-Objektschlüssel und ungültige ID-Klassen werden fail-closed abgewiesen.",
+  "test_plan": [
+    "sechs fokussierte I05-Identity-/Canonical-JSON-Tests ausführen",
+    "Linux/Windows-Zeilenenden, Unicode, Zahlen und Schlüsselreihenfolge als Golden-Verhalten prüfen",
+    "vollständigen Repository-Quality-Lauf durchführen",
+    "I05-Evidence nach finalem governeden Fingerprint erneuern"
+  ],
+  "rollback": "REOPEN-Commit revertieren; I06 bleibt dann blockiert, weil seine Stable-ID-/Canonical-JSON-Voraussetzung fehlt.",
+  "evidence": ["tools/domain_identity.py", "manifests/domain.identity.json", "tests/test_i05_identity.py", "evidence/I05_EVIDENCE.json", "status/I05_STATUS.json"],
+  "result": "GREEN"
+}
