@@ -1,0 +1,29 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-013",
+  "checkpoint": "I06",
+  "title": "REOPEN I06: README-Zeilenumbrüche und Status-Pill-Lesbarkeit",
+  "purpose": "Einen nach dem letzten I06-Refreeze noch sichtbaren Dokumentationsfehler korrigieren und genau eine risikoarme visuelle UX-Verbesserung ergänzen, bevor I07 beginnt.",
+  "scope": [
+    "zwei literale \\n-Sequenzen im README in echte Markdown-Zeilenumbrüche überführen",
+    "Status-Pills per white-space: nowrap vor unleserlichem Umbruch schützen"
+  ],
+  "non_goals": [
+    "Keine Änderung am Event-Envelope-Vertrag oder Schema",
+    "Keine Änderung an I00-I05",
+    "Kein Event Store, Reducer, Replay-Core oder sonstiger I07-Scope",
+    "Keine weitere visuelle UX-Änderung"
+  ],
+  "affected_owners": ["orchestrator", "qa_regression", "ux_accessibility", "release_evidence"],
+  "compatibility": "Reine Dokumentations- und CSS-Darstellungsänderung; keine Runtime-Semantik, Datenformate oder APIs ändern sich.",
+  "security": "Keine Änderung an Trust Boundaries oder Persistenz.",
+  "test_plan": [
+    "Repository-Quality-Gate ausführen",
+    "Browser-Smoke für Shell und CSS ausführen",
+    "README auf verbleibende literale \\n-Sequenzen prüfen",
+    "I06-Evidence nur nach vollständig grünen Gates erneuern"
+  ],
+  "rollback": "Die drei Dateien dieses REOPEN-Patches revertieren; I06 bleibt dann funktional, aber mit dem dokumentierten Darstellungsfehler.",
+  "evidence": ["README.md", "app/ui/styles.css", "changes/CHG-20260919-013.json"],
+  "result": "PENDING"
+}
