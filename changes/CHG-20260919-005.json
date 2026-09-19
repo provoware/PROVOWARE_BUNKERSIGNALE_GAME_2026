@@ -1,0 +1,52 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-005",
+  "checkpoint": "I03",
+  "title": "Read-only Content Registry und Lockfile",
+  "purpose": "Exakt versionierte lokale Contentpakete deterministisch und ohne Aktivierung auflösen, Pfade und SHA-256-Pins gegen ein Lockfile prüfen und Registry/Lock-Drift vor Persistenzentwicklung sichtbar machen.",
+  "scope": [
+    "Content Registry und Lockfile als maschinenlesbare Verträge",
+    "deterministischer read-only Dependency-Resolver",
+    "exakte Paketversionen und stabile Paket-IDs",
+    "SHA-256-Dateipins und gemeinsamer Registry/Lock-Fingerprint",
+    "Positiv- und Negativfixtures einschließlich Manipulationsfällen",
+    "Integration in Repository-Qualitätsprüfung"
+  ],
+  "non_goals": [
+    "Keine Content Inbox",
+    "Keine Quarantäne oder Aktivierung",
+    "Kein Kopieren oder Verschieben von Paketen",
+    "Keine Persistenz",
+    "Keine produktiven Story- oder Gameplay-Inhalte",
+    "Keine neue Runtime-Abhängigkeit"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "Additiver read-only Vertragscheckpoint auf I02; die I01-Browser-Runtime und die eingefrorene I02-Schema-Registry bleiben funktional unverändert.",
+  "security": "Pfade werden auf den erlaubten Root begrenzt; Paketinhalt wird gegen SHA-256-Lock-Pins geprüft; Netzwerk- und Aliasauflösung sind ausgeschlossen.",
+  "test_plan": [
+    "vollständiger Repository-Qualitätslauf",
+    "I00-I02 Regression",
+    "Content Registry/Lock Schema- und Auditprüfung",
+    "deterministische Dependency-Auflösung",
+    "doppelte ID, fehlende Abhängigkeit und falsche Version ablehnen",
+    "manipulierten Lock-Hash und Registry/Lock-Drift erkennen",
+    "realer Chromium-Smoke der unveränderten Browser-Runtime"
+  ],
+  "rollback": "I03-Squash-Commit revertieren; I02 bleibt der letzte gefreezte Vorgängerstand.",
+  "evidence": [
+    "tests/test_i03.py",
+    "tests/fixtures/content",
+    "manifests/content.registry.json",
+    "manifests/content.lock.json",
+    "manifests/content.registry-lock.sha256"
+  ],
+  "result": "GREEN"
+}

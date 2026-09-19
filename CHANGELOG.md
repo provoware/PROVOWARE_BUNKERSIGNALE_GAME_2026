@@ -6,6 +6,8 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
+- I03 Content Registry + Lockfile mit exakter Paketauflösung, SHA-256-Pins und deterministischem Dependency-Resolver.
+- Gemeinsamer Registry/Lock-Drift-Fingerprint sowie positive und manipulierte Content-Fixtures.
 - I02 Schema Registry mit explizitem Lifecycle und exakter Versionsauflösung.
 - Dependency-freie Draft-2020-12-Teilvalidierung für die im Repository verwendeten Keywords.
 - Schema-Positiv- und Negativfixtures einschließlich stabiler Fehlerklassifikation.

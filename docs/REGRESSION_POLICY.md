@@ -44,6 +44,10 @@ Jeder spätere Checkpoint MUSS die bisherigen Garantien weiterhin erfüllen. Che
 
 I02 prüft zusätzlich Registry-Selbstvalidierung, lokale Schema-Identitäten, exakte Versionsauflösung, Lifecycle-Sperren sowie eine gültige Positivfixture. Jede Negativfixture muss mit dem dort deklarierten stabilen Fehlercode abgewiesen werden.
 
+## I03-Regressionsumfang
+
+I03 prüft zusätzlich Content-Registry und Lockfile als gemeinsames read-only Vertragsset. Pflichtprüfungen sind: exakte Paketversionen, eindeutige Paket-IDs, vollständige Abhängigkeiten, deterministische Auflösungsreihenfolge, Pfadbegrenzung auf den erlaubten Root, SHA-256-Lock-Pins und gemeinsamer Registry/Lock-Fingerprint. Positive sowie manipulierte Fixtures müssen reproduzierbar akzeptiert beziehungsweise mit stabilem CONTENT-Fehlercode abgewiesen werden. Ein fehlgeschlagener Resolve-/Drift-Test darf Registry oder Lockfile nicht verändern.
+
 ## Rollback
 
 Ein fehlgeschlagener Checkpoint wird nicht vorwärts repariert, solange die letzte grüne Basis nicht reproduzierbar ist. Rollback bedeutet Wiederherstellung des letzten grünen Checkpoints plus erneuten vollständigen Qualitätslauf.

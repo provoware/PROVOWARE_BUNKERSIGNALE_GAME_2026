@@ -29,3 +29,7 @@ In I00 voll aktiv: klare Standards, Ein-Kommando-Prüfung, keine offenen Code-Pl
 
 ## I00 Exit
 I00 ist nur grün, wenn G0, G1 und G8 vollständig grün sowie die I00-Anteile von G6 ohne Fehler sind.
+
+
+## I03 Exit
+I03 ist nur grün, wenn G1, G2 und G8 vollständig grün sind, die I02-Schema-Regression bestehen bleibt, Registry und Lockfile gemeinsam gegen Drift geprüft werden und keine I04-Funktion (Inbox, Quarantäne, Aktivierung) eingeführt wurde.

@@ -1,0 +1,24 @@
+{
+  "$schema": "../../../../schemas/content-registry.schema.json",
+  "version": "1.0.0",
+  "resolution": "exact_version_only",
+  "packages": [
+    {
+      "package_id": "core.base",
+      "version": "1.0.0",
+      "path": "packages/base.json",
+      "dependencies": []
+    },
+    {
+      "package_id": "feature.addon",
+      "version": "1.0.0",
+      "path": "packages/addon.json",
+      "dependencies": [
+        {
+          "package_id": "core.base",
+          "version": "1.0.0"
+        }
+      ]
+    }
+  ]
+}
