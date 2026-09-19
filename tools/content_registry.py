@@ -145,6 +145,27 @@ class ContentRegistry:
             raise ContentRegistryError("SSI-CONTENT-0003", f"Contentpaket stimmt nicht mit Lockfile überein: {package_id}@{version}")
         return read_json(path)
 
+    def verify_candidate(self, candidate_path: Path, package_id: str, version: str) -> Path:
+        """Verify an inbox candidate against the registered identity and lock pin."""
+        if not PACKAGE_ID.fullmatch(package_id) or not SEMVER.fullmatch(version):
+            raise ContentRegistryError("SSI-CONTENT-0002", "Exakte package_id und SemVer-Version sind erforderlich.")
+        key = (package_id, version)
+        entry = self._packages.get(key)
+        pin = self._pins.get(key)
+        if entry is None or pin is None:
+            raise ContentRegistryError("SSI-CONTENT-0002", f"Unbekanntes Contentpaket: {package_id}@{version}")
+
+        try:
+            candidate = read_json(candidate_path)
+        except (OSError, ValueError) as exc:
+            raise ContentRegistryError("SSI-CONTENT-0001", "Inbox-Kandidat ist kein lesbares JSON-Dokument.") from exc
+        if candidate.get("package_id") != package_id or candidate.get("version") != version:
+            raise ContentRegistryError("SSI-CONTENT-0003", f"Paketidentität weicht ab: {package_id}@{version}")
+        if entry["path"] != pin["path"] or sha256_file(candidate_path) != pin["sha256"]:
+            raise ContentRegistryError("SSI-CONTENT-0003", f"Inbox-Kandidat stimmt nicht mit Lockfile überein: {package_id}@{version}")
+        self.resolve_graph(package_id, version)
+        return self._local_path(entry["path"])
+
     def resolve_graph(self, package_id: str, version: str) -> list[tuple[str, str]]:
         start = (package_id, version)
         if start not in self._packages:
