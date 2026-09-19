@@ -1,0 +1,31 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-004",
+  "checkpoint": "I10",
+  "title": "I10 game UI gate entry-page trigger",
+  "purpose": "Den bereits eingeführten Game-UI-Regressionsgate auch bei reinen Änderungen an index.html zuverlässig auslösen.",
+  "scope": [
+    "index.html in den pull_request-Pfadfilter des i10-game-ui-shell-smoke aufnehmen"
+  ],
+  "non_goals": [
+    "Keine Änderung an Game-Shell, UI-Layout, Produktlogik, Storage Health oder Export/Restore"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "qa_regression",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "Die bestehende Game-Shell und ihre Prüfungen bleiben unverändert; nur die Triggerabdeckung wird vervollständigt.",
+  "security": "Keine Runtime- oder Persistenzwirkung.",
+  "test_plan": [
+    "Repository Quality",
+    "i10-game-ui-shell-smoke auf PR",
+    "allgemeiner Browser-Smoke nur soweit durch bestehende Trigger ausgelöst"
+  ],
+  "rollback": "Branch verwerfen; main bleibt auf dem bestehenden aktiven I10-P0-Stand.",
+  "evidence": [
+    ".github/workflows/i10-game-ui-shell-smoke.yml"
+  ],
+  "result": "GREEN"
+}
