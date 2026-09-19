@@ -1,0 +1,52 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-007",
+  "checkpoint": "I10",
+  "title": "I10-B deterministic world backup v1",
+  "purpose": "Den isolierten I10-B-Exportpfad als read-only, deterministischen Backupvertrag implementieren, ohne Restore-, Download- oder andere Schreiblogik vorzuziehen.",
+  "scope": [
+    "world-backup/1.0.0 Schema und Schema-Registry-Eintrag",
+    "exakter Runtime-Validator für Backupfelder und I06-Event-Invarianten",
+    "kanonischer JSON-Serializer mit stabiler Schlüsselreihenfolge und LF-Normalisierung",
+    "read-only Export-Use-Case über injiziertes I08 readWorld(worldId)",
+    "byteidentischer Wiederholungsexport im realen Chromium",
+    "1000-Event-Smoke mit dokumentiertem 5000-ms-Budget"
+  ],
+  "non_goals": [
+    "Kein Restore oder Import",
+    "Kein Download-/File-Picker-Pfad",
+    "Keine Änderung am I08 Event Store",
+    "Keine Änderung an I09 Snapshot Cache",
+    "Keine Game-Shell- oder Storage-Health-UI-Änderung",
+    "Keine Hashkette, Signatur oder Crypto aus I11/I12"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "I10 bleibt active. Der Export liest ausschließlich autoritative I08-Events; I09-Snapshots, UI-State und Storage-Health-Werte werden nicht Teil des Backupdokuments.",
+  "security": "Es entsteht kein neuer persistenter Schreibpfad. Ein fehlgeschlagener Read oder eine Validierungsverletzung verhindert die erfolgreiche Backup-Erzeugung vollständig.",
+  "test_plan": [
+    "Repository Quality und Schema-Registry-Audit",
+    "fokussierte I10-B Contract-Tests",
+    "realer Chromium-Smoke mit 1000 I08-Events",
+    "zwei byteidentische Wiederholungsexporte",
+    "negative Tests für Count-Mismatch, Zusatzfeld, ungültiges Event und falsche Reihenfolge",
+    "allgemeiner Browser-Smoke nur bei bestehendem Trigger",
+    "finaler Diff ohne Restore/Download und ohne I09/Game-Shell/I10-A-Änderung"
+  ],
+  "rollback": "I10-B-Branch verwerfen; main bleibt auf dem aktiven I10-A-Stand inklusive P2-Fix.",
+  "evidence": [
+    "schemas/world-backup.schema.json",
+    "manifests/schema.registry.json",
+    "app/application/world-backup.js",
+    "tests/test_i10_backup.py",
+    ".github/workflows/i10-export-backup-smoke.yml",
+    "docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md"
+  ],
+  "result": "GREEN"
+}
