@@ -25,5 +25,5 @@
   ],
   "rollback": "Die drei Dateien dieses REOPEN-Patches revertieren; I06 bleibt dann funktional, aber mit dem dokumentierten Darstellungsfehler.",
   "evidence": ["README.md", "app/ui/styles.css", "changes/CHG-20260919-013.json"],
-  "result": "PENDING"
+  "result": "GREEN"
 }
