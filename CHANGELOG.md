@@ -6,7 +6,7 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 ## [Unreleased]
 
 ### Added
-- I05 stabile world/actor/object/event IDs mit deterministischem Generator und strikter Typvalidierung.
+- I06 Event Envelope v1 mit Schema Registry, Sequenz-/Lamport-Invarianten und definierten Trace-Feldern.\n- I06 Positiv-/Negativfixtures für gültige Envelopes, ungültige Sequenz, negative Lamport-Zeit und unbekannte Zusatzfelder.\n- I05 stabile world/actor/object/event IDs mit deterministischem Generator und strikter Typvalidierung.
 - I05 Canonical-JSON-Serialisierung mit UTF-8, sortierten Schlüsseln, LF-Normalisierung und fail-closed Behandlung instabiler Werte.
 - I05 read-only Content-Hot-Swap-Policy mit vier Sicherheitsklassen, sicherem Default und deterministischen Freigabeentscheidungen.
 - I05-Regressionstests für Sofortwechsel, Neustartpflicht, Migrationspflicht und Sperre während laufender Welten.
@@ -23,7 +23,7 @@ Das Format orientiert sich an Keep a Changelog 1.1.0; die Produktversionierung f
 - I01-Strukturtests sowie realer Chromium-Boot-Smoke als Pull-Request-Gate.
 
 ### Changed
-- I05 per dokumentiertem REOPEN an die verbindliche v0.4-Voraussetzung für Stable IDs + Canonical JSON angeglichen; bestehende Hot-Swap-Funktion bleibt unverändert.
+- Panel-Fließtexte auf eine ruhige maximale Zeilenbreite begrenzt; keine Navigation oder Laufzeitlogik verändert.\n- I05 per dokumentiertem REOPEN an die verbindliche v0.4-Voraussetzung für Stable IDs + Canonical JSON angeglichen; bestehende Hot-Swap-Funktion bleibt unverändert.
 - Text-Zeilenabstand der Browseroberfläche moderat erhöht, ohne Navigation oder Laufzeitlogik zu verändern.
 - I04-Architekturvertrag an die tatsächlich geprüfte Hardlink-No-Clobber-Implementierung angepasst; Freeze-Evidence erfasst nun automatisch alle I04-Change-Records.
 - Repository-Einstieg und Bereichs-READMEs auf den tatsächlichen I02-Stand ausgerichtet.
