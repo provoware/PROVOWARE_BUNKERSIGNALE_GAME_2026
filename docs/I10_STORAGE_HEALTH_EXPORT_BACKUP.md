@@ -132,12 +132,15 @@ Kleinster Produktblock:
 
 ### I10-B - Export Backup
 
-Erst nach grünem I10-A:
+Nach grünem I10-A:
 
-- Backup v1 Schema/Serializer,
-- Welt-Readback aus I08,
-- deterministische Exportbytes,
-- Download erst nach vollständig erfolgreicher Erzeugung.
+- registriertes `world-backup/1.0.0`-Schema,
+- Runtime-Validator für exakte Top-Level-Felder und I06-Event-Invarianten,
+- kanonischer JSON-Serializer mit LF-Normalisierung und stabiler Schlüsselreihenfolge,
+- read-only Welt-Readback ausschließlich über injiziertes I08-`readWorld(worldId)`,
+- deterministische Exportbytes bei identischem autoritativem Weltstand,
+- 1000-Event-Chromium-Smoke: zwei vollständige Exporte zusammen < **5000 ms**,
+- noch **kein** Dateidownload; Download darf erst nach vollständig erfolgreicher Erzeugung ergänzt werden.
 
 ### I10-C - Restore
 
@@ -170,10 +173,10 @@ Verbindliche Gates: **G1, G4, G6, G7 und G8**.
 ## Aktueller Umsetzungsstand
 
 - **I10-A Storage Health Foundation:** implementiert auf diesem Branch; read-only Estimate/Persistenzstatus, Grenzwertklassifikation, Diagnoseanzeige und Chromium-Gate.
-- **I10-B Export Backup:** Vertrag festgelegt, noch keine Produktimplementierung.
+- **I10-B Export Backup:** implementiert: Schema/Registry, Validator, kanonischer Serializer, read-only I08-Readback und 1000-Event-Determinismus-Smoke; noch kein Download.
 - **I10-C Restore:** Vertrag festgelegt, noch keine Produktimplementierung.
 
-I10 bleibt deshalb **ACTIVE** und darf nach I10-A ausdrücklich noch nicht eingefroren werden.
+I10 bleibt deshalb **ACTIVE** und darf nach I10-B ausdrücklich noch nicht eingefroren werden; I10-C Restore fehlt weiterhin.
 
 ## Restrisiko
 
