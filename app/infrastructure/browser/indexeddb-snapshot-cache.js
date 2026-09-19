@@ -106,8 +106,15 @@ export function createIndexedDbSnapshotCache({
     try {
       const transaction = db.transaction(STORE, "readonly");
       const done = transactionDone(transaction);
-      record = await requestResult(transaction.objectStore(STORE).get(worldId));
-      await done;
+      try {
+        const request = transaction.objectStore(STORE).get(worldId);
+        faultInjector?.({ phase: "after-read-queued", transaction, request });
+        record = await requestResult(request);
+        await done;
+      } catch (error) {
+        try { await done; } catch {}
+        throw error;
+      }
     } finally {
       db.close();
     }
