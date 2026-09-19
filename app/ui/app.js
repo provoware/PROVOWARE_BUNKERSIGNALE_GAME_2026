@@ -33,9 +33,9 @@ function renderOverview(documentRef, snapshot) {
   const section = element(documentRef, "section", { className: "ssi-panel" });
   section.id = "overview-panel";
   section.tabIndex = -1;
-  const heading = element(documentRef, "h2", { text: "System bereit für I01" });
+  const heading = element(documentRef, "h2", { text: "Technische Basis bereit" });
   const copy = element(documentRef, "p", {
-    text: "Diese Iteration stellt nur den sicheren Startpfad und die technische Diagnose bereit. Spiellogik und persistente Weltdaten sind noch nicht aktiv.",
+    text: "Die technische Grundlage ist aktiv. Die neue Spielansicht dient zunächst als read-only Regressionstest; Spielaktionen bleiben noch deaktiviert.",
   });
   const meta = element(documentRef, "dl", { className: "ssi-meta" });
   const values = [
@@ -53,6 +53,89 @@ function renderOverview(documentRef, snapshot) {
   return section;
 }
 
+function renderGame(documentRef, gameShell) {
+  const section = element(documentRef, "section", { className: "ssi-panel ssi-game-panel" });
+  section.id = "game-panel";
+  section.tabIndex = -1;
+  section.hidden = true;
+  section.dataset.regressionSurface = "game-shell";
+
+  const headingRow = element(documentRef, "div", { className: "ssi-game-heading" });
+  headingRow.append(
+    element(documentRef, "div"),
+    element(documentRef, "span", { className: "ssi-status ssi-status--info", text: gameShell.statusLabel }),
+  );
+  headingRow.firstElementChild.append(
+    element(documentRef, "h2", { text: "Spielansicht · Regression" }),
+    element(documentRef, "p", { text: `${gameShell.worldLabel} · feste Referenzansicht ohne aktive Spiellogik` }),
+  );
+
+  const grid = element(documentRef, "div", { className: "ssi-game-grid" });
+
+  const actors = element(documentRef, "section", { className: "ssi-game-region" });
+  actors.setAttribute("aria-labelledby", "game-actors-title");
+  const actorsTitle = element(documentRef, "h3", { text: "Figuren" });
+  actorsTitle.id = "game-actors-title";
+  const actorList = element(documentRef, "ul", { className: "ssi-game-list" });
+  for (const actor of gameShell.actors) {
+    const item = element(documentRef, "li");
+    item.append(
+      element(documentRef, "strong", { text: actor.label }),
+      element(documentRef, "span", { text: actor.state }),
+    );
+    actorList.append(item);
+  }
+  actors.append(actorsTitle, actorList);
+
+  const scene = element(documentRef, "article", { className: "ssi-game-region ssi-scene-card" });
+  scene.setAttribute("aria-labelledby", "game-scene-title");
+  const sceneTitle = element(documentRef, "h3", { text: gameShell.scene.title });
+  sceneTitle.id = "game-scene-title";
+  scene.append(
+    sceneTitle,
+    element(documentRef, "p", { className: "ssi-game-location", text: gameShell.scene.location }),
+    element(documentRef, "p", { text: gameShell.scene.description }),
+  );
+
+  const details = element(documentRef, "section", { className: "ssi-game-region" });
+  details.setAttribute("aria-labelledby", "game-details-title");
+  const detailsTitle = element(documentRef, "h3", { text: "Details" });
+  detailsTitle.id = "game-details-title";
+  const detailList = element(documentRef, "dl", { className: "ssi-meta ssi-game-meta" });
+  for (const item of gameShell.details) {
+    detailList.append(
+      element(documentRef, "dt", { text: item.label }),
+      element(documentRef, "dd", { text: item.value }),
+    );
+  }
+  details.append(detailsTitle, detailList);
+
+  const events = element(documentRef, "section", { className: "ssi-game-region ssi-game-events" });
+  events.setAttribute("aria-labelledby", "game-events-title");
+  const eventsTitle = element(documentRef, "h3", { text: "Ereignis / Log" });
+  eventsTitle.id = "game-events-title";
+  const eventList = element(documentRef, "ol", { className: "ssi-game-log" });
+  for (const entry of gameShell.events) {
+    eventList.append(element(documentRef, "li", { text: entry }));
+  }
+  events.append(eventsTitle, eventList);
+
+  grid.append(actors, scene, details, events);
+
+  const actions = element(documentRef, "div", { className: "ssi-game-actions" });
+  actions.setAttribute("aria-label", "Spätere Spielaktionen");
+  for (const label of gameShell.actions) {
+    const button = element(documentRef, "button", { className: "ssi-button ssi-game-action", text: label });
+    button.type = "button";
+    button.disabled = true;
+    button.title = "Noch nicht aktiv – Regressionansicht ist read-only";
+    actions.append(button);
+  }
+
+  section.append(headingRow, grid, actions);
+  return section;
+}
+
 function renderDiagnostics(documentRef, snapshot, onRefresh) {
   const section = element(documentRef, "section", { className: "ssi-panel" });
   section.id = "diagnostics-panel";
@@ -60,7 +143,7 @@ function renderDiagnostics(documentRef, snapshot, onRefresh) {
   section.hidden = true;
   const heading = element(documentRef, "h2", { text: "Diagnose & Recovery" });
   const intro = element(documentRef, "p", {
-    text: "Die Diagnose liest nur Fähigkeiten und Status. I01 verändert, repariert oder löscht keine Weltdaten.",
+    text: "Die Diagnose liest nur Fähigkeiten und Status. Dieser Bereich verändert, repariert oder löscht keine Weltdaten.",
   });
   const project = element(documentRef, "dl", { className: "ssi-meta" });
   const values = [
@@ -84,7 +167,7 @@ function renderDiagnostics(documentRef, snapshot, onRefresh) {
   return section;
 }
 
-export function renderApp(root, snapshot, { onRefresh }) {
+export function renderApp(root, snapshot, { onRefresh, gameShell }) {
   const documentRef = root.ownerDocument;
   root.replaceChildren();
 
@@ -103,26 +186,35 @@ export function renderApp(root, snapshot, { onRefresh }) {
   const nav = element(documentRef, "nav", { className: "ssi-tabs" });
   nav.setAttribute("aria-label", "Hauptbereiche");
   const overviewButton = element(documentRef, "button", { className: "ssi-tab", text: "Übersicht" });
+  const gameButton = element(documentRef, "button", { className: "ssi-tab", text: "Spiel" });
   const diagnosticsButton = element(documentRef, "button", { className: "ssi-tab", text: "Diagnose & Recovery" });
-  overviewButton.type = diagnosticsButton.type = "button";
-  overviewButton.setAttribute("aria-pressed", "true");
-  diagnosticsButton.setAttribute("aria-pressed", "false");
-  nav.append(overviewButton, diagnosticsButton);
+  for (const button of [overviewButton, gameButton, diagnosticsButton]) button.type = "button";
+  nav.append(overviewButton, gameButton, diagnosticsButton);
 
-  const overview = renderOverview(documentRef, snapshot);
-  const diagnostics = renderDiagnostics(documentRef, snapshot, onRefresh);
+  const panels = {
+    overview: renderOverview(documentRef, snapshot),
+    game: renderGame(documentRef, gameShell),
+    diagnostics: renderDiagnostics(documentRef, snapshot, onRefresh),
+  };
+  const buttons = {
+    overview: overviewButton,
+    game: gameButton,
+    diagnostics: diagnosticsButton,
+  };
 
-  function select(panel) {
-    const showDiagnostics = panel === "diagnostics";
-    overview.hidden = showDiagnostics;
-    diagnostics.hidden = !showDiagnostics;
-    overviewButton.setAttribute("aria-pressed", String(!showDiagnostics));
-    diagnosticsButton.setAttribute("aria-pressed", String(showDiagnostics));
-    (showDiagnostics ? diagnostics : overview).focus?.();
+  function select(panelName) {
+    for (const [name, panel] of Object.entries(panels)) {
+      const selected = name === panelName;
+      panel.hidden = !selected;
+      buttons[name].setAttribute("aria-pressed", String(selected));
+    }
+    panels[panelName].focus?.();
   }
 
   overviewButton.addEventListener("click", () => select("overview"));
+  gameButton.addEventListener("click", () => select("game"));
   diagnosticsButton.addEventListener("click", () => select("diagnostics"));
+  select("overview");
 
-  root.append(header, nav, overview, diagnostics);
+  root.append(header, nav, panels.overview, panels.game, panels.diagnostics);
 }

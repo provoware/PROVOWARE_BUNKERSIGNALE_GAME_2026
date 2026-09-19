@@ -88,11 +88,11 @@ jobs:
               returnByValue: true
             });
             state = result.result?.value;
-            if (state?.text?.includes('System bereit für I01') && state.busy === 'false') break;
+            if (state?.text?.includes('Technische Basis bereit') && state.busy === 'false') break;
             await new Promise(r => setTimeout(r, 100));
           }
 
-          if (!state?.text?.includes('System bereit für I01')) throw new Error(`App ready marker missing: ${JSON.stringify(state)}`);
+          if (!state?.text?.includes('Technische Basis bereit')) throw new Error(`App ready marker missing: ${JSON.stringify(state)}`);
           if (state.title !== 'S.O.U.N.D. SYSTEM-IKER') throw new Error(`Unexpected title: ${state.title}`);
           if (state.busy !== 'false') throw new Error(`aria-busy not false: ${state.busy}`);
           if (!state.text.includes('0.1.0-alpha.0')) throw new Error('Version not visible');

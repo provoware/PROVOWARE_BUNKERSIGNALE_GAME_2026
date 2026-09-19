@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-003",
+  "checkpoint": "I10",
+  "title": "I10-P0 Game UI Regression Shell",
+  "purpose": "Vor der I10-Storage-Produktlogik eine stabile sichtbare Spieloberfläche als read-only Browser-, Layout-, Fokus- und Accessibility-Regressionsreferenz schaffen.",
+  "scope": [
+    "read-only Game-Tab mit Figuren-, Szenen-, Detail- und Ereignisbereich",
+    "infrastrukturfreies Application-ViewModel als feste Regression-Fixture",
+    "vier vollständig deaktivierte spätere Spielaktionen",
+    "responsives Game-Grid mit Desktop- und 640-px-Chromium-Prüfung",
+    "checkpoint-neutrale Übersicht/Diagnose-Texte",
+    "exakt eine zusätzliche visuelle UX-Verfeinerung: Akzentkante an der zentralen Szenenfläche"
+  ],
+  "non_goals": [
+    "Keine Storage-Health-, Quota-, Export- oder Restore-Logik",
+    "Keine Commands, Events oder Weltmutation",
+    "Keine Änderung am eingefrorenen I09 Event-/Snapshot-Vertrag",
+    "Keine Hash-, Crypto-, Canon- oder Gameplay-Logik"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "Bestehende Übersicht und Diagnose bleiben erhalten; die neue Spielansicht ist ein zusätzlicher read-only Tab und importiert keine Infrastructure.",
+  "security": "Alle sichtbaren Spielaktionen sind nativ disabled. Der ViewModel-Pfad besitzt keine Browser-, IndexedDB- oder Storage-Abhängigkeit.",
+  "test_plan": [
+    "Repository Quality mit allen bisherigen Regressionen",
+    "I10 Game UI Chromium-Smoke für Tab, Fokus, disabled actions und responsive Overflow",
+    "allgemeiner Browser-Smoke",
+    "finaler Diff ohne I10-Storage-/Exportlogik und ohne I09-Änderung"
+  ],
+  "rollback": "I10-P0-Branch verwerfen; main bleibt auf dem eingefrorenen I09-Stand.",
+  "evidence": [
+    "app/application/game-shell.js",
+    "app/bootstrap/main.js",
+    "app/ui/app.js",
+    "app/ui/styles.css",
+    "tests/test_i10_ui_shell.py",
+    ".github/workflows/i10-game-ui-shell-smoke.yml",
+    "docs/I10_GAME_UI_REGRESSION_SHELL.md"
+  ],
+  "result": "GREEN"
+}
