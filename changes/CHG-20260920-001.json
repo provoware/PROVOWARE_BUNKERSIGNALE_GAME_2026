@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-001",
+  "checkpoint": "I09",
+  "title": "I09 cache storage failure replay fallback",
+  "purpose": "Post-merge gefundenen I09-Fehler beheben, bei dem ein Ausfall der verwerfbaren Snapshot-Datenbank den vollständigen Event-Replay blockieren konnte.",
+  "scope": [
+    "Storagefehler beim Snapshot-Read werden nach gültiger Argumentprüfung als Cache-Miss behandelt",
+    "vollständiger Replay bleibt bei Snapshot-DB-Ausfall verfügbar",
+    "realer Chromium-Regressionsfall für nicht verfügbare Snapshot-Datenbank",
+    "I09-Dokumentation um expliziten REOPEN und Fehlerpfad ergänzt",
+    "exakt eine visuelle UX-Änderung: Metadatenwerte erhalten line-height 1.55"
+  ],
+  "non_goals": [
+    "Keine Änderung am I08 Event Store",
+    "Keine Änderung an I06/I07-Verträgen",
+    "Keine I10 Quota-/Export-Funktion",
+    "Keine Hash-, Crypto-, Recovery-, Multi-Tab- oder Gameplay-Funktion"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "Valide Snapshot-Reads bleiben unverändert; Argumentfehler bleiben fail-closed. Nur Infrastrukturfehler des verwerfbaren Snapshot-Caches fallen auf Replay zurück.",
+  "security": "Der Event Store bleibt alleinige Wahrheit; ein defekter Cache darf Wiederherstellung nicht blockieren und wird nicht zur Autorität erhoben.",
+  "test_plan": [
+    "Repository Quality",
+    "I09 Chromium-Smoke mit nicht verfügbarer Snapshot-Datenbank",
+    "bestehende Snapshot-Validierungs-, Abort- und Großweltregressionen",
+    "allgemeiner Browser-Smoke",
+    "finalen Diff auf I10+-Scope und Änderungen an I08 oder früheren Verträgen prüfen"
+  ],
+  "rollback": "REOPEN-Branch verwerfen; main bleibt auf dem zuvor gemergten I09-Stand.",
+  "evidence": [
+    "app/infrastructure/browser/indexeddb-snapshot-cache.js",
+    "tests/test_i09.py",
+    ".github/workflows/i09-snapshot-smoke.yml",
+    "docs/I09_SNAPSHOT_CACHE.md",
+    "app/ui/styles.css"
+  ],
+  "result": "GREEN"
+}
