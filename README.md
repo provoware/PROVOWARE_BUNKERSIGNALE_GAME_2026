@@ -9,13 +9,15 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Bereich | Stand |
 | --- | --- |
 | Produktversion | `0.1.0-alpha.0` |
-| Aktueller Checkpoint | **I09 – Snapshot Cache** |
-| Nächster Checkpoint | **I10 – Storage Health + Export Backup** |
+| Aktueller Checkpoint | **I10 – Storage Health + Export Backup (P0: Game UI Regression Shell)** |
+| Nächster Checkpoint | **I11 – Hash Chain** |
 | Runtime | Browser, local-first |
 | Buildschritt | nicht erforderlich |
 | Paketmanager | nicht erforderlich |
 | Persistente Eventdaten | **I08 aktiv – IndexedDB Event Store** |
 | Snapshot Cache | **I09 – verwerfbarer Cache; Eventlog bleibt Wahrheit** |
+| Spieloberfläche | **I10-P0 – read-only Regression Shell aktiv** |
+| Storage Health / Export | **I10-Kern noch nicht implementiert** |
 | Spiellogik | noch nicht aktiv |
 
 Bereits umgesetzt:
@@ -30,6 +32,7 @@ Bereits umgesetzt:
 - **I07** – deterministische Pure-Reducer-Grundlage mit fail-closed Replay-Invarianten und Purity-Guard.
 - **I08** – transaktionaler IndexedDB Event Store mit Weltzuordnung als Storage-Metadatum, deterministischem Readback und vollständigem Rollback bei Abort, Duplicate sowie synchronen Queue-/Clone-Fehlern.
 - **I09** – verwerfbarer IndexedDB Snapshot Cache mit Fingerprint-Prüfung, vollständigem Replay-Fallback und Crash-/Abort-Schutz; das Eventlog bleibt alleinige Wahrheit.
+- **I10-P0** – read-only Game UI Regression Shell mit Figuren-, Szenen-, Detail- und Ereignisbereich; alle Spielaktionen bleiben deaktiviert.
 
 ## Schnellstart
 
@@ -88,8 +91,9 @@ Dokumentationsindex: **[docs/README.md](docs/README.md)**
 - I07 reduziert ausschließlich aus Events + Ruleset und besitzt keine Zeit-, Zufalls-, Storage-/Datei- oder Netzwerkabhängigkeit.
 - I08 persistiert Events transaktional in IndexedDB; die Weltzuordnung liegt außerhalb des unveränderten I06-Envelope-Vertrags als Storage-Metadatum.
 - I09 nutzt Snapshots ausschließlich als beschleunigenden Cache; fehlende, korrupte oder fingerprint-falsche Snapshots werden verworfen und vollständig replayt.
+- I10-P0 stellt ausschließlich eine read-only Spielansicht für DOM-/Layout-/Fokusregression bereit; sie erzeugt keine Commands, Events oder Persistenzmutationen.
 - Neue Runtime-Abhängigkeiten benötigen eine begründete Architekturentscheidung.
-- Quota-/Export-Funktionen, Hashketten, Crypto, produktive Contentpakete und Spiellogik werden nicht vorgezogen.
+- Der I10-Kern für Storage Health + Export Backup folgt erst nach dem P0-Regressionsgate; Hashketten, Crypto, produktive Contentpakete und echte Spiellogik werden weiterhin nicht vorgezogen.
 
 ## Lizenzstatus
 
