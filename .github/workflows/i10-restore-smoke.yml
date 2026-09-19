@@ -1,0 +1,226 @@
+name: i10-restore-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'app/application/world-backup.js'
+      - 'app/application/world-restore.js'
+      - 'app/infrastructure/browser/indexeddb-event-store.js'
+      - 'schemas/world-backup.schema.json'
+      - 'tests/test_i10_restore.py'
+      - 'docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md'
+      - '.github/workflows/i10-restore-smoke.yml'
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preflight, no-clobber, abort and parity in real Chromium
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser"
+
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i10-restore-http.log" 2>&1 &
+          server_pid=$!
+          "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage             --remote-debugging-address=127.0.0.1 --remote-debugging-port=9222 about:blank             >"$RUNNER_TEMP/i10-restore-chromium.log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$server_pid" "$browser_pid" 2>/dev/null || true' EXIT
+
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break
+            sleep 0.1
+          done
+
+          node <<'NODE'
+          const debugBase = 'http://127.0.0.1:9222';
+          const appUrl = 'http://127.0.0.1:8765/index.html';
+          const target = await fetch(debugBase + '/json/new?' + encodeURIComponent(appUrl), {method:'PUT'}).then(r => r.json());
+          const ws = new WebSocket(target.webSocketDebuggerUrl);
+          await new Promise((resolve, reject) => {
+            ws.addEventListener('open', resolve, {once:true});
+            ws.addEventListener('error', reject, {once:true});
+          });
+
+          let seq = 0;
+          const pending = new Map();
+          const exceptions = [];
+          ws.addEventListener('message', event => {
+            const msg = JSON.parse(event.data);
+            if (msg.id && pending.has(msg.id)) {
+              const p = pending.get(msg.id);
+              pending.delete(msg.id);
+              msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg.result ?? {});
+            } else if (msg.method === 'Runtime.exceptionThrown') {
+              exceptions.push(msg.params);
+            }
+          });
+          const call=(method,params={})=>new Promise((resolve,reject)=>{
+            const id=++seq;
+            pending.set(id,{resolve,reject});
+            ws.send(JSON.stringify({id,method,params}));
+          });
+
+          await call('Runtime.enable');
+          const expression = `(async () => {
+            const { createIndexedDbEventStore } = await import('/app/infrastructure/browser/indexeddb-event-store.js');
+            const { exportWorldBackup } = await import('/app/application/world-backup.js');
+            const { restoreWorldBackup } = await import('/app/application/world-restore.js');
+
+            const worldId = 'world:000000000000000000000020';
+            const productVersion = '0.1.0-alpha.0';
+            const contentLockFingerprint = 'a8562f17edc6682170cb08d0ccc4cb012346392f21e97415f301ae322212878f';
+            const events = Array.from({length:1000}, (_, index) => ({
+              event_id:'event:' + (index + 1).toString(16).padStart(24,'0'),
+              event_type:'test.event',
+              payload:{index, name:'actor-' + index},
+              author_id:'actor:000000000000000000000001',
+              sequence:index + 1,
+              lamport:index,
+              ruleset_version:'1.0.0',
+              metadata:{source:'i10-restore-smoke'}
+            }));
+
+            const sourceDb = 'i10-restore-source-' + crypto.randomUUID();
+            const sourceStore = createIndexedDbEventStore({ indexedDB, dbName: sourceDb });
+            await sourceStore.append(worldId, events);
+            const sourceExport = await exportWorldBackup({
+              worldId,
+              productVersion,
+              contentLockFingerprint,
+              readWorld: sourceStore.readWorld
+            });
+
+            const targetDb = 'i10-restore-target-' + crypto.randomUUID();
+            const targetStore = createIndexedDbEventStore({ indexedDB, dbName: targetDb });
+            const started = performance.now();
+            const restored = await restoreWorldBackup({
+              backupText: sourceExport.text,
+              expectedContentLockFingerprint: contentLockFingerprint,
+              readWorld: targetStore.readWorld,
+              appendWorld: targetStore.append
+            });
+            const restoredEvents = await targetStore.readWorld(worldId);
+            const targetExport = await exportWorldBackup({
+              worldId,
+              productVersion,
+              contentLockFingerprint,
+              readWorld: targetStore.readWorld
+            });
+            const elapsedMs = performance.now() - started;
+
+            if (restored.status !== 'restored' || restored.event_count !== 1000) throw new Error('restore result mismatch');
+            if (restoredEvents.length !== 1000) throw new Error('restored event count mismatch');
+            if (sourceExport.text !== targetExport.text) throw new Error('export -> restore -> re-export parity failed');
+
+            async function expectCode(label, expectedCode, task) {
+              let caught = null;
+              try { await task(); } catch (error) { caught = error; }
+              if (!caught || caught.code !== expectedCode) {
+                throw new Error(label + ' expected ' + expectedCode + ' but got ' + (caught?.code || 'none'));
+              }
+              return true;
+            }
+
+            const noClobber = await expectCode('no-clobber', 'SSI-RESTORE-1005', () =>
+              restoreWorldBackup({
+                backupText: sourceExport.text,
+                expectedContentLockFingerprint: contentLockFingerprint,
+                readWorld: targetStore.readWorld,
+                appendWorld: targetStore.append
+              })
+            );
+            if ((await targetStore.readWorld(worldId)).length !== 1000) throw new Error('no-clobber mutated target');
+
+            const mismatchDb = 'i10-restore-mismatch-' + crypto.randomUUID();
+            const mismatchStore = createIndexedDbEventStore({ indexedDB, dbName: mismatchDb });
+            const contentMismatch = await expectCode('content mismatch', 'SSI-RESTORE-1003', () =>
+              restoreWorldBackup({
+                backupText: sourceExport.text,
+                expectedContentLockFingerprint: 'b'.repeat(64),
+                readWorld: mismatchStore.readWorld,
+                appendWorld: mismatchStore.append
+              })
+            );
+            if ((await mismatchStore.readWorld(worldId)).length !== 0) throw new Error('content mismatch mutated target');
+
+            const truncatedDb = 'i10-restore-truncated-' + crypto.randomUUID();
+            const truncatedStore = createIndexedDbEventStore({ indexedDB, dbName: truncatedDb });
+            const truncatedRejected = await expectCode('truncated backup', 'SSI-RESTORE-1001', () =>
+              restoreWorldBackup({
+                backupText: sourceExport.text.slice(0, -5),
+                expectedContentLockFingerprint: contentLockFingerprint,
+                readWorld: truncatedStore.readWorld,
+                appendWorld: truncatedStore.append
+              })
+            );
+            if ((await truncatedStore.readWorld(worldId)).length !== 0) throw new Error('truncated backup mutated target');
+
+            const invalidDb = 'i10-restore-invalid-' + crypto.randomUUID();
+            const invalidStore = createIndexedDbEventStore({ indexedDB, dbName: invalidDb });
+            const invalidBackup = JSON.parse(sourceExport.text);
+            invalidBackup.events[1].sequence = invalidBackup.events[0].sequence;
+            const invalidRejected = await expectCode('invalid backup', 'SSI-RESTORE-1002', () =>
+              restoreWorldBackup({
+                backupText: JSON.stringify(invalidBackup),
+                expectedContentLockFingerprint: contentLockFingerprint,
+                readWorld: invalidStore.readWorld,
+                appendWorld: invalidStore.append
+              })
+            );
+            if ((await invalidStore.readWorld(worldId)).length !== 0) throw new Error('invalid backup mutated target');
+
+            const abortDb = 'i10-restore-abort-' + crypto.randomUUID();
+            const abortStore = createIndexedDbEventStore({
+              indexedDB,
+              dbName: abortDb,
+              faultInjector: ({writeCount, transaction}) => {
+                if (writeCount === 1) transaction.abort();
+              }
+            });
+            const abortRejected = await expectCode('abort', 'SSI-RESTORE-1006', () =>
+              restoreWorldBackup({
+                backupText: sourceExport.text,
+                expectedContentLockFingerprint: contentLockFingerprint,
+                readWorld: abortStore.readWorld,
+                appendWorld: abortStore.append
+              })
+            );
+            if ((await abortStore.readWorld(worldId)).length !== 0) throw new Error('aborted restore leaked partial events');
+
+            const maxElapsedMs = 5000;
+            if (elapsedMs >= maxElapsedMs) {
+              throw new Error('1000-event restore parity exceeded budget: ' + elapsedMs.toFixed(1) + ' ms');
+            }
+
+            for (const dbName of [sourceDb, targetDb, mismatchDb, truncatedDb, invalidDb, abortDb]) {
+              indexedDB.deleteDatabase(dbName);
+            }
+
+            return {
+              count:restored.event_count,
+              parity:sourceExport.text === targetExport.text,
+              no_clobber:noClobber,
+              content_mismatch:contentMismatch,
+              truncated_rejected:truncatedRejected,
+              invalid_rejected:invalidRejected,
+              abort_rejected:abortRejected,
+              partial_after_abort:0,
+              elapsed_ms:Number(elapsedMs.toFixed(1)),
+              max_elapsed_ms:maxElapsedMs
+            };
+          })()`;
+
+          const result = await call('Runtime.evaluate', {expression, awaitPromise:true, returnByValue:true});
+          if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
+          const value = result.result?.value;
+          if (value?.count !== 1000 || value?.parity !== true || value?.partial_after_abort !== 0) {
+            throw new Error('I10 restore smoke failed: ' + JSON.stringify(value));
+          }
+          if (exceptions.length) throw new Error('Runtime exceptions: ' + JSON.stringify(exceptions));
+
+          console.log('I10 Restore smoke: PASS', JSON.stringify(value));
+          ws.close();
+          NODE
