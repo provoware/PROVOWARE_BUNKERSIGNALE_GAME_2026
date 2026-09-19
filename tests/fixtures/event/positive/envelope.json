@@ -1,0 +1,12 @@
+{
+  "event_id": "event:111111111111111111111111",
+  "event_type": "character.created",
+  "payload": {"name": "PPPOPPI"},
+  "author_id": "actor:222222222222222222222222",
+  "sequence": 1,
+  "lamport": 0,
+  "ruleset_version": "1.0.0",
+  "metadata": {"source": "fixture"},
+  "command_id": "cmd-001",
+  "correlation_id": "corr-001"
+}
