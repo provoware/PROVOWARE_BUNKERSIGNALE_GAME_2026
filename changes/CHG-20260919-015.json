@@ -1,0 +1,35 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260919-015",
+  "checkpoint": "I08",
+  "title": "I08 IndexedDB Event Store Foundation",
+  "purpose": "Den kleinsten transaktionalen IndexedDB-Event-Store gemäß I08-Masterplanung umsetzen und den aktiven Checkpoint korrekt von der eingefrorenen I07-Evidence trennen.",
+  "scope": [
+    "transaktionaler Batch-Append mit eindeutigem event_id",
+    "Welt- und Welt/Lamport-Indizes mit deterministischem Readback",
+    "Abort- und Duplicate-Rollback sowie Reopen/Readback im realen Chromium",
+    "aktive I08-Checkpoint-Markierung im Projektmanifest",
+    "exakt eine visuelle UX-Änderung: Kicker-Beschriftung wird fett dargestellt"
+  ],
+  "non_goals": [
+    "Keine Snapshots oder Snapshot-Wahrheit aus I09",
+    "Keine Quota-, Export-, Hash- oder Signaturfunktion",
+    "Keine Änderung am eingefrorenen I07-Reducer",
+    "Keine Gameplay- oder UI-Schreiblogik",
+    "Kein REOPEN von I00-I07"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "ux_accessibility", "release_evidence"],
+  "compatibility": "I07 bleibt eingefroren und unverändert; I08 ergänzt ausschließlich die Browser-Infrastruktur um persistente Event-Speicherung.",
+  "security": "Fehlgeschlagene oder abgebrochene Batch-Transaktionen dürfen keine partiellen Events sichtbar machen; Duplicate-Constraints rollen die gesamte Transaktion zurück.",
+  "test_plan": [
+    "fokussierte I08-Contract-Tests ausführen",
+    "Repository Quality ausführen",
+    "realen Chromium-Append plus Reopen/Readback prüfen",
+    "Abort nach erstem Write auf vollständigen Rollback prüfen",
+    "Duplicate-Batch auf vollständigen Rollback prüfen",
+    "finalen Diff auf I09+-Scope und I07-REOPEN prüfen"
+  ],
+  "rollback": "I08-Branch verwerfen; main und die eingefrorenen I00-I07-Artefakte bleiben unverändert.",
+  "evidence": ["app/infrastructure/browser/indexeddb-event-store.js", "tests/test_i08.py", ".github/workflows/i08-indexeddb-smoke.yml", "docs/I08_INDEXEDDB_EVENT_STORE.md", "app/ui/styles.css"],
+  "result": "GREEN"
+}
