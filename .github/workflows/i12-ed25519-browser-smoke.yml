@@ -1,0 +1,31 @@
+name: i12-ed25519-browser-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'app/infrastructure/browser/ed25519-sign-verify.js'
+      - 'tests/i12_ed25519_browser_smoke.html'
+      - '.github/workflows/i12-ed25519-browser-smoke.yml'
+      - 'changes/**'
+
+jobs:
+  chromium-ed25519:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Chromium Ed25519 known vector and tamper smoke
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser"
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i12-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:8765/tests/i12_ed25519_browser_smoke.html >/dev/null 2>&1 && break
+            sleep 0.1
+          done
+          output="$("$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --dump-dom http://127.0.0.1:8765/tests/i12_ed25519_browser_smoke.html)"
+          printf '%s\n' "$output"
+          grep -q 'data-result="PASS"' <<<"$output"
