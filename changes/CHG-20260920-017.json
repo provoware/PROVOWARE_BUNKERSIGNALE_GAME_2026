@@ -1,0 +1,45 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-017",
+  "checkpoint": "I12",
+  "title": "I12 signatures keys authenticity planning gate",
+  "purpose": "Nach dem eingefrorenen I11 den Signatur-, Schlüssel- und Authentizitätsvertrag vor jeglichem Crypto-/Persistenzcode verbindlich festlegen.",
+  "scope": [
+    "I12 als detached Authentizitätsschicht über einem bereits verifizierten I11-Kettenkontext definieren",
+    "Ed25519 als I12-v1-Signaturalgorithmus mit fail-closed Capability Detection festlegen",
+    "Signatur-Record, signierte Byte-Rahmung, key_id und Actor-Key-Vertrauensgrenze planen",
+    "I12-A/B/C-Reihenfolge mit explizitem Key-Persistence-/Recovery-/REOPEN-Gate festlegen",
+    "Projektmanifest und öffentliche Statusdokumentation ausschließlich auf aktives I12 umstellen"
+  ],
+  "non_goals": [
+    "Kein Runtime-, Crypto-, Schlüsselgenerierungs- oder Persistenzcode in diesem Planning-Gate",
+    "Keine Änderung am I06-Envelope oder an I08/I09/I10/I11-Produktverträgen",
+    "Keine private-key Recovery- oder Backupentscheidung vor I12-C",
+    "Keine I13-Recovery- oder I14-Multi-Tab-Funktion",
+    "Keine visuelle UX-Änderung im reinen Planning-Gate"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "I00-I11 bleiben fachlich eingefroren. I12 wird detached aufgebaut und setzt erfolgreiche I11-Verifikation voraus; kein Vorgänger-REOPEN ist für die Planung erforderlich.",
+  "security": "Private Schlüssel werden als nicht extrahierbar geplant; Signaturgültigkeit wird ausdrücklich von realer Identität und Actor-Vertrauen getrennt. Kein stiller Algorithmus-Fallback.",
+  "test_plan": [
+    "Repository Quality für Planungs-/Manifest-/README-Konsistenz",
+    "prüfen, dass der Diff keinen Runtime-, Persistenz- oder I13+-Code enthält",
+    "nach Merge erst I12-A mit festen Signatur- und key_id-Testvektoren öffnen"
+  ],
+  "rollback": "Planning-Branch verwerfen; main bleibt auf I11 GREEN/FROZEN.",
+  "evidence": [
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md",
+    "manifests/project.manifest.json",
+    "README.md",
+    "docs/README.md",
+    "status/I11_STATUS.json"
+  ],
+  "result": "GREEN"
+}
