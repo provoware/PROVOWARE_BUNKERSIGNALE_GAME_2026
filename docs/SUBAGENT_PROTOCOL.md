@@ -34,3 +34,24 @@ Wenn keine echten Subagenten ausführbar sind, MUSS der Orchestrator dieselben R
 
 ## Veto
 `architecture_guardian`, `qa_regression` und `security_integrity` besitzen für ihre harten Gates ein Veto. Ein Veto kann nur durch Behebung oder eine dokumentierte Scope-Änderung mit REOPEN aufgelöst werden.
+
+
+## Visual-World-Ein-Aspekt-Regel
+
+Der spezialisierte, nicht merge-berechtigte Delegationsagent `visual_world_director` arbeitet unter der Merge-Hoheit des `orchestrator` sowie den registrierten Review-Ownern `ux_accessibility` und `content_canon`. Die eingefrorene Kernrollenliste in `agents/registry.json` wird dafür nicht erweitert.
+
+Der `visual_world_director` darf pro Entwicklungsiteration exakt **eine** visuelle/spielweltliche Zieldatei oder einen eindeutig abgegrenzten visuellen Aspekt bearbeiten. Planung darf Folgearbeiten benennen, aber nicht mitimplementieren.
+
+Vor jedem Visual-World-Patch dokumentiert die Rolle:
+- Story-/Gameplay-Zweck,
+- genau eine betroffene Zieldatei bzw. einen Aspekt,
+- Abhängigkeiten und Non-Goals,
+- räumliche/visuelle Akzeptanzkriterien,
+- Accessibility-/Performance-Grenzen,
+- relevante Regression-Gates.
+
+Der Agent darf keine Persistence-, Security-, Schema-, Recovery- oder Checkpoint-Grenze öffnen. Konflikte mit einem funktionalen Hauptscope werden zugunsten des funktionalen Freeze-Schutzes auf die nächste Iteration verschoben.
+
+## Effizienzregel
+
+Für unabhängige Planungs-/Review-Schritte gilt: lesen und entscheiden zuerst, schreiben zuletzt. Mehrere kleine Dokumentationskorrekturen desselben Scopes SOLLEN in einem Governance-Commit gebündelt werden, damit triggerbasierte CI nicht unnötig mehrfach startet. Produkt-/UI-Patches bleiben davon getrennt, wenn ihre Gates andere Trigger besitzen.

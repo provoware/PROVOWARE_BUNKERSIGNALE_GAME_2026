@@ -31,3 +31,16 @@ Commit-Nachrichten folgen Conventional Commits 1.0.0. Zulässige Primärtypen si
 
 ## Versionsstandard
 Produktversionen folgen Semantic Versioning 2.0.0. Spezifikations-, Schema-, Content- und Produktversion sind getrennte Dimensionen und dürfen nicht implizit gekoppelt werden.
+
+
+## Ein visueller Delta pro Iteration
+
+Grafische oder spielweltliche Weiterentwicklung erfolgt standardmäßig in genau einem klar begrenzten Delta pro Iteration. Der `visual_world_director` definiert zuerst Zweck, Zieldatei/Aspekt, Akzeptanzkriterien und Non-Goals. Folgeideen werden ausschließlich im Visual-World-Masterplan vorgemerkt.
+
+## CI-/Traffic-Effizienz
+
+- Vor dem ersten Write werden vorhandene Verträge, Trigger und Pfad-Gates gelesen.
+- Dokumentations-/Governance-Anpassungen desselben Scopes werden möglichst in einem Commit gebündelt.
+- Evidence wird erst nach grünen funktionalen Gates gebunden.
+- Bereits grüne, nicht durch Pfade betroffene Regressionen werden nicht künstlich neu ausgelöst.
+- Ein roter Gate wird anhand seines konkreten Logs behoben; keine zusätzlichen Scope-Patches auf Verdacht.

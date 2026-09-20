@@ -1,38 +1,43 @@
 {
   "checkpoint": "I12",
-  "generated_at_utc": "2026-09-20T23:30:00Z",
+  "generated_at_utc": "2026-09-20T23:46:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "abed848ed42ebf3412d59f1798293707693a1a839b9bf4a984f0775257b82df9",
+  "fingerprint_sha256": "ed7fe580e92aedd53ac51d2f49151424caa5614b8072a84ae6fb8ffedb754711",
   "checks": [
     {
       "name": "repository_quality",
       "status": "PASS",
-      "detail": "Quality #657 ermittelte den governed P2-L-Decision-Fingerprint abed848ed42ebf3412d59f1798293707693a1a839b9bf4a984f0775257b82df9; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus CHG-039."
+      "detail": "Quality #665/#666 ermittelten den governed P2-L-Contract/Visual-Governance-Fingerprint ed7fe580e92aedd53ac51d2f49151424caa5614b8072a84ae6fb8ffedb754711; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus CHG-040."
     },
     {
-      "name": "p1_p2_frozen",
+      "name": "p2_l_contract",
       "status": "PASS",
-      "detail": "P1 active signing key store und P2 historical public-key store bleiben unveraendert und gruen eingefroren."
+      "detail": "Funktionssignatur, Capability-Injection, Rueckgabewert, stabile Fehlercodes, Call-Barrier, idempotenter Existing-Key-Pfad und Contract-Tests sind eingefroren; kein Application-Code."
     },
     {
-      "name": "p2_l_decision",
+      "name": "visual_world_agent",
       "status": "PASS",
-      "detail": "Vor P3 ist eine verpflichtende Application Registration Barrier festgelegt: P1 read -> public export -> derive/verify key_id -> P2 putIfAbsent -> sign."
+      "detail": "Delegierter visual_world_director unter orchestrator sowie ux_accessibility/content_canon eingefuehrt, ohne die eingefrorene Kernrollen-Registry zu oeffnen."
     },
     {
-      "name": "atomicity_boundary",
+      "name": "visual_world_plan",
       "status": "PASS",
-      "detail": "Keine Cross-Store-Write-Transaktion: P1 ist read-only, P2 besitzt den einzigen atomaren Write; Signieren startet erst nach erfolgreicher P2-Bestaetigung."
+      "detail": "Visual-World-Masterplan erzwingt genau einen visuellen Aspekt pro Iteration; VW-001 definiert ausschliesslich die Bunker-Hauptkomposition und Ausbauumgebung."
+    },
+    {
+      "name": "triggered_regressions",
+      "status": "PASS",
+      "detail": "Browser #154, I11 #56 und I12 Ed25519 #42 sind gruen."
     },
     {
       "name": "p3_lock",
       "status": "PASS",
-      "detail": "Detached Signature Persistence bleibt bis zum gruen eingefrorenen P2-L-Block gesperrt."
+      "detail": "P3 bleibt bis zum gruenen P2-L-Implementierungs-Freeze gesperrt."
     },
     {
       "name": "scope_guard",
       "status": "PASS",
-      "detail": "Decision-only: keine Produkt-, DB-, Schema-, UI- oder Testcodeaenderung; I08/I10 bleiben geschlossen."
+      "detail": "Keine Runtime-, DB-, Schema-, Persistence-, UI-, CSS- oder Testcodeaenderung; I08/I10 bleiben geschlossen."
     }
   ],
   "file_hashes": {
@@ -58,49 +63,50 @@
     "changes/CHG-20260921-036.json": "2c68942418aee9c16f6edbc061d4fb59ae57036751881cb3d2ea2530ad400aa2",
     "changes/CHG-20260921-037.json": "132958159a0ee1af2d186a8db2f1d88d814ae5e3b08767f7bf33b6564db29709",
     "changes/CHG-20260921-038.json": "da81be7a0e6e4b4753538be379ca82bbe446214746c05069aec12049856abc2d",
-    "changes/CHG-20260921-039.json": "3ca4e9493e4c022f3010ddc3461cf10039b0692ee333978767ba7775e4d99fd7"
+    "changes/CHG-20260921-039.json": "3ca4e9493e4c022f3010ddc3461cf10039b0692ee333978767ba7775e4d99fd7",
+    "changes/CHG-20260921-040.json": "3d33a24cd8d4ab76c1aadbd2ab9efb1ffcc53cb983e0abfcec93bce7a996109a"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-L als notwendiger Zwischenblock vor P3 aufgeloest."
+      "evidence": "P2-L Contract und delegierte Visual-World-Governance bleiben getrennte, nicht produktive Scopes."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Application Registration Barrier nutzt bestehende P1/P2/I12-A/B-Capabilities ohne neue Persistenzgrenze."
+      "evidence": "Keine Schicht- oder Runtime-Aenderung; Visual-Agent bleibt Governance/Planung."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "Keine DB-Version, Migration oder Schemaaenderung."
+      "evidence": "Keine DB-, Schema- oder Migrationaenderung."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Decision-only; funktionale Stores bleiben byteunveraendert."
+      "evidence": "Quality sowie Browser #154, I11 #56 und Ed25519 #42 gruen nach finalem Scope."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Signieren ohne erfolgreiche historische Registrierung ist fail-closed verboten."
+      "evidence": "P2-L verbietet Signieren vor erfolgreicher P2-Registrierung; P3 bleibt gesperrt."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "Keine UI-Aenderung im exklusiven Decision-Scope."
+      "evidence": "Visual-Agent bindet Zoom, Kontrast, reduzierte Bewegung und Ein-Aspekt-Regel; keine Runtime-UI-Aenderung."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "Keine Gameplay-/Contentlogik veraendert."
+      "evidence": "VW-001 ist storykausale Planung ohne produktive Content-Aktivierung."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "P2-L Decision an governed Fingerprint abed848ed42ebf3412d59f1798293707693a1a839b9bf4a984f0775257b82df9 und CHG-039 gebunden."
+      "evidence": "Scope an ed7fe580e92aedd53ac51d2f49151424caa5614b8072a84ae6fb8ffedb754711 und CHG-040 gebunden."
     }
   ]
 }

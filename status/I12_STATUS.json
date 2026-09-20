@@ -1,7 +1,7 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-20T23:30:00Z",
+  "generated_at_utc": "2026-09-20T23:46:00Z",
   "overall_status": "GREEN",
   "gates": {
     "G0": "GREEN",
@@ -9,14 +9,14 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "abed848ed42ebf3412d59f1798293707693a1a839b9bf4a984f0775257b82df9",
+  "fingerprint_sha256": "ed7fe580e92aedd53ac51d2f49151424caa5614b8072a84ae6fb8ffedb754711",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_p1_signing_key_store": "PASS",
     "i12_c_p2_sequence_decision": "DOCUMENTED",
-    "next_i12_c_block": "P2_L_CONTRACT_GATE_ACTIVE_KEY_REGISTRATION_BARRIER",
-    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_L_GREEN",
+    "next_i12_c_block": "P2_L_IMPLEMENTATION_ACTIVE_KEY_REGISTRATION_BARRIER",
+    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_L_IMPLEMENTATION_GREEN",
     "product_persistence": "P1_ACTIVE_KEY_PLUS_P2_HISTORICAL_PUBLIC_KEYS",
     "i08_reopen": "NO",
     "i10_reopen": "NO",
@@ -38,48 +38,56 @@
     "p2_injected_write_failure": "FAIL_CLOSED",
     "i12_c_p2_lifecycle_registration_decision": "DOCUMENTED",
     "p2_l_sequence": "P1_READ_EXPORT_DERIVE_VERIFY_P2_REGISTER_SIGN",
-    "p2_l_cross_store_write_transaction": "NOT_REQUIRED"
+    "p2_l_cross_store_write_transaction": "NOT_REQUIRED",
+    "i12_c_p2_l_contract": "DOCUMENTED",
+    "p2_l_function": "ENSURE_ACTIVE_SIGNING_KEY_REGISTERED",
+    "p2_l_barrier": "P1_READ_EXPORT_DERIVE_VERIFY_P2_REGISTER_BEFORE_SIGN",
+    "p2_l_error_surface": "STABLE_APPLICATION_CODES",
+    "p2_l_sign_before_registration": "FORBIDDEN",
+    "visual_world_agent": "DELEGATED_SPECIALIST_ACTIVE",
+    "visual_world_iteration_rule": "ONE_ASPECT_PER_ITERATION",
+    "visual_world_current": "VW_001_BUNKER_OVERLOOK_PLANNED"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-L ist der verbindliche naechste I12-C-Block."
+      "evidence": "P2-L Contract Gate und Visual-World-Governance sauber getrennt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Lifecycle-Orchestrierung liegt in Application; P1/P2 Infrastructure bleibt unveraendert."
+      "evidence": "Keine Runtime-/Schichtaenderung; Kernrollen-Registry unveraendert."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "Keine Daten- oder Schemaaenderung."
+      "evidence": "Keine Daten-/Schemaaenderung."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Decision-only; naechster Block ist Contract Gate, keine Implementierung."
+      "evidence": "Alle ausgeloesten relevanten Gates gruen; Evidence danach gebunden."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "P2-Registrierung ist harte Vorbedingung vor Signieren."
+      "evidence": "Sign-Barrier und stabile Fehleroberflaeche vertraglich eingefroren."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "Keine UI-Aenderung."
+      "evidence": "Visual-World-Agent besitzt klare Accessibility- und Ein-Aspekt-Grenzen."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "Keine Gameplay-/Contentlogik veraendert."
+      "evidence": "Bunker-Hauptkomposition als erste storykausale Visual-Iteration geplant."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Decision an abed848ed42ebf3412d59f1798293707693a1a839b9bf4a984f0775257b82df9 gebunden."
+      "evidence": "Finaler Scope an ed7fe580e92aedd53ac51d2f49151424caa5614b8072a84ae6fb8ffedb754711 gebunden."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
