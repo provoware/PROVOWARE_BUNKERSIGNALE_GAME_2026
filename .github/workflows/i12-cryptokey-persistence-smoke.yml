@@ -1,6 +1,11 @@
 name: i12-cryptokey-persistence-smoke
 
 on:
+  push:
+    branches: ['i12c-cryptokey-persistence-proof-v2']
+    paths:
+      - 'tests/i12_cryptokey_persistence_browser_smoke.html'
+      - '.github/workflows/i12-cryptokey-persistence-smoke.yml'
   pull_request:
     paths:
       - 'tests/i12_cryptokey_persistence_browser_smoke.html'
