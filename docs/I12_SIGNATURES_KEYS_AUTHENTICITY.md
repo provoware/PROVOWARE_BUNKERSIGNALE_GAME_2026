@@ -160,7 +160,7 @@ Erst nach grünem I12-A:
 - Chromium-Smoke mit bekanntem Vektor und Manipulationsfällen.
 - reproduzierbares 1000-Verify-Performanceprofil.
 
-**Aktueller I12-B-Stand:** Capability Detection, non-extractable Key Generation sowie Sign/Verify mit realem Chromium-Smoke sind grün eingefroren. Der aktuelle Teilblock ergänzt ausschließlich Public-Key Import/Export als rohe 32-Byte-Ed25519-Form hinter dem Infrastructure-Adapter. Public Keys werden nur mit `verify`-Usage importiert und dürfen exportiert werden; private Schlüssel bleiben nicht extrahierbar und ein Private-Key-Export ist außerhalb des Scopes. KeyStore, Persistenz, Recovery, Rotation und I12-C bleiben gesperrt.
+**Aktueller I12-B-Stand:** Capability Detection, non-extractable Key Generation, Sign/Verify, Public-Key Import/Export und der reale Chromium-Krypto-Smoke sind grün eingefroren. Der aktuelle Teilblock ergänzt ausschließlich das offene Performanceprofil: nach 10 Warm-up-Verifikationen werden 1000 sequenzielle Ed25519-Verifikationen im echten Chromium gemessen. Der CI-Regressionsgrenzwert beträgt 5000 ms und ist ein Gate-Wert, kein Leistungsversprechen für Endgeräte. KeyStore, Persistenz, Recovery, Rotation und I12-C bleiben gesperrt.
 
 ### I12-C – Key lifecycle + persistence/recovery decision gate
 
@@ -200,7 +200,7 @@ I12 darf nur eingefroren werden, wenn:
 8. Suffix-Truncation nur dann als ausgeschlossen gilt, wenn Eventcount und Kettenkopf gegen einen gültigen trusted checkpoint geprüft wurden; ohne Checkpoint wird keine Vollständigkeitsgarantie behauptet.
 9. private Schlüssel im Produktpfad nicht versehentlich exportiert oder geloggt werden.
 10. fehlende Web-Crypto-/Ed25519-Capability stabil und ohne Fallback behandelt wird.
-11. 1000 Verifikationen im dokumentierten Chromium-Smoke-Budget bleiben.
+11. 1000 sequenzielle Verifikationen nach 10 Warm-up-Läufen im dokumentierten Chromium-Smoke-Budget von 5000 ms bleiben.
 12. I06/I08/I09/I10/I11 ohne begründeten REOPEN unverändert bleiben.
 13. Repository Quality + allgemeiner Chromium-Smoke + I12-spezifischer Crypto-Smoke grün bleiben.
 14. finaler Diff keine I13+-Recovery- oder I14+-Multi-Tab-Funktion vorzieht.

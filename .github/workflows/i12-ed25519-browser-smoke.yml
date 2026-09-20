@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Chromium Ed25519 known vector and tamper smoke
+      - name: Chromium Ed25519 known vector, tamper and 1000-verify profile
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -29,3 +29,6 @@ jobs:
           output="$("$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --dump-dom http://127.0.0.1:8765/tests/i12_ed25519_browser_smoke.html)"
           printf '%s\n' "$output"
           grep -q 'data-result="PASS"' <<<"$output"
+          grep -q 'data-verifications="1000"' <<<"$output"
+          grep -q 'data-budget-ms="5000"' <<<"$output"
+          grep -Eq 'data-elapsed-ms="[0-9]+"' <<<"$output"

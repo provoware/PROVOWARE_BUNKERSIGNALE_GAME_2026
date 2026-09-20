@@ -31,7 +31,7 @@ h1 { margin: 0.25rem 0 0; }
 .ssi-tab:hover, .ssi-button:not(:disabled):hover { border-color: var(--ssi-accent); }
 .ssi-button:disabled { cursor: not-allowed; opacity: 0.75; }
 :focus-visible { outline: 0.2rem solid var(--ssi-accent); outline-offset: 0.2rem; }
-.ssi-status { display: inline-flex; align-items: center; min-height: 2rem; border: 1px solid currentColor; border-radius: 999px; padding: 0.25rem 0.65rem; font-weight: 700; white-space: normal; text-align: center; }
+.ssi-status { display: inline-flex; align-items: center; min-height: 2rem; border: 1px solid currentColor; border-radius: 999px; padding: 0.25rem 0.65rem; font-weight: 700; white-space: normal; text-align: center; overflow-wrap: anywhere; }
 .ssi-status--ok { color: var(--ssi-ok); }
 .ssi-status--warning { color: var(--ssi-warning); }
 .ssi-status--critical { color: var(--ssi-error); }
