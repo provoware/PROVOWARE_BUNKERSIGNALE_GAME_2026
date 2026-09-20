@@ -1,0 +1,16 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-027",
+  "checkpoint": "I12",
+  "title": "I12-B Ed25519 public key import export",
+  "purpose": "Den naechsten kleinsten offenen I12-B-Produktblock umsetzen: rohe 32-Byte-Ed25519-Public-Keys hinter dem Browser-Infrastructure-Adapter importieren und exportieren.",
+  "scope": ["importEd25519PublicKey fuer exakt 32 rohe Bytes", "exportEd25519PublicKey als rohe 32-Byte-Form", "Public-Key-Roundtrip im Node-WebCrypto- und Chromium-Smoke", "disabled Game-Action Opazitaet auf den bestehenden 0.75-Standard angleichen"],
+  "non_goals": ["Kein Private-Key-Export", "Kein KeyStore oder Persistence", "Kein Recovery oder Rotation", "Keine I12-C-Funktion", "Kein REOPEN von I06 bis I11", "Noch kein 1000-Verify-Performanceprofil"],
+  "affected_owners": ["architecture_guardian", "qa_regression", "security_integrity", "release_evidence"],
+  "compatibility": "Additive Public-Key-Capabilities; eingefrorene I12-A-Vertraege und bestehende Sign/Verify-/Key-Generation-Pfade bleiben unveraendert.",
+  "security": "Import akzeptiert nur exakt 32 rohe Ed25519-Public-Key-Bytes mit verify-Usage. Export lehnt Nicht-Public-Keys ab. Private Produkt-Schluessel bleiben nicht extrahierbar.",
+  "test_plan": ["bekannten 32-Byte-Public-Key importieren und byteidentisch exportieren", "31-Byte-Import muss stabil fehlschlagen", "Private-Key-Export muss stabil fehlschlagen", "RFC-8032 Sign/Verify bleibt gruen", "Chromium-Public-Key-Roundtrip bleibt gruen", "triggerbasierte UI-/Regression-Gates bleiben gruen"],
+  "rollback": "PR verwerfen; main bleibt auf dem gruenen non-extractable Key-Generation-Stand. Restrisiko bis zum naechsten Block: das verbindliche 1000-Verify-Performanceprofil ist noch offen.",
+  "evidence": ["app/infrastructure/browser/ed25519-sign-verify.js", "tests/test_i12_ed25519_sign_verify.py", "tests/i12_ed25519_browser_smoke.html", "app/ui/styles.css", "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md"],
+  "result": "GREEN"
+}

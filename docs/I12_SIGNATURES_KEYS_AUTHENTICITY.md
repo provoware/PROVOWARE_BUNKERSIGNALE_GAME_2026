@@ -160,7 +160,7 @@ Erst nach grünem I12-A:
 - Chromium-Smoke mit bekanntem Vektor und Manipulationsfällen.
 - reproduzierbares 1000-Verify-Performanceprofil.
 
-**Aktueller I12-B-Teilblock:** ausschließlich Capability Detection. `detectBrowserEd25519()` prüft per nicht extrahierbarem Ed25519-Probe-Schlüsselpaar und liefert stabil nur `supported` oder `unsupported`; fehlendes Web Crypto und Browserfehler werden fail-closed zu `unsupported`. Die Probe wird weder gespeichert noch exportiert. Produktive generate/sign/verify/import/export-public-Operationen bleiben für folgende getrennte Teilblöcke gesperrt.
+**Aktueller I12-B-Stand:** Capability Detection, non-extractable Key Generation sowie Sign/Verify mit realem Chromium-Smoke sind grün eingefroren. Der aktuelle Teilblock ergänzt ausschließlich Public-Key Import/Export als rohe 32-Byte-Ed25519-Form hinter dem Infrastructure-Adapter. Public Keys werden nur mit `verify`-Usage importiert und dürfen exportiert werden; private Schlüssel bleiben nicht extrahierbar und ein Private-Key-Export ist außerhalb des Scopes. KeyStore, Persistenz, Recovery, Rotation und I12-C bleiben gesperrt.
 
 ### I12-C – Key lifecycle + persistence/recovery decision gate
 
