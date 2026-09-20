@@ -1,11 +1,13 @@
 {
-  "checkpoint":"I12","generated_at_utc":"2026-09-20T22:02:00Z","status":"GREEN","fingerprint_sha256":"d1b74e5e62de50f2ec9046d9a27e457b86722ec0c464094e0f9c6c16a7fc3899",
+  "checkpoint":"I12","generated_at_utc":"2026-09-20T22:59:00Z","status":"GREEN","fingerprint_sha256":"c3bbbf2d4d9821779d16e5e738f87e956fea916fff254a948333d257e0c26808",
   "checks":[
-    {"name":"repository_quality","status":"PASS","detail":"Quality #612 ermittelte den governed Contract-Fingerprint d1b74e5e62de50f2ec9046d9a27e457b86722ec0c464094e0f9c6c16a7fc3899; RED war nur die erwartete Evidence-Neubindung."},
-    {"name":"cryptokey_persistence_proof","status":"PASS","detail":"Der eingefrorene Chromium-Persistence-Proof bleibt unveraendert; dieser Block implementiert keine Persistence."},
-    {"name":"p1_contract","status":"PASS","detail":"Separater I12-Store, putIfAbsent/readActive, atomarer No-clobber und fail-closed Lost-Key sind festgelegt."},
+    {"name":"repository_quality","status":"PASS","detail":"Quality #619 ermittelte den governed P1-Fingerprint c3bbbf2d4d9821779d16e5e738f87e956fea916fff254a948333d257e0c26808; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus der neue CHG-034-Hash."},
+    {"name":"cryptokey_persistence_proof","status":"PASS","detail":"Der eingefrorene Chromium-Persistence-Proof bleibt unveraendert."},
+    {"name":"p1_contract","status":"PASS","detail":"Der zuvor eingefrorene P1-Vertrag bleibt unveraendert und wird exakt umgesetzt."},
+    {"name":"p1_signing_key_store","status":"PASS","detail":"Chromium P1 Store Smoke #2: leer=null, non-extractable CryptoKey persistiert, sign/verify nach Read, Duplicate no-clobber und korrupter Record fail-closed."},
+    {"name":"triggered_regressions","status":"PASS","detail":"Browser #139, Game UI #61, Storage Health #55, I11 #41 und I12 Ed25519 #27 sind gruen."},
     {"name":"predecessor_freeze","status":"PASS","detail":"I06/I08/I09/I10/I11 bleiben unveraendert; kein REOPEN."},
-    {"name":"scope_guard","status":"PASS","detail":"Keine produktive Persistence/Rotation/Backup/Multi-Tab-Funktion; genau eine CSS-UX-Aenderung fuer disabled Buttons."}
+    {"name":"scope_guard","status":"PASS","detail":"Keine Signature-Persistence, Rotation, Backup/Restore- oder Multi-Tab-Funktion; genau eine CSS-UX-Aenderung fuer den aktiven Tab."}
   ],
   "file_hashes":{
     "changes/CHG-20260920-017.json":"9d76cb206dd3e13a0793d4021dd156094e420eb5854180aa345c81cfc785d1f8",
@@ -24,17 +26,18 @@
     "changes/CHG-20260920-030.json":"088557d6e15807f536e3fe807b0a2472c4706c2f8cc8cac6188f326f28ff833c",
     "changes/CHG-20260920-031.json":"dee3e403cf01efc6ec8dc7c58eb593a8ca985bfbd9bcf2ad5773c854cf7d0c0c",
     "changes/CHG-20260920-032.json":"a4659a5d6239e1fec3d4ccf285826d05494e2edc445dc62d14971702852160b6",
-    "changes/CHG-20260920-033.json":"87ae62d812430560e0e351b3a387e41f6bdfe7a6b08bb2a5aaa00a8009f8b1ef"
+    "changes/CHG-20260920-033.json":"87ae62d812430560e0e351b3a387e41f6bdfe7a6b08bb2a5aaa00a8009f8b1ef",
+    "changes/CHG-20260921-034.json":"13f931361d3665b7a60cb7d8a05812e8e4c4dd31e4169935b628a6e7b94914ac"
   },
   "review_mode":"sequential_role_review_no_parallel_agent_runtime",
   "reviews":[
-    {"role":"orchestrator","status":"PASS","evidence":"I12-C Contract-only; produktive Persistence bleibt gesperrt."},
-    {"role":"architecture_guardian","status":"PASS","evidence":"Separater I12-DB/Store-Vertrag; keine I08/I10-Kopplung."},
-    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine Produkt-DB-Version, Migration oder Backup-Schemaaenderung."},
-    {"role":"qa_regression","status":"PASS","evidence":"Triggerbasierte Regressionen auf Contract-Head waren gruen; Quality wird nach Evidence-Fix erneut validiert."},
-    {"role":"security_integrity","status":"PASS","evidence":"Atomarer No-clobber und fail-closed Lost-Key sind verbindlich."},
-    {"role":"ux_accessibility","status":"PASS","evidence":"Genau eine isolierte CSS-Aenderung fuer deaktivierte Standardbuttons."},
+    {"role":"orchestrator","status":"PASS","evidence":"P1 bleibt auf aktiven lokalen Signing-Key-Store begrenzt."},
+    {"role":"architecture_guardian","status":"PASS","evidence":"Neuer Adapter liegt ausschliesslich in browser infrastructure und koppelt Domain/Application nicht an IndexedDB."},
+    {"role":"data_schema_auditor","status":"PASS","evidence":"Separate I12-DB/Store-Version 1; keine I08/I10-DB, Migration oder Backup-Schemaaenderung."},
+    {"role":"qa_regression","status":"PASS","evidence":"P1 Chromium #2 sowie Browser #139, Game UI #61, Storage Health #55, I11 #41 und Ed25519 #27 gruen."},
+    {"role":"security_integrity","status":"PASS","evidence":"Non-extractable Private Key, atomarer no-clobber, Input-/Stored-Record-Validierung und fail-closed Fehlercodes belegt."},
+    {"role":"ux_accessibility","status":"PASS","evidence":"Genau eine isolierte CSS-Aenderung: aktiver Tab nutzt zusaetzlich Accent-Textfarbe."},
     {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik veraendert."},
-    {"role":"release_evidence","status":"PASS","evidence":"Contract-Tree an d1b74e5e62de50f2ec9046d9a27e457b86722ec0c464094e0f9c6c16a7fc3899 gebunden."}
+    {"role":"release_evidence","status":"PASS","evidence":"P1-Tree an governed Fingerprint c3bbbf2d4d9821779d16e5e738f87e956fea916fff254a948333d257e0c26808 und kumulative CHG-Hashes gebunden."}
   ]
 }

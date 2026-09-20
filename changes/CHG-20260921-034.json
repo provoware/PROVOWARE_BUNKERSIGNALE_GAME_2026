@@ -1,0 +1,37 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-034",
+  "checkpoint": "I12",
+  "title": "I12-C P1 signing key store",
+  "purpose": "Den eingefrorenen P1-Vertrag als kleinsten produktiven Browser-Adapter fuer genau einen aktiven lokalen Ed25519-Signaturschluessel umsetzen.",
+  "scope": [
+    "indexeddb-signing-key-store.js mit putIfAbsent/readActive implementieren",
+    "atomaren No-clobber-Pfad innerhalb einer readwrite-Transaktion binden",
+    "fail-closed Record- und Storage-Fehler durch Chromium-Contract-Smoke pruefen",
+    "genau eine visuelle UX-Aenderung: aktiven Tab zusaetzlich ueber Accent-Textfarbe kennzeichnen"
+  ],
+  "non_goals": [
+    "Keine detached Signature Persistence",
+    "Keine Rotation oder historische Key-Retention",
+    "Kein Backup-/Restore-Patch",
+    "Keine Multi-Tab-Koordination",
+    "Kein I08- oder I10-REOPEN"
+  ],
+  "affected_owners": ["architecture_guardian", "data_schema_auditor", "qa_regression", "security_integrity", "ux_accessibility", "release_evidence"],
+  "compatibility": "Der Adapter nutzt eine separate I12-Datenbank und veraendert weder I08-Event-Store noch I10-Backup/Restore oder bestehende I12-A/B-Cryptovertraege.",
+  "security": "Private Keys bleiben non-extractable; Duplicate Writes clobbern den aktiven Slot nicht; ungueltige gespeicherte Records und Browserfehler werden fail-closed behandelt.",
+  "test_plan": [
+    "I12 P1 Chromium signing-key-store smoke",
+    "Repository Quality",
+    "triggerbasierter Browser-/Game-UI-Smoke fuer die isolierte CSS-Aenderung",
+    "finaler Scope-Diff ohne I08/I10-/Backup-/Signature-Persistence-Aenderung"
+  ],
+  "rollback": "P1-Branch/PR verwerfen; eingefrorener main-Stand und alle Vorgaenger bleiben unveraendert.",
+  "evidence": [
+    "app/infrastructure/browser/indexeddb-signing-key-store.js",
+    "tests/i12_signing_key_store_browser_smoke.html",
+    "docs/I12_C_P1_SIGNING_KEY_STORE.md",
+    "app/ui/styles.css"
+  ],
+  "result": "GREEN"
+}
