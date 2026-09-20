@@ -20,19 +20,20 @@
   ],
   "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "security_integrity", "ux_accessibility", "release_evidence"],
   "compatibility": "I08/I10 sowie produktive I12-A/B-Adapter bleiben unverändert; der Proof besitzt einen eigenen DB-Namen und ist ausschließlich Testinfrastruktur.",
-  "security": "Der private Ed25519-Key wird non-extractable erzeugt; Export muss auch nach Reopen fehlschlagen. Duplicate add darf den aktiven Key nicht überschreiben.",
+  "security": "Der private Ed25519-Key bleibt nach IndexedDB-Close/Reopen non-extractable; Export wird abgewiesen. Duplicate add überschreibt den aktiven Key nicht.",
   "test_plan": [
-    "I12 CryptoKey Persistence Chromium Smoke",
+    "I12 CryptoKey Persistence Chromium Smoke: PASS über ChromeDriver",
     "durch styles.css ausgelöste bestehende UI/Browser-Regressionen",
-    "Repository Quality",
+    "Repository Quality nach Evidence-Neubindung",
     "finaler Diff auf test-only Persistence und genau eine CSS-Regel prüfen"
   ],
   "rollback": "Branch/PR verwerfen; main und alle produktiven Stores bleiben unverändert.",
   "evidence": [
     "tests/i12_cryptokey_persistence_browser_smoke.html",
     ".github/workflows/i12-cryptokey-persistence-smoke.yml",
+    "Chromium-Persistence-Run 35534340402: PASS",
     "Restrisiko: Proof gilt nur für den getesteten Chromium/Origin; keine plattformübergreifende Recovery.",
-    "Nächster Schritt: nach grünen Gates erst den kleinsten produktiven I12-Persistence-Adapter planen."
+    "Nächster Schritt: erst nach Freeze den kleinsten produktiven I12-Persistence-Adapter planen."
   ],
-  "result": "RED"
+  "result": "GREEN"
 }
