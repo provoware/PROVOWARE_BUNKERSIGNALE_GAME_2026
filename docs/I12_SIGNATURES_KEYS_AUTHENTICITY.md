@@ -104,11 +104,15 @@ Die Checkpoint-Signatur besitzt eine eigene versionierte Domänentrennung; Rahmu
 
 Verifikation gegen einen trusted checkpoint ist fail-closed:
 
-1. `world_id` muss identisch sein.
-2. Der vollständig neu berechnete I11-Eventcount muss exakt `event_count` entsprechen.
-3. Das letzte geprüfte Event muss exakt `head_event_id` entsprechen.
-4. Der berechnete I11-Kettenkopf muss exakt `head_hash` entsprechen.
-5. Die Checkpoint-Signatur muss mit dem erwarteten Public Key gültig sein.
+1. Ein **extern konfigurierter** `expectedKeyId` muss vorhanden sein; `record.key_id` darf den Trust Anchor nicht selbst auswählen und muss exakt diesem erwarteten Schlüssel entsprechen.
+2. `world_id` muss identisch sein.
+3. Coverage-Metadaten werden **nicht** als frei übergebenes `actual` akzeptiert. I12 erhält `events + chain`, führt mit den injizierten kanonischen Eventbytes und SHA-256-Capabilities erneut `verifyHashChain(...)` aus und leitet erst nach erfolgreicher I11-Prüfung die Coverage ab.
+4. Der verifizierte Eventcount muss exakt `event_count` entsprechen.
+5. Das letzte Event des verifizierten Streams muss exakt `head_event_id` entsprechen.
+6. Der Hash des letzten verifizierten I11-Kettenglieds muss exakt `head_hash` entsprechen.
+7. Die Checkpoint-Signatur muss mit dem extern erwarteten Public Key gültig sein.
+
+Damit kann weder ein untrusted Checkpoint seinen eigenen Schlüssel zum Vertrauensanker erklären noch ein frei konstruiertes/cached Coverage-Objekt eine erfolgreiche I11-Prüfung vortäuschen.
 
 Fehlt ein solcher vertrauenswürdiger Checkpoint, darf I12 **keine Rollback-/Vollständigkeitsgarantie** behaupten. Die zulässige Aussage bleibt dann auf "vorhandene Events intern integer und signiert" begrenzt.
 
