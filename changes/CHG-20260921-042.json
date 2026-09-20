@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-042",
+  "checkpoint": "I12",
+  "title": "P2-LI sign-orchestration decision and VW-003",
+  "purpose": "Nach gruenem P2-L klaeren, ob vor P3 noch ein Integrations-Gate erforderlich ist, und parallel exakt einen Visual-World-Aspekt VW-003 planen.",
+  "scope": [
+    "P2-LI als verpflichtenden Sign-Orchestration-Zwischenblock vor P3 festlegen",
+    "Reihenfolge registration success -> confirmed key_id -> sign verbindlich dokumentieren",
+    "freien externen key_id im spaeteren Sign-Orchestrator ausschliessen",
+    "VW-003 Vorfeld- und Wegeachsen als einzigen Visual-World-Aspekt definieren"
+  ],
+  "non_goals": [
+    "Keine P2-LI-Implementierung",
+    "Keine detached Signature Persistence",
+    "Keine DB-/Schema-/P1-/P2-Aenderung",
+    "Keine Rotation oder Backup-/Restore-Erweiterung",
+    "Keine UI-/CSS-/DOM-/Asset-Aenderung",
+    "Kein I08-/I10-REOPEN"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "P1/P2/P2-L und I12-A/B bleiben unveraendert. P2-LI ordnet nur den spaeteren Application-Signierweg vor P3; VW-003 bleibt reine Planung.",
+  "security": "P3 darf erst nach einem Sign-Orchestrator eroefnet werden, der P2-L-Erfolg und bestaetigten key_id vor jedem Sign-Aufruf erzwingt.",
+  "test_plan": [
+    "Repository Quality",
+    "finaler Diff ohne Produkt-, DB-, Schema-, UI- oder Testcode",
+    "Scope-Check: P3 weiterhin gesperrt",
+    "Visual-World-Ein-Aspekt-Regel: nur VW-003"
+  ],
+  "rollback": "Decision-PR verwerfen; main bleibt auf dem gruen eingefrorenen P2-L-Implementierungsstand.",
+  "evidence": [
+    "docs/I12_C_P2_LI_SIGN_ORCHESTRATION_DECISION.md",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md",
+    "docs/visual-world/VW-003_FORECOURT_ROUTES.md",
+    "docs/VISUAL_WORLD_MASTERPLAN.md"
+  ],
+  "result": "GREEN"
+}
