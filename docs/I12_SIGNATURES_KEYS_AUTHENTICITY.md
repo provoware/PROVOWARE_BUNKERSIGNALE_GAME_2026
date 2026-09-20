@@ -176,6 +176,17 @@ Erst nach grünem I12-B:
 - explizit entscheiden, ob Backup/Restore erweitert werden muss;
 - jede Änderung an I08/I10 verlangt vor dem Patch einen dokumentierten REOPEN.
 
+#### Verbindliche I12-C-Sequenz nach P1
+
+Der aktive lokale Signing-Key-Store ist als **P1** grün eingefroren. Die verbleibenden Persistenzverantwortungen werden nicht parallel oder in beliebiger Reihenfolge geöffnet.
+
+1. **P2 – Historical Public-Key Retention.** Zuerst wird ausschließlich der Vertrag für die unveränderliche historische Aufbewahrung öffentlicher Schlüssel pro `key_id` aufgelöst. Grund: Bereits der bestehende Lifecycle verlangt, dass alte Signaturen nach Lost-Key oder späterer Rotation mit dem damaligen Public Key weiter verifizierbar bleiben.
+2. **P3 – Detached Signature Persistence.** Erst nach grün eingefrorenem P2 darf der persistente detached Signature Store geplant werden. Persistierte Signaturen dürfen keinen dauerhaft nicht mehr auflösbaren `key_id` erzeugen.
+3. **Rotation bleibt danach separat.** Ein Rotationspfad darf weder P2 noch P3 implizit mitimplementieren und benötigt einen eigenen Scope/Contract.
+4. **Authenticity Export / Trusted-Checkpoint-Persistence bleiben separat.** Sie sind weder P2 noch P3 und öffnen I10 nicht automatisch.
+
+Die Reihenfolge ist eine Architekturabhängigkeit, keine Aussage, dass P2 bereits implementiert werden darf. Der nächste freigegebene Schritt nach diesem Sequence Gate ist ausschließlich ein **P2 Contract Gate**; noch kein weiterer IndexedDB-Store.
+
 ## Non-Goals
 
 - keine Verschlüsselung von Welt- oder Eventdaten,

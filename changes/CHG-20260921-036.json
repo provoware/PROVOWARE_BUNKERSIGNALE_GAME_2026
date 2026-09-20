@@ -1,0 +1,34 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-036",
+  "checkpoint": "I12",
+  "title": "I12-C P2 sequence decision",
+  "purpose": "Die nach P1 offene I12-C-Reihenfolge verbindlich aufloesen, ohne weitere Persistence zu implementieren.",
+  "scope": [
+    "P2 als Historical Public-Key Retention vor detached Signature Persistence festlegen",
+    "P3 als nachgelagerten detached Signature Persistence Block kennzeichnen",
+    "P2-Ziel, Non-Goals, Freeze-Grenzen und Exit-Gates dokumentieren"
+  ],
+  "non_goals": [
+    "Keine neue Persistence-Implementierung",
+    "Keine DB-Version oder Migration",
+    "Kein Signature Store und keine Rotation",
+    "Keine Backup-/Restore- oder Trusted-Checkpoint-Persistence",
+    "Keine UI- oder Produktlogikaenderung",
+    "Kein I08- oder I10-REOPEN"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "data_schema_auditor", "security_integrity", "release_evidence"],
+  "compatibility": "P1 sowie I06/I08/I09/I10/I11 und die eingefrorenen I12-A/B-Vertraege bleiben unveraendert. Der Change ordnet nur die Folgearbeit innerhalb I12-C.",
+  "security": "Historische Verifizierbarkeit wird als Abhaengigkeit vor Signature Persistence festgeschrieben; private Schluesselpfade werden nicht geaendert.",
+  "test_plan": [
+    "Repository Quality",
+    "finaler Diff-Check: nur Masterplan/Decision-Dokumentation, Change Record und I12-Evidence/Status",
+    "Scope-Check: keine Produkt-, Schema-, UI- oder Testdatei"
+  ],
+  "rollback": "Decision-Branch/PR verwerfen; der eingefrorene P1-main bleibt unveraendert.",
+  "evidence": [
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md",
+    "docs/I12_C_P2_SEQUENCE_DECISION.md"
+  ],
+  "result": "GREEN"
+}

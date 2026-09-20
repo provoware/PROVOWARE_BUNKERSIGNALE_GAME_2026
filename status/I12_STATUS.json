@@ -1,34 +1,31 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-20T23:02:00Z",
+  "generated_at_utc": "2026-09-20T23:08:00Z",
   "overall_status": "GREEN",
   "gates": {"G0":"GREEN","G1":"GREEN","G6":"GREEN","G8":"GREEN"},
-  "fingerprint_sha256": "eceb7ae06481913922d7f66b14133dde06a8ad95649be516c70aca621c919cfe",
+  "fingerprint_sha256": "f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
-    "i12_cryptokey_persistence_chromium": "PASS",
-    "i12_p1_adapter_contract": "PASS",
     "i12_p1_signing_key_store": "PASS",
-    "i12_p1_signing_key_store_pr_run": "35543400110",
-    "i12_p1_smoke_timeout_hardening": "PASS",
-    "p1_no_clobber": "PASS",
-    "p1_corrupt_record": "FAIL_CLOSED",
+    "i12_c_p2_sequence_decision": "DOCUMENTED",
+    "next_i12_c_block": "P2_CONTRACT_GATE_HISTORICAL_PUBLIC_KEY_RETENTION",
+    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_GREEN",
     "product_persistence": "P1_ACTIVE_KEY_STORE_ONLY",
     "i08_reopen": "NO",
     "i10_reopen": "NO",
     "private_key_backup": "NOT_ALLOWED_V1"
   },
   "reviews": [
-    {"role":"orchestrator","status":"PASS","evidence":"Hotfix bleibt auf CI-WebDriver-Startup begrenzt."},
-    {"role":"architecture_guardian","status":"PASS","evidence":"Produktcode und P1-Adapter unveraendert."},
-    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine Daten- oder Backup-Schemaaenderung."},
-    {"role":"qa_regression","status":"PASS","evidence":"P1-Smokes #7/#8 und triggerbasierte Regressionen gruen."},
-    {"role":"security_integrity","status":"PASS","evidence":"Kein Produkt-/Keypfad geaendert."},
-    {"role":"ux_accessibility","status":"PASS","evidence":"Keine zweite UX-Aenderung; P1-UX-Scope bleibt exakt eine Aenderung."},
+    {"role":"orchestrator","status":"PASS","evidence":"I12-C Folgearbeit ist jetzt P2 vor P3 sequenziert."},
+    {"role":"architecture_guardian","status":"PASS","evidence":"P2 Historical Public-Key Retention ist der naechste Contract-only Block."},
+    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine Store-/Schemaaenderung in diesem Decision Gate."},
+    {"role":"qa_regression","status":"PASS","evidence":"Nur Governance-Evidence wird erneut gegated."},
+    {"role":"security_integrity","status":"PASS","evidence":"Persistente Signaturen bleiben gesperrt, bis historische Public Keys dauerhaft aufloesbar geplant sind."},
+    {"role":"ux_accessibility","status":"PASS","evidence":"Keine UI-Aenderung im Decision-only Scope."},
     {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik veraendert."},
-    {"role":"release_evidence","status":"PASS","evidence":"Hotfix an eceb7ae06481913922d7f66b14133dde06a8ad95649be516c70aca621c919cfe gebunden."}
+    {"role":"release_evidence","status":"PASS","evidence":"Sequence Decision an f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be gebunden."}
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
 }
