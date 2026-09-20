@@ -1,0 +1,32 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-013",
+  "checkpoint": "I11",
+  "title": "I11-A deterministic hash-chain core",
+  "purpose": "Die in der I11-Planung geforderte Byte-Rahmung durch einen festen Testvektor binden und den kleinsten infrastrukturfrei prüfbaren Hashketten-Core bereitstellen.",
+  "scope": [
+    "versionierte v1-Byte-Rahmung und Genesis-Vorgänger festschreiben",
+    "deterministischen Kettenaufbau und fail-closed Verifikation implementieren",
+    "feste SHA-256-Testvektoren und Manipulations-Negativfälle ergänzen",
+    "genau eine visuelle UX-Korrektur: deaktivierte Aktionsbuttons erhalten beim Hover keinen aktiven Akzent mehr"
+  ],
+  "non_goals": [
+    "Kein Browser-Crypto-Adapter aus I11-B",
+    "Keine Persistenz der Hashkette",
+    "Keine Änderung an I06-, I08-, I09- oder I10-Produktverträgen",
+    "Keine Signaturen oder Schlüsselverwaltung aus I12",
+    "Keine weitere visuelle Änderung"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "security_integrity", "release_evidence"],
+  "compatibility": "Der Core erhält kanonische Eventbytes und SHA-256 als injizierte Funktionen. Dadurch bleiben die gefrorenen Event-, Storage-, Snapshot- und Backup-Verträge unverändert; kein REOPEN ist erforderlich.",
+  "security": "Domänentrennung, Genesis-Hash und Byte-Rahmung sind durch einen festen SHA-256-Vektor gebunden. Verifikation scheitert bei Inhalts- oder Kettengliedmanipulation geschlossen.",
+  "test_plan": [
+    "I11-Festvektor einschließlich exakter gerahmter Bytes und erwartetem SHA-256",
+    "Negativfälle für Eventänderung und previous_hash-Manipulation",
+    "leere Welt und Schichtgrenzen ohne Browser-/Persistenzabhängigkeit",
+    "Repository Quality und allgemeiner Chromium-Smoke"
+  ],
+  "rollback": "I11-A-Branch verwerfen; main bleibt auf dem grünen I11-Planning-Gate.",
+  "evidence": ["app/application/hash-chain.js", "tests/test_i11_hash_chain.py", "docs/I11_HASH_CHAIN.md", "app/ui/styles.css"],
+  "result": "GREEN"
+}
