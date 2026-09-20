@@ -26,14 +26,13 @@ Damit bleibt die bestehende Abhängigkeitsrichtung erhalten und I11 zwingt keine
 
 ## Kettenvertrag v1
 
-Ein Kettenglied enthält mindestens:
+Ein Kettenglied enthält mindestens `sequence`, `event_id`, `previous_hash` und `event_hash`.
 
-- `sequence`
-- `event_id`
-- `previous_hash`
-- `event_hash`
+Die Byte-Rahmung ist ab I11-A eingefroren als UTF-8/ASCII-Konkatenation:
 
-Die Hash-Eingabe besteht aus einer versionierten ASCII-Domänentrennung, dem 64-stelligen Vorgängerhash und den kanonischen UTF-8-Bytes des vollständigen Events. Die konkrete Byte-Rahmung wird vor dem ersten Runtime-Patch in Tests festgeschrieben und darf danach nicht implizit geändert werden.
+`provoware:i11:hash-chain:v1\n` + `<64-stelliger previous_hash>` + `\n` + `<kanonische UTF-8-Eventbytes>`
+
+Für das erste Standard-Testevent mit Genesis-Vorgänger ist der SHA-256-Vektor verbindlich `b583335b4025c08e3cd2c3ae9324edde696d05450ef2744b721e59fd20f6fc31`. Änderungen an Domänentrennung, Trennern oder kanonischen Eventbytes sind Vertragsänderungen und dürfen nicht implizit erfolgen.
 
 ## Non-Goals
 
