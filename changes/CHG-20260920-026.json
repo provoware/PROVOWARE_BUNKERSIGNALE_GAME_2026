@@ -1,0 +1,18 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-026",
+  "checkpoint": "I12",
+  "title": "I12-B non-extractable Ed25519 key generation",
+  "purpose": "Den naechsten kleinsten offenen I12-B-Produktblock umsetzen: Ed25519-Schluesselpaar hinter dem Browser-Infrastructure-Adapter erzeugen, privaten Schluessel nicht extrahierbar halten.",
+  "scope": ["generateEd25519KeyPair ueber SubtleCrypto", "privateKey extractable=false erzwingen", "sign/verify usages testen"],
+  "non_goals": ["Kein KeyStore oder Persistence", "Kein Import/Export-public in diesem Block", "Kein Recovery oder Rotation", "Keine I12-C-Funktion", "Kein REOPEN von I06 bis I11"],
+  "affected_owners": ["architecture_guardian", "qa_regression", "security_integrity"],
+  "compatibility": "Additive Infrastructure-Funktion; bestehende I12-A/I12-B-Vertraege bleiben unveraendert.",
+  "security": "Der private Produkt-Schluessel wird nicht extrahierbar erzeugt; Fehler werden ohne rohe DOMException uebersetzt.",
+  "test_plan": ["generiertes Paar enthaelt private/public Key", "privateKey.extractable ist false", "Usages sind sign/verify", "bestehender RFC-8032 sign/verify Vektor bleibt gruen"],
+  "rollback": "Branch/PR verwerfen; main bleibt auf dem gruenen Chromium-Smoke-Stand.",
+  "evidence": ["app/infrastructure/browser/ed25519-sign-verify.js", "tests/test_i12_ed25519_sign_verify.py"],
+  "result": "PENDING_GATES",
+  "residual_risk": "Public-key import/export und 1000-Verify-Profil bleiben als getrennte I12-B-Teilbloecke offen.",
+  "next_step": "Nur relevante PR-Gates pruefen; bei Gruen scope-clean squash-mergen."
+}
