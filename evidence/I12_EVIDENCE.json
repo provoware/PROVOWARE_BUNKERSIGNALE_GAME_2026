@@ -1,43 +1,43 @@
 {
   "checkpoint": "I12",
-  "generated_at_utc": "2026-09-20T23:12:00Z",
+  "generated_at_utc": "2026-09-20T23:21:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b",
+  "fingerprint_sha256": "313d12126910f79a16637c3d5d6f04d7f522e217a919b0451f8ba682641ec1b1",
   "checks": [
     {
       "name": "repository_quality",
       "status": "PASS",
-      "detail": "Quality #640 ermittelte den governed P2-Contract-Fingerprint 0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus CHG-037."
+      "detail": "Quality #651/#652 ermittelten den governed P2-Implementierungs-Fingerprint 313d12126910f79a16637c3d5d6f04d7f522e217a919b0451f8ba682641ec1b1; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus CHG-038."
     },
     {
-      "name": "p1_frozen",
+      "name": "p2_public_key_store",
       "status": "PASS",
-      "detail": "P1 signing_keys, Produktcode und Chromium-Gates bleiben unveraendert."
+      "detail": "P2 Chromium #6/#7 gruen: raw32, key_id-Verifikation, non-aliasing readback, idempotent duplicate, conflict/no-clobber, Korruption, injected write failure und P1-v1→v2-Erhalt."
     },
     {
-      "name": "p2_contract",
+      "name": "p1_compatibility",
       "status": "PASS",
-      "detail": "Historische Public-Key-Retention ist auf 32 rohe Ed25519-Bytes, exakte key_id-Verifikation, separaten public_keys-Store sowie putIfAbsent/readById begrenzt."
+      "detail": "P1 Signing-Key-Store #14 ist nach additivem I12-DB-v2-Upgrade gruen; API und Semantik bleiben unveraendert."
     },
     {
-      "name": "p2_no_clobber",
+      "name": "triggered_regressions",
       "status": "PASS",
-      "detail": "Identischer Duplicate ist idempotent; gleicher key_id mit abweichenden Bytes ist fail-closed und darf nicht mutieren."
+      "detail": "Browser #149, I11 #51 und I12 Ed25519 #37 sind gruen."
     },
     {
       "name": "p3_lock",
       "status": "PASS",
-      "detail": "Detached Signature Persistence bleibt bis zum vollstaendig gruenen P2-Implementierungs-Freeze gesperrt."
+      "detail": "Detached Signature Persistence, Rotation, Backup/Restore und Trusted-Checkpoint-Persistence bleiben gesperrt."
     },
     {
       "name": "predecessor_freeze",
       "status": "PASS",
-      "detail": "I06/I08/I09/I10/I11 sowie I12-A/B/P1 bleiben unveraendert; kein I08-/I10-REOPEN."
+      "detail": "I08/I10 bleiben geschlossen; keine I06/I09/I11-Vertragsaenderung."
     },
     {
       "name": "scope_guard",
       "status": "PASS",
-      "detail": "Contract-only: keine Produkt-, DB-, Schema-, UI- oder Testcodeaenderung."
+      "detail": "Produktpatch beschraenkt sich auf P2 public_keys, minimale P1 DB-v2-Kompatibilitaet, Contract-Smokes, Workflow und Entwicklerdokumentation; keine UI-Aenderung."
     }
   ],
   "file_hashes": {
@@ -61,39 +61,40 @@
     "changes/CHG-20260921-034.json": "13f931361d3665b7a60cb7d8a05812e8e4c4dd31e4169935b628a6e7b94914ac",
     "changes/CHG-20260921-035.json": "9397571e3dd0b48f1f5272d77cab5cad2692bb15aff5b30b2ca2ef2286646ed6",
     "changes/CHG-20260921-036.json": "2c68942418aee9c16f6edbc061d4fb59ae57036751881cb3d2ea2530ad400aa2",
-    "changes/CHG-20260921-037.json": "132958159a0ee1af2d186a8db2f1d88d814ae5e3b08767f7bf33b6564db29709"
+    "changes/CHG-20260921-037.json": "132958159a0ee1af2d186a8db2f1d88d814ae5e3b08767f7bf33b6564db29709",
+    "changes/CHG-20260921-038.json": "da81be7a0e6e4b4753538be379ca82bbe446214746c05069aec12049856abc2d"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "Nur P2-Vertrag und seine Freeze-Grenzen wurden aufgeloest."
+      "evidence": "Nur der eingefrorene P2-Implementierungsblock wurde umgesetzt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "P2 trennt historischen Public-Key-Store vom unveraenderten P1 signing_keys-Store."
+      "evidence": "P2 public_keys ist additiv im separaten I12-Bereich; P1 bleibt semantisch unveraendert."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "Keine DB-Version, Migration oder Schemaaenderung in diesem Contract Gate."
+      "evidence": "I12-DB v1→v2 legt ausschliesslich public_keys additiv an; bestehende signing_keys-Daten bleiben erhalten."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Nur Repository Quality ist fuer den docs-only Contract-Block erforderlich; Contract-Faelle sind fuer die spaetere Implementierung eingefroren."
+      "evidence": "P2 #6/#7, P1 #14, Browser #149, I11 #51 und Ed25519 #37 gruen."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "key_id muss exakt aus den gespeicherten 32 Bytes reproduziert werden; widerspruechliches Material ist fail-closed."
+      "evidence": "key_id wird aus den gespeicherten 32 Bytes verifiziert; Duplicates sind idempotent und Konflikte fail-closed/no-clobber."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "Keine UI-Aenderung im ausdruecklich eingeengten Contract-only Scope."
+      "evidence": "Keine UI-Aenderung im explizit eingegrenzten P2-Implementierungsblock."
     },
     {
       "role": "content_canon",
@@ -103,7 +104,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "P2 Contract Gate an governed Fingerprint 0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b und CHG-037 gebunden."
+      "evidence": "P2-Implementierung an governed Fingerprint 313d12126910f79a16637c3d5d6f04d7f522e217a919b0451f8ba682641ec1b1 und CHG-038 gebunden."
     }
   ]
 }

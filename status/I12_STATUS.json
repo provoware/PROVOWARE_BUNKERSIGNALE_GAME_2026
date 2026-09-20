@@ -1,7 +1,7 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-20T23:12:00Z",
+  "generated_at_utc": "2026-09-20T23:21:00Z",
   "overall_status": "GREEN",
   "gates": {
     "G0": "GREEN",
@@ -9,53 +9,64 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b",
+  "fingerprint_sha256": "313d12126910f79a16637c3d5d6f04d7f522e217a919b0451f8ba682641ec1b1",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_p1_signing_key_store": "PASS",
     "i12_c_p2_sequence_decision": "DOCUMENTED",
-    "next_i12_c_block": "P2_IMPLEMENTATION_HISTORICAL_PUBLIC_KEY_RETENTION",
-    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_IMPLEMENTATION_GREEN",
-    "product_persistence": "P1_ACTIVE_KEY_STORE_ONLY",
+    "next_i12_c_block": "MASTERPLAN_RESOLUTION_REQUIRED",
+    "p3_detached_signature_persistence": "BLOCKED_UNTIL_NEXT_SCOPE_RESOLVED",
+    "product_persistence": "P1_ACTIVE_KEY_PLUS_P2_HISTORICAL_PUBLIC_KEYS",
     "i08_reopen": "NO",
     "i10_reopen": "NO",
     "private_key_backup": "NOT_ALLOWED_V1",
     "i12_c_p2_public_key_contract": "DOCUMENTED",
     "p2_public_key_representation": "RAW_ED25519_32_BYTES",
     "p2_api": "PUT_IF_ABSENT_READ_BY_ID",
-    "p2_conflict_policy": "IDEMPOTENT_IDENTICAL_FAIL_CLOSED_DIFFERENT"
+    "p2_conflict_policy": "IDEMPOTENT_IDENTICAL_FAIL_CLOSED_DIFFERENT",
+    "i12_c_p2_public_key_store": "PASS",
+    "i12_c_p2_public_key_store_run": "35544315028",
+    "i12_c_p2_public_key_store_push_run": "35544312882",
+    "i12_c_p2_db_version": "2",
+    "p2_raw_public_key_bytes": "PASS",
+    "p2_key_id_verification": "PASS",
+    "p2_duplicate_identical": "IDEMPOTENT",
+    "p2_duplicate_conflict": "FAIL_CLOSED",
+    "p2_corrupt_record": "FAIL_CLOSED",
+    "p2_p1_upgrade_preservation": "PASS",
+    "p2_injected_write_failure": "FAIL_CLOSED"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2 Contract Gate vollstaendig dokumentiert."
+      "evidence": "P2-Implementierung entspricht dem eingefrorenen Contract."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "P2 public_keys bleibt additiv und getrennt von P1 signing_keys."
+      "evidence": "P2 public_keys und P1 signing_keys bleiben getrennte Verantwortungen in derselben I12-DB."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "Noch keine DB-/Schemaaenderung; additive Migration bleibt Folgeblock."
+      "evidence": "Additives DB-v2-Upgrade erhaelt vorhandene P1-Daten."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "P2 Contract-Faelle und Exit-Gates sind vor Implementierung gebunden."
+      "evidence": "P2/P1 und alle triggerbasierten Regressionen gruen."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Raw-Bytes/key_id-Bindung und fail-closed Konfliktpolitik sind festgelegt."
+      "evidence": "Raw32/key_id-Bindung, immutable no-clobber und fail-closed Konflikte belegt."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "Keine UI-Aenderung im Contract-only Scope."
+      "evidence": "Keine UI-Aenderung."
     },
     {
       "role": "content_canon",
@@ -65,7 +76,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Contract Gate an 0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b gebunden."
+      "evidence": "P2 an 313d12126910f79a16637c3d5d6f04d7f522e217a919b0451f8ba682641ec1b1 gebunden."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
