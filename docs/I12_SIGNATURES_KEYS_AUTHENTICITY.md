@@ -191,6 +191,8 @@ Die Reihenfolge ist eine Architekturabhängigkeit, keine Aussage, dass P2 bereit
 
 **P2-L – Lifecycle Registration Barrier:** Nach grünem P2 und vor P3 ist ein eigener Application-Orchestrierungsvertrag erforderlich. Vor jedem Signieren MUSS der aktive P1-Key gelesen, sein öffentlicher Schlüssel über die bestehende I12-B-Capability als 32 rohe Bytes exportiert, daraus der eingefrorene `key_id` abgeleitet und exakt gegen den P1-`key_id` geprüft werden. Danach MUSS derselbe Public Key über P2 `putIfAbsent` historisch registriert sein. Erst nach erfolgreichem Abschluss dieser Barriere darf ein Signiervorgang starten. P1 wird dabei nur gelesen; deshalb ist keine Cross-Store-Write-Transaktion erforderlich. P2-No-Clobber bleibt die einzige Persistenzmutation. Jeder Export-, Ableitungs-, Mismatch- oder P2-Fehler blockiert Signieren fail-closed. P3 bleibt bis zum grünen P2-L-Freeze gesperrt.
 
+
+**P2-L Contract Gate – Active Key Registration Barrier:** Die spätere minimale Application-Funktion ist `ensureActiveSigningKeyRegistered({ signingKeyStore, publicKeyStore, exportPublicKey, deriveKeyId })`. Sie liefert nach erfolgreicher Barriere ausschließlich den bestätigten `key_id` plus eine frische Kopie der 32 Public-Key-Bytes. Stabile Application-Fehler unterscheiden fehlenden aktiven Key, Exportfehler, key_id-Ableitungsfehler, key_id-Mismatch und P2-Registrierungsfehler. Die Call-Barrier bleibt zwingend `read → export → derive/verify → register → erst danach sign`; ein Sign-Aufruf vor P2-Erfolg ist vertraglich verboten. P3 bleibt bis zum grünen P2-L-Implementierungs-Freeze gesperrt.
 ## Non-Goals
 
 - keine Verschlüsselung von Welt- oder Eventdaten,

@@ -15,7 +15,6 @@ Nur `orchestrator` darf einen Checkpoint integrieren und freigeben. Fachrollen d
 6. `ux_accessibility` - Verständlichkeit, Fehlerzustände, Tastatur/Zoom/Bewegung und WCAG-Ziel.
 7. `content_canon` - Kanonstatus, Provenienz, Textentkopplung und Story-Konsistenz.
 8. `release_evidence` - Versionierung, Changelog, Fingerprints, Exit-Kriterien und Releasepaket.
-9. `visual_world_director` - Pro Iteration exakt ein visueller/spielweltlicher Aspekt; Komposition, räumliche Lesbarkeit, Environment Storytelling, spätere Ausbauflächen und visuelle Scope-Grenzen.
 
 ## Arbeitsfolge
 1. Orchestrator erstellt Change-ID, Scope und betroffene Owner.
@@ -38,6 +37,8 @@ Wenn keine echten Subagenten ausführbar sind, MUSS der Orchestrator dieselben R
 
 
 ## Visual-World-Ein-Aspekt-Regel
+
+Der spezialisierte, nicht merge-berechtigte Delegationsagent `visual_world_director` arbeitet unter der Merge-Hoheit des `orchestrator` sowie den registrierten Review-Ownern `ux_accessibility` und `content_canon`. Die eingefrorene Kernrollenliste in `agents/registry.json` wird dafür nicht erweitert.
 
 Der `visual_world_director` darf pro Entwicklungsiteration exakt **eine** visuelle/spielweltliche Zieldatei oder einen eindeutig abgegrenzten visuellen Aspekt bearbeiten. Planung darf Folgearbeiten benennen, aber nicht mitimplementieren.
 

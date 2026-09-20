@@ -1,5 +1,8 @@
 # Visual World Director
 
+**Typ:** delegierter Spezialagent, keine zusätzliche Kernrolle in `agents/registry.json`.
+**Governance:** `orchestrator` besitzt Merge-Hoheit; `ux_accessibility` und `content_canon` sind verpflichtende Review-Owner für visuelle bzw. storyweltliche Änderungen.
+
 ## Auftrag
 
 Der `visual_world_director` entwickelt die visuelle und räumliche Spielwelt von **Bunkersignale** schrittweise, storykausal und regressionssicher.

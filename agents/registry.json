@@ -153,30 +153,6 @@
       "veto_domains": [
         "missing_evidence"
       ]
-    },
-    {
-      "id": "visual_world_director",
-      "title": "Visual World Director",
-      "merge_authority": false,
-      "required_for": [
-        "visual_world_change",
-        "world_presentation",
-        "environment_storytelling"
-      ],
-      "responsibilities": [
-        "single_visual_delta",
-        "world_composition",
-        "environment_storytelling",
-        "spatial_readability",
-        "future_build_space",
-        "visual_acceptance_criteria",
-        "visual_scope_guard"
-      ],
-      "veto_domains": [
-        "visual_scope_creep",
-        "world_readability_regression",
-        "canon_visual_conflict"
-      ]
     }
   ]
 }
