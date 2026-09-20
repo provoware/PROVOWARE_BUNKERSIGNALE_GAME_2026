@@ -49,9 +49,23 @@ Zusätzlich laufen nur durch die geänderten Pfade ausgelöste bestehende Qualit
 
 Genau eine isolierte Änderung: Der bereits aktive Tab erhält zusätzlich die Accent-Textfarbe. Dadurch bleibt der aktive Zustand neben Rahmen und Unterstreichung auch bei flüchtigem Blick klarer erkennbar. DOM und Interaktionslogik ändern sich nicht.
 
+## Post-Merge Gate-Härtung
+
+Der erste Post-Merge-P1-Smoke (#4) erreichte den Produkttest nicht: Die WebDriver-Session-Erzeugung überschritt den festen HTTP-Timeout von zehn Sekunden. Der Store-Code selbst war dabei nicht beteiligt.
+
+Der Workflow erhöht deshalb ausschließlich den HTTP-Timeout für WebDriver-Aufrufe von zehn auf dreißig Sekunden. Das eigentliche Testfenster für den DOM-Resultatstatus bleibt unverändert bei zehn Sekunden. Dadurch wird langsamer Runner-/Chrome-Start toleriert, ohne einen hängenden Produkttest zu kaschieren.
+
+Betroffen ist nur `.github/workflows/i12-signing-key-store-smoke.yml`. Store, Testfall, CSS und gefrorene Vorgänger bleiben unverändert.
+
+**Prüfung:** P1-Smoke und Repository Quality müssen nach Evidence-Neubindung grün sein.
+
+**Ergebnis:** Der P1-Block gilt erst nach grünem Hotfix-PR und grünen Post-Merge-Gates als eingefroren.
+
+**Restrisiko:** Ein Runner, dessen WebDriver-Session selbst nach dreißig Sekunden nicht antwortet, bleibt bewusst rot; es wird kein automatischer Retry eingeführt.
+
 ## Ergebnis und Freeze-Grenze
 
-Der Block darf ausschließlich bei vollständig grünen relevanten Gates gemergt werden. Die finalen Run-IDs und der gebundene Repository-Fingerprint werden in I12-Evidence/Status geführt.
+Der Block darf ausschließlich bei vollständig grünen relevanten Gates eingefroren werden. Die finalen Run-IDs und der gebundene Repository-Fingerprint werden in I12-Evidence/Status geführt.
 
 Kein I08-/I10-REOPEN ist erforderlich.
 
