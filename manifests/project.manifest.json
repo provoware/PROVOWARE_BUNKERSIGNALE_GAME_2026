@@ -7,7 +7,7 @@
   "specification_baseline": "0.4.0",
   "checkpoint": "I12",
   "checkpoint_title": "Signatures + Keys + Authenticity",
-  "status": "active_i12",
+  "status": "frozen_i12",
   "runtime_strategy": "browser_local_first",
   "tooling_python_min": "3.12",
   "license_state": "UNLICENSED",

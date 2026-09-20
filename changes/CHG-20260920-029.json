@@ -1,0 +1,45 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-029",
+  "checkpoint": "I12",
+  "title": "I12 formal freeze and evidence binding",
+  "purpose": "Den vollständig grünen I12-A/B-Stand formal einfrieren und Evidence/Status an den finalen governed Repository-Fingerprint binden.",
+  "scope": [
+    "project manifest status auf frozen_i12 setzen",
+    "alle 14 I12-Exit-Gates gegen den finalen main-Stand bestätigen",
+    "I12 Evidence und Status mit governed Fingerprint erzeugen",
+    "I13 bis zum abgeschlossenen Freeze gesperrt halten"
+  ],
+  "non_goals": [
+    "Keine I12-C-Implementierung",
+    "Kein KeyStore oder Persistence",
+    "Kein Recovery oder Rotation",
+    "Kein I08/I10-REOPEN",
+    "Keine Produkt- oder UI-Aenderung"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "Reiner Governance-/Evidence-Freeze; Produktcode und eingefrorene Vorgaenger bleiben unveraendert.",
+  "security": "Kein Schluesselmaterial wird persistiert oder exportiert; Freeze bindet nur bereits gruene Vertraege und Regressionsevidence.",
+  "test_plan": [
+    "Repository Quality auf Freeze-Branch GREEN",
+    "Fingerprint aus Quality-Run auslesen",
+    "Evidence/Status auf exakt diesen Fingerprint binden",
+    "Quality erneut GREEN mit aktiver Checkpoint-Evidence-Validierung"
+  ],
+  "rollback": "Freeze-PR verwerfen; main bleibt auf dem gruene I12-B-Produktstand aktiv_i12.",
+  "evidence": [
+    "evidence/I12_EVIDENCE.json",
+    "status/I12_STATUS.json",
+    "manifests/project.manifest.json"
+  ],
+  "result": "GREEN"
+}

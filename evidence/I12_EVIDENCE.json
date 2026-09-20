@@ -1,0 +1,136 @@
+{
+  "checkpoint": "I12",
+  "generated_at_utc": "2026-09-20T17:34:56Z",
+  "status": "GREEN",
+  "fingerprint_sha256": "e6667a8336b9c578c243bb9c005e9f59ee520aa2087480494054b621e80fc595",
+  "checks": [
+    {
+      "name": "repository_quality",
+      "status": "PASS",
+      "detail": "Post-Merge Quality #543 GREEN auf main 178f3d53f06522fe91133f54362d395ea3a80e86; Freeze-Tree Quality #546 GREEN."
+    },
+    {
+      "name": "i11_before_i12",
+      "status": "PASS",
+      "detail": "Sign/Verify-Orchestrierung verlangt erfolgreiche aktuelle I11-Bindung; bloßes weitergereichtes Flag genügt nicht."
+    },
+    {
+      "name": "deterministic_signature_bytes",
+      "status": "PASS",
+      "detail": "Versionierte Event-Signatur-Rahmung und feste I12-A-Testvektoren sind gebunden."
+    },
+    {
+      "name": "deterministic_key_id",
+      "status": "PASS",
+      "detail": "key_id v1 nutzt exakt 32 rohe Ed25519-Public-Key-Bytes und festen SHA-256-Vektor."
+    },
+    {
+      "name": "ed25519_valid_signature",
+      "status": "PASS",
+      "detail": "RFC-8032-Leernachrichtenvektor signiert und verifiziert in Node WebCrypto und realem Chromium."
+    },
+    {
+      "name": "tamper_fail_closed",
+      "status": "PASS",
+      "detail": "Event-, Welt-, Kettenhash-, Schlüssel- und Signaturmanipulation werden fail-closed abgewiesen."
+    },
+    {
+      "name": "author_binding",
+      "status": "PASS",
+      "detail": "record.author_id muss exakt event.author_id entsprechen; Mismatch wird fail-closed abgewiesen."
+    },
+    {
+      "name": "trust_separation",
+      "status": "PASS",
+      "detail": "Integrität, kryptografische Authentizität und Actor-Vertrauen bleiben getrennte Aussagen."
+    },
+    {
+      "name": "trusted_checkpoint_coverage",
+      "status": "PASS",
+      "detail": "Suffix-Truncation wird nur mit gültigem trusted checkpoint ausgeschlossen; ohne Checkpoint keine Vollständigkeitsgarantie."
+    },
+    {
+      "name": "private_key_protection",
+      "status": "PASS",
+      "detail": "Produktive private Ed25519-Schlüssel werden nicht extrahierbar erzeugt; Private-Key-Export wird nicht angeboten."
+    },
+    {
+      "name": "unsupported_fail_closed",
+      "status": "PASS",
+      "detail": "Fehlendes WebCrypto/Ed25519 wird stabil ohne Algorithmus-Fallback behandelt."
+    },
+    {
+      "name": "browser_profile_1000",
+      "status": "PASS",
+      "detail": "I12 Chromium #5: 1000 sequenzielle Verifikationen nach 10 Warm-ups in 62 ms; Gate 5000 ms."
+    },
+    {
+      "name": "predecessor_freeze",
+      "status": "PASS",
+      "detail": "I06/I08/I09/I10/I11 blieben ohne begründeten REOPEN unverändert."
+    },
+    {
+      "name": "scope_guard",
+      "status": "PASS",
+      "detail": "Kein I13-Recovery-, I14-Multi-Tab-, KeyStore-, Persistence- oder I12-C-Implementierungsscope vorgezogen."
+    }
+  ],
+  "file_hashes": {
+    "changes/CHG-20260920-017.json": "9d76cb206dd3e13a0793d4021dd156094e420eb5854180aa345c81cfc785d1f8",
+    "changes/CHG-20260920-018.json": "646651048c68e12e3ef6029e96b8139f5196e0faa50f768b651beb6a52d9cad8",
+    "changes/CHG-20260920-019.json": "0d5b1235fb738349cda2eefa2cd9f1536592e76818e3ca92e0087510bcdd6dab",
+    "changes/CHG-20260920-020.json": "662c49db4c975b5f2fa7381ddde9923f562b5473e9e665b34c5727c9a029fe7d",
+    "changes/CHG-20260920-021.json": "cf6d322f432c348e6ea59a8b7512b911e49b5140c1b50f0dd28623f432708429",
+    "changes/CHG-20260920-022.json": "96b85d4bc5228171cc22860e9eb5207192f8b60a71ab559d31fdb4572b1b7049",
+    "changes/CHG-20260920-023.json": "0a7454e747c5999ea9abc3299daad1c7e2dbac5c3d79b02ec29a4c62f0c1f9d6",
+    "changes/CHG-20260920-024.json": "d2f0114ea42788a85c8b1f78941ce70183410318324b33a289cd0e4e82927bb2",
+    "changes/CHG-20260920-025.json": "0ee6800acc29ed8ecb5e25ee1473597c64b521db86c91b9a04f356cb04d1157d",
+    "changes/CHG-20260920-026.json": "c82d845ca97ad1155877adf72c2ad1e84cd7e0bacecd22d06f4ec26b4eb8c5e9",
+    "changes/CHG-20260920-027.json": "acac79a6f327eed5c657eb437b5c064717ce9b187e6cdebe016c11a1e28bbe6e",
+    "changes/CHG-20260920-028.json": "b4fc8dd4f42711d0389f9fbdf9cc28eab028133430876dddeca9632a227d5712",
+    "changes/CHG-20260920-029.json": "b6b24c1b84b03c8ed1f51ca81e2c95de9097d2e900c45716a2508137d8a08405"
+  },
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "I12-A/B vollständig; alle 14 I12-Exit-Gates geprüft; I12-C blieb gesperrt."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "Application/Infrastructure-Grenzen bleiben erhalten; kein I06/I08/I09/I10/I11-REOPEN erforderlich."
+    },
+    {
+      "role": "data_schema_auditor",
+      "status": "PASS",
+      "evidence": "I06-Envelope und bestehende Stores/Snapshots/Backups bleiben unverändert; detached I12-Verträge sind separat."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Post-Merge Quality #543 GREEN; I12 Chromium #5, I11 Chromium #19 und Generic Browser #117 GREEN."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "I11-vor-I12, author binding, tamper fail-closed, trusted checkpoint coverage, non-extractable private key und unsupported fail-closed sind belegt."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "I12-UX-Änderungen blieben isoliert; UI-/Browser-Regressionen blieben GREEN."
+    },
+    {
+      "role": "content_canon",
+      "status": "PASS",
+      "evidence": "I12 verändert keine Gameplay-/Contentlogik."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "Frozen I12 governed tree ist an Fingerprint e6667a8336b9c578c243bb9c005e9f59ee520aa2087480494054b621e80fc595 gebunden; Quality #546 bestätigt den finalen governed Tree vor der Evidence-Bindung."
+    }
+  ]
+}
