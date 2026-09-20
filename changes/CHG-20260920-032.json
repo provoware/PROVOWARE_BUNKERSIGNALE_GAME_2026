@@ -30,9 +30,9 @@
   "rollback": "Branch/PR verwerfen; main und alle produktiven Stores bleiben unverändert.",
   "evidence": [
     "tests/i12_cryptokey_persistence_browser_smoke.html",
-    ".github/workflows/i12-cryptokey-persistence-smoke.yml"
+    ".github/workflows/i12-cryptokey-persistence-smoke.yml",
+    "Restrisiko: Proof gilt nur für den getesteten Chromium/Origin; keine plattformübergreifende Recovery.",
+    "Nächster Schritt: nach grünen Gates erst den kleinsten produktiven I12-Persistence-Adapter planen."
   ],
-  "result": "PENDING",
-  "residual_risk": "Der Proof belegt Browser-Persistenz im getesteten Chromium/Origin, aber keine plattformübergreifende Recovery und noch keinen produktiven Store-Vertrag.",
-  "next_step": "Nur bei vollständig grünen Gates den Proof dokumentarisch abschließen; danach erst den kleinsten produktiven I12-Persistence-Adapter planen."
+  "result": "RED"
 }
