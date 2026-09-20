@@ -1,0 +1,39 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-031",
+  "checkpoint": "I12",
+  "title": "I12-C isolated CryptoKey persistence proof",
+  "purpose": "Den im I12-C Decision Gate geforderten realen Chromium-Nachweis vor jeder produktiven Persistence-Implementierung isoliert erbringen.",
+  "scope": [
+    "separaten test-only IndexedDB-Store im Chromium-Smoke verwenden",
+    "non-extractable Ed25519-CryptoKey über close/reopen wiederverwenden",
+    "Sign/Verify nach Reopen prüfen",
+    "Private-Key-Export weiterhin ablehnen",
+    "Duplicate-Key no-clobber und Missing-Key fail-closed prüfen",
+    "genau eine visuelle UX-Änderung: dezenter Schatten ausschließlich für Karten"
+  ],
+  "non_goals": [
+    "Kein produktiver KeyStore oder Signature-Store",
+    "Keine produktive DB-Version oder Migration",
+    "Kein I08- oder I10-REOPEN",
+    "Keine Rotation oder Recovery",
+    "Keine Backup-Schema-Änderung",
+    "Keine Funktionsänderung an der UI"
+  ],
+  "affected_owners": ["architecture_guardian", "qa_regression", "security_integrity", "ux_accessibility", "release_evidence"],
+  "compatibility": "I08/I10 und produktive I12-A/B-Crypto-Pfade bleiben unverändert; der IndexedDB-Store existiert ausschließlich in der Testseite.",
+  "security": "Der Proof exportiert kein privates Schlüsselmaterial und bestätigt explizit extractable=false auch nach Reopen.",
+  "test_plan": [
+    "I12 CryptoKey Persistence Chromium Smoke",
+    "Repository Quality",
+    "I10 Game UI Shell Smoke wegen isolierter CSS-Änderung",
+    "Generic Browser Smoke wegen isolierter CSS-Änderung"
+  ],
+  "rollback": "Branch/PR verwerfen; main und alle gefrorenen Produktstores bleiben unverändert.",
+  "evidence": [
+    "tests/i12_cryptokey_persistence_browser_smoke.html",
+    ".github/workflows/i12-cryptokey-persistence-smoke.yml",
+    "app/ui/styles.css"
+  ],
+  "result": "PENDING"
+}
