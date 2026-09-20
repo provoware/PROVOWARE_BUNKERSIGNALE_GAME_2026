@@ -1,0 +1,33 @@
+name: i12-cryptokey-persistence-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'tests/i12_cryptokey_persistence_browser_smoke.html'
+      - '.github/workflows/i12-cryptokey-persistence-smoke.yml'
+
+jobs:
+  chromium-persistence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Chromium non-extractable CryptoKey close/reopen proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser"
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i12-persistence-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:8765/tests/i12_cryptokey_persistence_browser_smoke.html >/dev/null 2>&1 && break
+            sleep 0.1
+          done
+          output="$("$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --dump-dom http://127.0.0.1:8765/tests/i12_cryptokey_persistence_browser_smoke.html)"
+          printf '%s\n' "$output"
+          grep -q 'data-result="PASS"' <<<"$output"
+          grep -q 'data-reopened="true"' <<<"$output"
+          grep -q 'data-non-extractable="true"' <<<"$output"
+          grep -q 'data-no-clobber="true"' <<<"$output"
+          grep -q 'data-missing-key="closed"' <<<"$output"
