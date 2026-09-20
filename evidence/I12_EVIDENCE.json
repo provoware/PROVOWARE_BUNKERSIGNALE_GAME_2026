@@ -1,13 +1,13 @@
 {
   "checkpoint": "I12",
-  "generated_at_utc": "2026-09-20T17:40:00Z",
+  "generated_at_utc": "2026-09-20T18:55:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "9c3b7219d17ae356a06f38cbb8f9a5a44d1d3b3cbdbbdf1368647ab9f67d79b2",
+  "fingerprint_sha256": "84e5d2dfb90970cdbf4b9feae91f5a059e95ae90a111b3d801239d4f83772d82",
   "checks": [
     {
       "name": "repository_quality",
       "status": "PASS",
-      "detail": "Frozen-I12 main Quality #551 GREEN; I12-C Decision-Tree initial Quality #555 erwartbar nur wegen veralteter Evidence RED; governed Decision-Fingerprint 9c3b7219d17ae356a06f38cbb8f9a5a44d1d3b3cbdbbdf1368647ab9f67d79b2 wurde daraus gebunden."
+      "detail": "I12 Trusted-Checkpoint-Hardening initial Quality #580 erwartbar ausschließlich wegen veralteter Evidence RED; governed Fingerprint 84e5d2dfb90970cdbf4b9feae91f5a059e95ae90a111b3d801239d4f83772d82 wurde daraus gebunden."
     },
     {
       "name": "i11_before_i12",
@@ -47,7 +47,7 @@
     {
       "name": "trusted_checkpoint_coverage",
       "status": "PASS",
-      "detail": "Suffix-Truncation wird nur mit gültigem trusted checkpoint ausgeschlossen; ohne Checkpoint keine Vollständigkeitsgarantie."
+      "detail": "Trusted checkpoint akzeptiert Coverage nur nach erfolgreicher verifyHashChain(events, chain, ...) und nur wenn record.key_id dem extern erwarteten expectedKeyId entspricht; Suffix-Truncation, manipulierte Chain und selbstgewählter Angreifer-Key werden fail-closed abgewiesen."
     },
     {
       "name": "private_key_protection",
@@ -72,7 +72,7 @@
     {
       "name": "scope_guard",
       "status": "PASS",
-      "detail": "I12-C ist ausschließlich als Decision Gate geöffnet: kein Store, keine Migration, keine Produkt-Persistenz, kein Recovery-/Rotation-Code und kein I08/I10-REOPEN."
+      "detail": "I12 ist eng für die P1-Trusted-Checkpoint-Korrektur reopened; kein Store, keine Migration, keine Produkt-Persistenz, kein Recovery-/Rotation-Code und kein I08/I10/I11-REOPEN."
     }
   ],
   "file_hashes": {
@@ -89,14 +89,15 @@
     "changes/CHG-20260920-027.json": "acac79a6f327eed5c657eb437b5c064717ce9b187e6cdebe016c11a1e28bbe6e",
     "changes/CHG-20260920-028.json": "b4fc8dd4f42711d0389f9fbdf9cc28eab028133430876dddeca9632a227d5712",
     "changes/CHG-20260920-029.json": "b6b24c1b84b03c8ed1f51ca81e2c95de9097d2e900c45716a2508137d8a08405",
-    "changes/CHG-20260920-030.json": "088557d6e15807f536e3fe807b0a2472c4706c2f8cc8cac6188f326f28ff833c"
+    "changes/CHG-20260920-030.json": "088557d6e15807f536e3fe807b0a2472c4706c2f8cc8cac6188f326f28ff833c",
+    "changes/CHG-20260920-031.json": "dee3e403cf01efc6ec8dc7c58eb593a8ca985bfbd9bcf2ad5773c854cf7d0c0c"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "I12-A/B bleiben unverändert; I12 wurde nur für den dokumentarischen I12-C Decision Gate reopened."
+      "evidence": "I12-A Trusted-Checkpoint-Verifikation wurde ausschließlich zur P1-Sicherheitskorrektur reopened; I12-B und I08/I10/I11 bleiben unverändert."
     },
     {
       "role": "architecture_guardian",
@@ -116,12 +117,12 @@
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Private Keys bleiben non-extractable; Lost-Key/Rotation sind fail-closed und explizit; lokaler Checkpoint allein gilt nicht als externer Trust Anchor."
+      "evidence": "Trusted Checkpoint kann weder seinen eigenen Trust-Anchor-Key auswählen noch ungeprüfte Coverage-Metadaten einschleusen; verifyHashChain und externer expectedKeyId sind verpflichtend."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "Decision-only Scope enthält keine UI-Aenderung."
+      "evidence": "Genau eine isolierte UX-Korrektur: lange Metadaten-Labels dürfen bei hohem Zoom umbrechen."
     },
     {
       "role": "content_canon",
@@ -131,7 +132,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Aktiver I12-C Decision-Tree ist an governed Fingerprint 9c3b7219d17ae356a06f38cbb8f9a5a44d1d3b3cbdbbdf1368647ab9f67d79b2 gebunden; historischer Frozen-I12-Fingerprint bleibt in der Git-Historie erhalten."
+      "evidence": "Aktiver I12-Korrekturbaum ist an governed Fingerprint 84e5d2dfb90970cdbf4b9feae91f5a059e95ae90a111b3d801239d4f83772d82 gebunden; historischer Frozen-I12-Fingerprint bleibt in der Git-Historie erhalten."
     }
   ]
 }
