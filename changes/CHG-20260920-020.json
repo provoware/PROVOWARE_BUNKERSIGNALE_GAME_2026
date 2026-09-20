@@ -20,7 +20,7 @@
   ],
   "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "security_integrity", "ux_accessibility", "release_evidence"],
   "compatibility": "I06/I08/I09/I10/I11 bleiben unverändert. I12 konsumiert ausschließlich bereits verifizierten I11-Kontext und injizierte signBytes/verifyBytes-Capabilities.",
-  "security": "Authentizitätsbewertung ist fail-closed. Ohne explizit erfolgreichen I11-Status wird nicht signiert bzw. Verifikation liefert false. Browser-Crypto und privates Schlüsselmaterial bleiben außerhalb dieses Blocks.",
+  "security": "Authentizitätsbewertung ist fail-closed. Ohne explizit erfolgreichen I11-Status wird nicht signiert bzw. Verifikation liefert false. Restrisiko: reale Ed25519-Crypto und Capability Detection folgen erst I12-B.",
   "test_plan": [
     "deterministische identische Sign-/Verify-Inputbytes prüfen",
     "Signieren ohne I11-Erfolg muss abbrechen",
@@ -29,8 +29,7 @@
     "Application-Core weiterhin auf Browser-/Persistenzabhängigkeiten prüfen",
     "nur triggerbasierte Quality-/Browser-/UI-Regressionen auswerten"
   ],
-  "result": "PENDING_GATES",
-  "residual_risk": "Die Capabilities sind in I12-A absichtlich injizierte Test-/Port-Schnittstellen; reale Ed25519-Crypto und Capability Detection folgen erst I12-B.",
-  "next_step": "Nach grünen Gates I12-A Coverage/trusted-checkpoint-Vertrag als separaten kleinsten Teilblock auflösen; keine Persistenz vor I12-C.",
-  "evidence": ["app/application/event-signature.js", "tests/test_i12_signature_contract.py", "app/ui/styles.css"]
+  "rollback": "PR/Branch verwerfen; main bleibt auf dem grünen I12-A Signature-Record-Core. Nächster Schritt nach Grün: Coverage/trusted-checkpoint-Vertrag separat auflösen.",
+  "evidence": ["app/application/event-signature.js", "tests/test_i12_signature_contract.py", "app/ui/styles.css"],
+  "result": "GREEN"
 }
