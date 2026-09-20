@@ -189,6 +189,8 @@ Die Reihenfolge ist eine Architekturabhängigkeit, keine Aussage, dass P2 bereit
 
 **P2 Contract Gate – Historical Public-Key Retention:** Der eingefrorene Vertrag verwendet als historische Wahrheit exakt 32 rohe Ed25519-Public-Key-Bytes. Diese Bytes müssen den bereits eingefrorenen `key_id` deterministisch reproduzieren. Geplant ist ein separater I12-`public_keys`-Store neben dem unveränderten P1-`signing_keys`-Store. Die minimale spätere API ist `putIfAbsent(record)` + `readById(keyId)`; byteidentische Duplicates sind idempotent, widersprüchliches Material für denselben `key_id` schlägt fail-closed fehl. P3 bleibt bis zum grünen P2-Freeze gesperrt.
 
+**P2-L – Lifecycle Registration Barrier:** Nach grünem P2 und vor P3 ist ein eigener Application-Orchestrierungsvertrag erforderlich. Vor jedem Signieren MUSS der aktive P1-Key gelesen, sein öffentlicher Schlüssel über die bestehende I12-B-Capability als 32 rohe Bytes exportiert, daraus der eingefrorene `key_id` abgeleitet und exakt gegen den P1-`key_id` geprüft werden. Danach MUSS derselbe Public Key über P2 `putIfAbsent` historisch registriert sein. Erst nach erfolgreichem Abschluss dieser Barriere darf ein Signiervorgang starten. P1 wird dabei nur gelesen; deshalb ist keine Cross-Store-Write-Transaktion erforderlich. P2-No-Clobber bleibt die einzige Persistenzmutation. Jeder Export-, Ableitungs-, Mismatch- oder P2-Fehler blockiert Signieren fail-closed. P3 bleibt bis zum grünen P2-L-Freeze gesperrt.
+
 ## Non-Goals
 
 - keine Verschlüsselung von Welt- oder Eventdaten,

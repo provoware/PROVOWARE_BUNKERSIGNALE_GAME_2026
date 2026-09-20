@@ -1,0 +1,36 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-039",
+  "checkpoint": "I12",
+  "title": "I12-C P2-L lifecycle registration barrier decision",
+  "purpose": "Klaeren, ob zwischen P2 und P3 eine verpflichtende Lifecycle-Orchestrierung fuer die historische Registrierung des aktiven Public Keys erforderlich ist.",
+  "scope": [
+    "P2-L als verpflichtenden Zwischenblock vor P3 festlegen",
+    "Reihenfolge P1 read -> public export -> key_id verify -> P2 register -> sign verbindlich dokumentieren",
+    "Application-seitige Registration Barrier statt Cross-Store-Write-Transaktion festlegen",
+    "geplante Contract-Faelle, Freeze-Grenzen und Exit-Gates dokumentieren"
+  ],
+  "non_goals": [
+    "Keine Application-Implementierung",
+    "Keine neue Persistence oder DB-Migration",
+    "Keine Aenderung an P1/P2 Infrastructure",
+    "Keine detached Signature Persistence oder Rotation",
+    "Keine Backup-/Restore- oder Trusted-Checkpoint-Erweiterung",
+    "Keine UI-Aenderung",
+    "Kein I08- oder I10-REOPEN"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "security_integrity", "qa_regression", "release_evidence"],
+  "compatibility": "P1/P2 sowie I06/I08/I09/I10/I11/I12-A/B bleiben unveraendert. Der Change ordnet nur die Application-Lifecycle-Abhaengigkeit vor P3.",
+  "security": "Eine Signatur darf erst nach erfolgreicher key_id-Pruefung und idempotenter P2-Registrierung des aktiven Public Keys erzeugt werden; jeder Vorbedingungsfehler blockiert fail-closed.",
+  "test_plan": [
+    "Repository Quality",
+    "finaler Diff-Check auf ausschliesslich Masterplan/Decision-Dokumentation, Change Record und I12-Evidence/Status",
+    "Scope-Check: keine Produkt-, DB-, Schema-, UI- oder Testcodeaenderung"
+  ],
+  "rollback": "Decision-Branch/PR verwerfen; der gruen eingefrorene P2-main bleibt unveraendert.",
+  "evidence": [
+    "docs/I12_C_P2_LIFECYCLE_REGISTRATION_DECISION.md",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md"
+  ],
+  "result": "GREEN"
+}
