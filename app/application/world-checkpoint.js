@@ -1,3 +1,5 @@
+import { verifyHashChain } from "./hash-chain.js";
+
 const WORLD_ID = /^world:[0-9a-f]{24}$/;
 const EVENT_ID = /^event:[0-9a-f]{24}$/;
 const SHA256_HEX = /^[0-9a-f]{64}$/;
@@ -29,13 +31,26 @@ export function validateWorldCheckpoint(record) {
     record.algorithm === "Ed25519" && SIGNATURE_BASE64URL.test(record.signature);
 }
 
-export async function verifyTrustedCheckpoint(record, actual, { verifyBytes }) {
+export async function verifyTrustedCheckpoint(record, context, { verifyBytes, canonicalEventBytes, sha256Hex }) {
   if (typeof verifyBytes !== "function" || !validateWorldCheckpoint(record)) return false;
-  if (record.world_id !== actual?.worldId || record.event_count !== actual?.eventCount ||
-      record.head_event_id !== actual?.headEventId || record.head_hash !== actual?.headHash) return false;
+  if (!KEY_ID.test(context?.expectedKeyId) || record.key_id !== context.expectedKeyId) return false;
+  if (!WORLD_ID.test(context?.worldId) || record.world_id !== context.worldId) return false;
+  if (!Array.isArray(context?.events) || !Array.isArray(context?.chain) || context.events.length < 1) return false;
   try {
-    const input = frameWorldCheckpointInput({ worldId: record.world_id, eventCount: record.event_count, headEventId: record.head_event_id, headHash: record.head_hash });
-    return (await verifyBytes(input, record.signature, record.key_id)) === true;
+    const i11Verified = await verifyHashChain(context.events, context.chain, { canonicalEventBytes, sha256Hex });
+    if (!i11Verified) return false;
+    const headEvent = context.events.at(-1);
+    const headEntry = context.chain.at(-1);
+    if (record.event_count !== context.events.length ||
+        record.head_event_id !== headEvent?.event_id ||
+        record.head_hash !== headEntry?.event_hash) return false;
+    const input = frameWorldCheckpointInput({
+      worldId: record.world_id,
+      eventCount: record.event_count,
+      headEventId: record.head_event_id,
+      headHash: record.head_hash,
+    });
+    return (await verifyBytes(input, record.signature, context.expectedKeyId)) === true;
   } catch {
     return false;
   }
