@@ -1,0 +1,77 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>I12 CryptoKey Persistence Proof</title>
+<output id="result" data-result="RUNNING">RUNNING</output>
+<script type="module">
+const result = document.querySelector("#result");
+const keepAlive = setInterval(() => {}, 50);
+const DB_NAME = "i12-cryptokey-persistence-proof-v2";
+const STORE = "keys";
+const KEY_ID = "active";
+const message = new TextEncoder().encode("provoware:i12:persistence-proof:v1");
+const request = req => new Promise((resolve, reject) => {
+  req.onsuccess = () => resolve(req.result);
+  req.onerror = () => reject(req.error);
+});
+const transactionDone = tx => new Promise((resolve, reject) => {
+  tx.oncomplete = resolve;
+  tx.onabort = () => reject(tx.error ?? new Error("transaction aborted"));
+  tx.onerror = () => reject(tx.error ?? new Error("transaction failed"));
+});
+const deleteDb = () => new Promise((resolve, reject) => {
+  const req = indexedDB.deleteDatabase(DB_NAME);
+  req.onsuccess = resolve;
+  req.onerror = () => reject(req.error);
+  req.onblocked = () => reject(new Error("database deletion blocked"));
+});
+const openDb = async () => {
+  const req = indexedDB.open(DB_NAME, 1);
+  req.onupgradeneeded = () => req.result.createObjectStore(STORE, { keyPath: "key_id" });
+  return request(req);
+};
+try {
+  if (!globalThis.crypto?.subtle || !globalThis.indexedDB) throw new Error("required browser capability unavailable");
+  await deleteDb();
+  const pair = await crypto.subtle.generateKey({ name: "Ed25519" }, false, ["sign", "verify"]);
+  if (pair.privateKey.extractable) throw new Error("private key unexpectedly extractable");
+
+  let db = await openDb();
+  let tx = db.transaction(STORE, "readwrite");
+  tx.objectStore(STORE).add({ key_id: KEY_ID, private_key: pair.privateKey, public_key: pair.publicKey });
+  await transactionDone(tx);
+  db.close();
+
+  db = await openDb();
+  tx = db.transaction(STORE, "readonly");
+  const stored = await request(tx.objectStore(STORE).get(KEY_ID));
+  await transactionDone(tx);
+  if (!stored?.private_key || stored.private_key.extractable) throw new Error("persisted private key invalid");
+  const signature = await crypto.subtle.sign({ name: "Ed25519" }, stored.private_key, message);
+  if (!await crypto.subtle.verify({ name: "Ed25519" }, stored.public_key, signature, message)) throw new Error("reopened key cannot sign/verify");
+
+  let exportRejected = false;
+  try { await crypto.subtle.exportKey("pkcs8", stored.private_key); } catch { exportRejected = true; }
+  if (!exportRejected) throw new Error("private key export unexpectedly succeeded");
+
+  let noClobber = false;
+  tx = db.transaction(STORE, "readwrite");
+  tx.objectStore(STORE).add({ key_id: KEY_ID, private_key: pair.privateKey, public_key: pair.publicKey });
+  try { await transactionDone(tx); } catch { noClobber = true; }
+  if (!noClobber) throw new Error("duplicate key silently replaced active key");
+
+  tx = db.transaction(STORE, "readonly");
+  const missing = await request(tx.objectStore(STORE).get("missing"));
+  await transactionDone(tx);
+  if (missing !== undefined) throw new Error("missing-key path did not fail closed");
+  db.close();
+  await deleteDb();
+
+  Object.assign(result.dataset, { result: "PASS", reopened: "true", nonExtractable: "true", noClobber: "true", missingKey: "closed" });
+  result.textContent = "PASS";
+} catch (error) {
+  result.dataset.result = "FAIL";
+  result.textContent = `FAIL ${error.message}`;
+} finally {
+  clearInterval(keepAlive);
+}
+</script>
