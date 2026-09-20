@@ -1,0 +1,32 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-035",
+  "checkpoint": "I12",
+  "title": "I12-C P1 smoke startup timeout hardening",
+  "purpose": "Den nach dem P1-Merge beobachteten WebDriver-Session-Timeout ohne Produkt- oder Scope-Aenderung robust gegen langsamen Runner-Start machen.",
+  "scope": [
+    "WebDriver-HTTP-Timeout im I12-P1-Smoke von 10 auf 30 Sekunden erhoehen",
+    "Post-Merge-Gate-Ursache und Freeze-Bedingung in der P1-Entwicklerdokumentation festhalten"
+  ],
+  "non_goals": [
+    "Keine Aenderung am Signing-Key-Store",
+    "Keine Aenderung am Browser-Contract-Test",
+    "Keine weitere visuelle UX-Aenderung",
+    "Keine Signature-Persistence, Rotation, Backup/Restore oder Multi-Tab-Logik",
+    "Kein I08- oder I10-REOPEN"
+  ],
+  "affected_owners": ["qa_regression", "release_evidence"],
+  "compatibility": "Nur der CI-WebDriver-Transporttimeout wird erweitert; Produktcode, Testsemantik und bestehende Freeze-Grenzen bleiben unveraendert.",
+  "security": "Kein Produkt- oder Schluesselmaterialpfad wird veraendert. Der Testdeadline fuer den eigentlichen P1-DOM-Status bleibt bei zehn Sekunden.",
+  "test_plan": [
+    "I12 P1 Chromium signing-key-store smoke",
+    "Repository Quality",
+    "finaler Diff-Check: nur Workflow, P1-Dokumentation, Change Record und Evidence/Status"
+  ],
+  "rollback": "Hotfix-PR verwerfen; main bleibt auf dem bereits gemergten P1-Stand, jedoch ohne gruene Post-Merge-Freeze-Freigabe.",
+  "evidence": [
+    ".github/workflows/i12-signing-key-store-smoke.yml",
+    "docs/I12_C_P1_SIGNING_KEY_STORE.md"
+  ],
+  "result": "GREEN"
+}

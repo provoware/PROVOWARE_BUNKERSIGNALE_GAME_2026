@@ -1,17 +1,18 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-20T22:59:00Z",
+  "generated_at_utc": "2026-09-20T23:02:00Z",
   "overall_status": "GREEN",
   "gates": {"G0":"GREEN","G1":"GREEN","G6":"GREEN","G8":"GREEN"},
-  "fingerprint_sha256": "c3bbbf2d4d9821779d16e5e738f87e956fea916fff254a948333d257e0c26808",
+  "fingerprint_sha256": "eceb7ae06481913922d7f66b14133dde06a8ad95649be516c70aca621c919cfe",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_cryptokey_persistence_chromium": "PASS",
     "i12_p1_adapter_contract": "PASS",
     "i12_p1_signing_key_store": "PASS",
-    "i12_p1_signing_key_store_run": "35543233045",
+    "i12_p1_signing_key_store_pr_run": "35543400110",
+    "i12_p1_smoke_timeout_hardening": "PASS",
     "p1_no_clobber": "PASS",
     "p1_corrupt_record": "FAIL_CLOSED",
     "product_persistence": "P1_ACTIVE_KEY_STORE_ONLY",
@@ -20,14 +21,14 @@
     "private_key_backup": "NOT_ALLOWED_V1"
   },
   "reviews": [
-    {"role":"orchestrator","status":"PASS","evidence":"P1 bleibt auf aktiven lokalen Signing-Key-Store begrenzt."},
-    {"role":"architecture_guardian","status":"PASS","evidence":"Separater I12-Browser-Adapter; keine I08/I10-Kopplung."},
-    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine I08/I10-Migration oder Backup-Schemaaenderung."},
-    {"role":"qa_regression","status":"PASS","evidence":"P1 Chromium #2 sowie alle triggerbasierten Regressionen gruen."},
-    {"role":"security_integrity","status":"PASS","evidence":"No-clobber, non-extractable Key und fail-closed Record-/Storage-Grenzen belegt."},
-    {"role":"ux_accessibility","status":"PASS","evidence":"Genau eine CSS-Aenderung verbessert die Erkennbarkeit des aktiven Tabs."},
+    {"role":"orchestrator","status":"PASS","evidence":"Hotfix bleibt auf CI-WebDriver-Startup begrenzt."},
+    {"role":"architecture_guardian","status":"PASS","evidence":"Produktcode und P1-Adapter unveraendert."},
+    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine Daten- oder Backup-Schemaaenderung."},
+    {"role":"qa_regression","status":"PASS","evidence":"P1-Smokes #7/#8 und triggerbasierte Regressionen gruen."},
+    {"role":"security_integrity","status":"PASS","evidence":"Kein Produkt-/Keypfad geaendert."},
+    {"role":"ux_accessibility","status":"PASS","evidence":"Keine zweite UX-Aenderung; P1-UX-Scope bleibt exakt eine Aenderung."},
     {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik veraendert."},
-    {"role":"release_evidence","status":"PASS","evidence":"P1 an c3bbbf2d4d9821779d16e5e738f87e956fea916fff254a948333d257e0c26808 gebunden."}
+    {"role":"release_evidence","status":"PASS","evidence":"Hotfix an eceb7ae06481913922d7f66b14133dde06a8ad95649be516c70aca621c919cfe gebunden."}
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
 }
