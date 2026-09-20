@@ -1,0 +1,44 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-021",
+  "checkpoint": "I12",
+  "title": "I12-A bind detached authenticity to current verified event",
+  "purpose": "Den nach PR #43 gefundenen P1-Befund schließen: ein unabhängiges `i11Verified: true` darf nicht genügen, wenn der aktuelle Event-Inhalt nicht mehr zu dem verifizierten I11-Kettenglied gehört.",
+  "scope": [
+    "aktuellen Event vor Sign/Verify erneut kanonisch serialisieren",
+    "I11-Eventhash aus `previous_hash + canonicalEventBytes(event)` mit injiziertem `sha256Hex` nachrechnen",
+    "berechneten Hash exakt gegen `chainEntry.event_hash` prüfen",
+    "Signieren bei Event-/I11-Drift abbrechen und Verifizieren fail-closed `false` liefern",
+    "Regressionstest für mutierten Event mit gleicher `event_id` und altem I11-Ergebnis ergänzen"
+  ],
+  "non_goals": [
+    "Kein SubtleCrypto- oder Browser-Ed25519-Adapter",
+    "Kein CryptoKey, KeyStore oder IndexedDB",
+    "Keine Persistenz oder trusted-checkpoint-Ablage",
+    "Keine Änderung am eingefrorenen I11-Core selbst",
+    "Keine zusätzliche visuelle UX-Änderung; die zu diesem I12-A-Orchestrierungsblock gehörende Zoom-UX wurde bereits in PR #43 umgesetzt"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "I11 bleibt unverändert eingefroren. I12 importiert lediglich die bereits öffentliche `frameHashInput`-Funktion und verlangt injizierte Canonical-Bytes-/SHA-256-Capabilities, um den aktuellen Event lokal an das verifizierte Kettenglied zu binden.",
+  "security": "Schließt Replay/Stale-Verification innerhalb des Application-Kontexts: ein nach I11-Verifikation veränderter Event mit gleicher ID/Autor kann nicht mehr mit altem `i11Verified` und altem ChainEntry als authentisch behandelt werden. Restrisiko: reale Ed25519-Crypto folgt erst I12-B.",
+  "test_plan": [
+    "gültigen aktuellen Event gegen sein I11-Kettenglied signieren und verifizieren",
+    "mutierten Event mit gleicher event_id/author_id und altem I11-Ergebnis beim Signieren ablehnen",
+    "denselben Driftfall beim Verifizieren fail-closed false liefern",
+    "manipulierten chainEntry.event_hash weiterhin ablehnen",
+    "Repository Quality sowie nur ausgelöste Browser-/UI-Regressionen grün halten"
+  ],
+  "rollback": "Branch verwerfen; main bleibt auf PR #43. Nächster Schritt nach grünem Merge: verbleibenden I12-A Coverage/trusted-checkpoint-Teilblock separat auflösen.",
+  "evidence": [
+    "app/application/event-signature.js",
+    "tests/test_i12_signature_contract.py",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md"
+  ],
+  "result": "GREEN"
+}
