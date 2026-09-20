@@ -6,6 +6,8 @@
 import { exportEd25519PublicKey, importEd25519PublicKey, signEd25519, verifyEd25519 } from "../app/infrastructure/browser/ed25519-sign-verify.js";
 const result = document.querySelector("#result");
 const hex = value => Uint8Array.from(value.match(/../g)?.map(byte => parseInt(byte, 16)) ?? []);
+const VERIFY_COUNT = 1000;
+const VERIFY_BUDGET_MS = 5000;
 try {
   const subtle = globalThis.crypto?.subtle;
   if (!subtle) throw new Error("Web Crypto unavailable");
@@ -21,6 +23,22 @@ try {
   if (!await verifyEd25519(message, signature, publicKey, subtle)) throw new Error("verification failed");
   const changed = signature.slice(); changed[0] ^= 1;
   if (await verifyEd25519(message, changed, publicKey, subtle)) throw new Error("tampering accepted");
-  result.dataset.result = "PASS"; result.textContent = "PASS";
-} catch (error) { result.dataset.result = "FAIL"; result.textContent = "FAIL " + error.message; }
+  for (let i = 0; i < 10; i += 1) {
+    if (!await verifyEd25519(message, signature, publicKey, subtle)) throw new Error("warmup verification failed");
+  }
+  const started = performance.now();
+  for (let i = 0; i < VERIFY_COUNT; i += 1) {
+    if (!await verifyEd25519(message, signature, publicKey, subtle)) throw new Error("profile verification failed");
+  }
+  const elapsed = Math.ceil(performance.now() - started);
+  if (elapsed > VERIFY_BUDGET_MS) throw new Error("verify budget exceeded");
+  result.dataset.result = "PASS";
+  result.dataset.verifications = String(VERIFY_COUNT);
+  result.dataset.elapsedMs = String(elapsed);
+  result.dataset.budgetMs = String(VERIFY_BUDGET_MS);
+  result.textContent = "PASS";
+} catch (error) {
+  result.dataset.result = "FAIL";
+  result.textContent = "FAIL " + error.message;
+}
 </script>
