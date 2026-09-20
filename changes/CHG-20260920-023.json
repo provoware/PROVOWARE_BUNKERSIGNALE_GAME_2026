@@ -1,0 +1,34 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-023",
+  "checkpoint": "I12",
+  "title": "I12-B Ed25519 capability detection",
+  "purpose": "I12-B mit dem kleinsten Browserblock beginnen: Ed25519-Unterstützung stabil als supported/unsupported erkennen, ohne Schlüssel-Lifecycle oder Produkt-Crypto vorwegzunehmen.",
+  "scope": [
+    "Browser-Ed25519-Capability über injizierbares SubtleCrypto generateKey prüfen",
+    "fehlende oder fehlschlagende Capability fail-closed als unsupported übersetzen",
+    "Probe-Schlüssel nicht extrahierbar anfordern",
+    "Node-Vertragstest für supported/unsupported ergänzen",
+    "visuelle UX isoliert verbessern: deaktivierte Standardbuttons etwas lesbarer darstellen"
+  ],
+  "non_goals": [
+    "Keine Sign-/Verify-Produktoperationen",
+    "Kein KeyStore, IndexedDB oder Persistence",
+    "Kein Export oder Import von Schlüsseln",
+    "Kein REOPEN von I06 bis I11",
+    "Keine I12-C-Lifecycle-Entscheidung"
+  ],
+  "affected_owners": ["architecture_guardian", "qa_regression", "security_integrity", "ux_accessibility", "release_evidence"],
+  "compatibility": "I12-A bleibt unverändert. Der neue Infrastructure-Adapter ist isoliert und noch nicht in Bootstrap oder Application verdrahtet.",
+  "security": "Capability Detection liefert nur supported/unsupported und gibt keine rohe DOMException weiter. Probe-Schlüssel werden nicht exportierbar angefordert und nicht gespeichert. Restrisiko: echte sign/verify/import/export-public-Funktionen sowie Chromium-Vektor-/Performanceprüfung folgen in separaten I12-B-Blöcken.",
+  "test_plan": [
+    "fehlendes SubtleCrypto muss unsupported liefern",
+    "NotSupportedError muss unsupported liefern",
+    "erfolgreiches Ed25519 generateKey muss supported liefern",
+    "Probe muss extractable=false und sign/verify usages verwenden",
+    "nur triggerbasierte Quality-/Browser-/UI-Regressionen auswerten"
+  ],
+  "rollback": "PR/Branch verwerfen; main bleibt auf dem grünen I12-A trusted-checkpoint-Stand.",
+  "evidence": ["app/infrastructure/browser/ed25519-capability.js", "tests/test_i12_ed25519_capability.py", "app/ui/styles.css"],
+  "result": "GREEN"
+}

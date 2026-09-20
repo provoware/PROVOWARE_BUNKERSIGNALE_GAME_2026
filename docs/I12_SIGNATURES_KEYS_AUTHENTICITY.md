@@ -100,7 +100,7 @@ Der geplante `ssi-world-checkpoint` v1 bindet mindestens:
 - `algorithm = "Ed25519"`
 - `signature`
 
-Die Checkpoint-Signatur besitzt eine eigene versionierte Domänentrennung. Ihre konkrete Byte-Rahmung und Testvektoren werden erst im dafür vorgesehenen I12-A-Teilblock eingefroren.
+Die Checkpoint-Signatur besitzt eine eigene versionierte Domänentrennung; Rahmung und Suffix-Truncation-Vektor sind im eingefrorenen I12-A-Core festgelegt.
 
 Verifikation gegen einen trusted checkpoint ist fail-closed:
 
@@ -159,6 +159,8 @@ Erst nach grünem I12-A:
 - privater Produkt-Schlüssel nicht extrahierbar.
 - Chromium-Smoke mit bekanntem Vektor und Manipulationsfällen.
 - reproduzierbares 1000-Verify-Performanceprofil.
+
+**Aktueller I12-B-Teilblock:** ausschließlich Capability Detection. `detectBrowserEd25519()` prüft per nicht extrahierbarem Ed25519-Probe-Schlüsselpaar und liefert stabil nur `supported` oder `unsupported`; fehlendes Web Crypto und Browserfehler werden fail-closed zu `unsupported`. Die Probe wird weder gespeichert noch exportiert. Produktive generate/sign/verify/import/export-public-Operationen bleiben für folgende getrennte Teilblöcke gesperrt.
 
 ### I12-C – Key lifecycle + persistence/recovery decision gate
 
