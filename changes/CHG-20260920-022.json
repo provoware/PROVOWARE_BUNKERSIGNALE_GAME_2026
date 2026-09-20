@@ -1,0 +1,35 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-022",
+  "checkpoint": "I12",
+  "title": "I12-A trusted checkpoint coverage contract",
+  "purpose": "Den letzten separaten I12-A-Vertragsblock umsetzen: Suffix-Truncation nur gegen einen extern vertrauenswürdigen, signierten Welt-Checkpoint als ausgeschlossen bewerten.",
+  "scope": [
+    "ssi-world-checkpoint-v1 mit exakten Feldern validieren",
+    "versionierte Byte-Rahmung für world_id, event_count, head_event_id und head_hash definieren",
+    "deterministische Checkpoint-Verifikation über injiziertes verifyBytes implementieren",
+    "festen SHA-256-Rahmungsvektor und Suffix-Truncation-Negativtest ergänzen",
+    "visuelle UX isoliert verbessern: lange Eventlog-Tokens dürfen innerhalb des Panels umbrechen"
+  ],
+  "non_goals": [
+    "Kein SubtleCrypto-, CryptoKey- oder Browser-Ed25519-Adapter",
+    "Keine Checkpoint-, Schlüssel- oder Signaturpersistenz",
+    "Kein Export-, Backup-, Recovery- oder Trust-Anchor-Store",
+    "Kein REOPEN von I06/I08/I09/I10/I11",
+    "Keine I13- oder I14-Funktion"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "security_integrity", "ux_accessibility", "release_evidence"],
+  "compatibility": "Gefrorene Checkpoints bleiben unverändert. Der neue Application-Core ist additiv, browser- und storagefrei und konsumiert ausschließlich bereits neu berechnete I11-Coveragewerte plus injiziertes verifyBytes.",
+  "security": "Ein gültiger verkürzter Event-Präfix genügt nicht für Vollständigkeit: event_count, head_event_id und head_hash müssen exakt mit dem extern erwarteten Checkpoint übereinstimmen. Restrisiko: reale Ed25519-Verifikation und Herkunft/Storage des trusted checkpoint folgen erst I12-B/I12-C.",
+  "test_plan": [
+    "feste Checkpoint-Byte-Rahmung über SHA-256-Vektor binden",
+    "vollständigen Coveragezustand mit injiziertem verifyBytes akzeptieren",
+    "Suffix-Truncation durch abweichenden event_count/head_event_id/head_hash fail-closed ablehnen",
+    "falsche Welt und nichtkanonische Signatur ablehnen",
+    "Browser-/Persistenzabhängigkeiten im neuen Core verbieten",
+    "nur triggerbasierte Quality-/Browser-/UI-Regressionen auswerten"
+  ],
+  "rollback": "PR/Branch verwerfen; main bleibt auf dem grünen I12-A Sign/Verify-Core. Nach Grün ist I12-A vertraglich vollständig und der nächste Schritt ist I12-B Capability Detection als kleinster separater Browser-Adapter-Block.",
+  "evidence": ["app/application/world-checkpoint.js", "tests/test_i12_checkpoint_contract.py", "app/ui/styles.css"],
+  "result": "GREEN"
+}
