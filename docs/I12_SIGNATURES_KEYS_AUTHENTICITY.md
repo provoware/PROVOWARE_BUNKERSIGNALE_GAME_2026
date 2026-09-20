@@ -1,0 +1,147 @@
+# I12 – Signatures, Keys & Authenticity
+
+## Zweck
+
+I12 ergänzt den eingefrorenen I11-Integritätsvertrag um einen **detached kryptografischen Authentizitätsnachweis**. I11 beantwortet, ob der Eventstrom und seine Reihenfolge unverändert sind. I12 beantwortet zusätzlich, ob ein Signaturnachweis mit einem bekannten öffentlichen Schlüssel gültig ist.
+
+I12 behauptet **keine reale Personenidentität**. Ohne einen separat verifizierten Actor→Key-Vertrauensanker bedeutet eine gültige Signatur ausschließlich: Der passende private Schlüssel hat die gebundenen Daten signiert.
+
+## Verbindlicher Scope
+
+1. I12 baut ausschließlich auf einem bereits erfolgreichen I11-Hash-Chain-Verify auf.
+2. I06-Event-Envelopes werden nicht erweitert und bestehende I08-Events nicht mutiert.
+3. Signaturen bleiben detached und werden über stabile IDs mit Event und Schlüsselbezug verknüpft.
+4. Primärer Signaturalgorithmus für I12 v1 ist **Ed25519** über Web Crypto / SubtleCrypto.
+5. Fehlende Ed25519-Capability führt fail-closed zu "unsupported"; es gibt keinen stillen Algorithmus-Fallback.
+6. Öffentliche Schlüssel dürfen exportiert und zur Verifikation verteilt werden; private Schlüssel werden im Produktpfad standardmäßig als **nicht extrahierbar** geplant.
+7. Ein stabiler `key_id` wird deterministisch aus dem öffentlichen Schlüssel abgeleitet; die konkrete Byteform und Ableitung werden vor Runtime-Code durch feste Testvektoren eingefroren.
+8. Actor↔Key-Bindung ist ein eigener Vertrauensvertrag. Ein `actor_id` im Event allein beweist keine Schlüsselinhaberschaft.
+9. Signaturprüfung verändert weder Eventlog, Hashkette, Snapshot noch Weltzustand.
+10. Jede persistente Schlüssel- oder Signaturablage wird erst in I12-C nach explizitem Persistence/Recovery-Gate freigegeben.
+
+## Architektur
+
+- **Application:** erzeugt die zu signierenden Bytes, orchestriert Signieren/Verifizieren und erzwingt I11-vor-I12.
+- **Infrastructure:** kapselt Web-Crypto-Schlüsseloperationen, Capability Detection und später gegebenenfalls einen separaten Key-/Signature-Store.
+- **Domain:** enthält keine Browser-, IndexedDB- oder CryptoKey-Abhängigkeit.
+- **UI:** darf später nur abgeleiteten Status anzeigen; keine direkte Crypto-/Storage-Nutzung.
+- **Bootstrap:** verdrahtet konkrete Crypto-/Storage-Capabilities.
+
+## Detached Signature Record v1
+
+Der geplante Record enthält mindestens:
+
+- `format = "ssi-event-signature"`
+- `format_version = 1`
+- `world_id`
+- `event_id`
+- `author_id`
+- `key_id`
+- `algorithm = "Ed25519"`
+- `signature` als kanonisch definierte Base64url-Darstellung
+
+Der Record ist **kein Teil des I06-Event-Envelopes**.
+
+## Signierte Bytes v1
+
+I12 signiert nicht nur nackte Eventbytes. Die Signatur wird an den geprüften I11-Kontext gebunden, damit ein gültiger Nachweis nicht still in eine andere Welt oder Kettenposition transplantiert werden kann.
+
+Vor dem ersten Runtime-Patch wird folgende versionierte Rahmung als exakter Byte-Testvektor eingefroren:
+
+`provoware:i12:event-signature:v1\n`
++ `<world_id>\n`
++ `<previous_hash>\n`
++ `<event_hash>\n`
++ `<canonical UTF-8 I06 event bytes>`
+
+Vor Signaturprüfung MUSS das zugehörige I11-Kettenglied bereits erfolgreich gegen Event und Kette verifiziert sein.
+
+## Schlüsselidentität und Vertrauen
+
+I12 trennt drei Aussagen strikt:
+
+1. **Integrität:** I11-Kette ist korrekt.
+2. **Kryptografische Authentizität:** Signatur passt zum öffentlichen Schlüssel.
+3. **Actor-Vertrauen:** Der verwendete Schlüssel ist für den behaupteten `author_id` vertrauenswürdig gebunden.
+
+Nur wenn alle für einen Use-Case erforderlichen Ebenen grün sind, darf die UI einen entsprechend präzisen Status anzeigen. Begriffe wie "Person bestätigt" oder "Identität bewiesen" sind ohne externen Vertrauensanker verboten.
+
+## Schlüssel-Lifecycle
+
+Verbindliche Regeln für die spätere Umsetzung:
+
+- Schlüsselgenerierung ausschließlich über Browser-Crypto-Capability.
+- Privater Schlüssel: Signieren erlaubt, Export standardmäßig verboten.
+- Öffentlicher Schlüssel: Verify + Export erlaubt.
+- Kein privates Schlüsselmaterial in Logs, Fehlermeldungen, Change Records oder Evidence.
+- Kein automatischer Ersatz eines vorhandenen Schlüssels.
+- Rotation erzeugt einen neuen `key_id`; alte Signaturen müssen mit dem damaligen öffentlichen Schlüssel prüfbar bleiben.
+- Löschung/Verlust eines privaten Schlüssels darf keine bestehenden Events oder Signaturen verändern.
+- Recovery/Backup privater Schlüssel ist **nicht implizit erlaubt** und benötigt eine eigene I12-C-Entscheidung.
+
+## Umsetzungsreihenfolge
+
+### I12-A – Contract + deterministic verification core
+
+- Signature-Record-v1-Vertrag und exakte Feldregeln definieren.
+- Byte-Rahmung und `key_id`-Ableitung mit festen Vektoren einfrieren.
+- detached Sign/Verify-Orchestrierung als injizierte Capabilities planen/implementieren.
+- I11-vor-I12 als harte Vorbedingung testen.
+- Negativfälle: falsche Welt, falsches Event, falscher Kettenhash, falscher Schlüssel, veränderte Signatur.
+- Noch keine Persistenz.
+
+### I12-B – Browser Ed25519 adapter
+
+Erst nach grünem I12-A:
+
+- Ed25519 Capability Detection über `SubtleCrypto`.
+- generate/sign/verify/import/export-public hinter Infrastructure-Adapter.
+- stabile Fehlerübersetzung ohne rohe DOMException bis zur UI.
+- privater Produkt-Schlüssel nicht extrahierbar.
+- Chromium-Smoke mit bekanntem Vektor und Manipulationsfällen.
+- reproduzierbares 1000-Verify-Performanceprofil.
+
+### I12-C – Key lifecycle + persistence/recovery decision gate
+
+Erst nach grünem I12-B:
+
+- entscheiden, ob private `CryptoKey`-Objekte und detached Signature Records persistent gespeichert werden müssen;
+- falls ja: ausschließlich separaten I12-Store bevorzugen, keine stillen I08-/I10-Schemaänderungen;
+- Rotation, Lost-Key, public-key retention und no-clobber-Verhalten festlegen;
+- explizit entscheiden, ob Backup/Restore erweitert werden muss;
+- jede Änderung an I08/I10 verlangt vor dem Patch einen dokumentierten REOPEN.
+
+## Non-Goals
+
+- keine Verschlüsselung von Welt- oder Eventdaten,
+- kein Passwortsystem,
+- keine Server-/PKI-/Certificate-Authority,
+- keine Behauptung realer menschlicher Identität,
+- keine Netzwerk-Key-Discovery,
+- keine Änderung am I06-Envelope,
+- keine Mutation des I08-Eventlogs,
+- kein Persistieren der I11-Hashkette,
+- kein automatischer Recovery-/Repair-Flow aus I13,
+- kein Multi-Tab-Writer-/Key-Lock aus I14,
+- kein Algorithmus-Fallback ohne neue Vertragsversion.
+
+## Exit-Gates I12
+
+I12 darf nur eingefroren werden, wenn:
+
+1. I11-Verifikation zwingend vor jeder I12-Authentizitätsbewertung erfolgt.
+2. identische Signatur-Inputs byteidentisch gerahmt werden.
+3. `key_id` deterministisch und durch feste Vektoren gebunden ist.
+4. gültige Ed25519-Signatur mit passendem Public Key erfolgreich verifiziert.
+5. Event-, Welt-, Kettenhash-, Schlüssel- oder Signaturmanipulation fail-closed erkannt wird.
+6. Actor↔Key-Vertrauensstatus getrennt von bloßer Signaturgültigkeit modelliert ist.
+7. private Schlüssel im Produktpfad nicht versehentlich exportiert oder geloggt werden.
+8. fehlende Web-Crypto-/Ed25519-Capability stabil und ohne Fallback behandelt wird.
+9. 1000 Verifikationen im dokumentierten Chromium-Smoke-Budget bleiben.
+10. I06/I08/I09/I10/I11 ohne begründeten REOPEN unverändert bleiben.
+11. Repository Quality + allgemeiner Chromium-Smoke + I12-spezifischer Crypto-Smoke grün bleiben.
+12. finaler Diff keine I13+-Recovery- oder I14+-Multi-Tab-Funktion vorzieht.
+
+## Freeze-Regel
+
+I12-Evidence und Status werden erst nach vollständig grünen finalen Gates an den governeden Repository-Fingerprint gebunden. I13 bleibt bis dahin gesperrt.
