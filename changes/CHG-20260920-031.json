@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-031",
+  "checkpoint": "I12",
+  "title": "I12-A trusted checkpoint hardening",
+  "purpose": "Die nach PR #45 gefundenen P1-Lücken im Trusted-Checkpoint-Vertrag schließen: der Checkpoint darf seinen Trust-Anchor-Key nicht selbst auswählen und Coverage darf nur aus einer tatsächlich verifizierten I11-Kette abgeleitet werden.",
+  "scope": [
+    "`record.key_id` zwingend gegen einen extern konfigurierten `expectedKeyId` prüfen",
+    "Coverage nicht länger aus frei übergebenen Metadaten akzeptieren",
+    "`events + chain` erneut über `verifyHashChain` prüfen und Eventcount, Head-Event und Head-Hash ausschließlich daraus ableiten",
+    "Suffix-Truncation, manipulierte Chain und Angreifer-Key fail-closed testen",
+    "genau eine visuelle UX-Korrektur: lange Metadaten-Labels dürfen bei hohem Zoom umbrechen"
+  ],
+  "non_goals": [
+    "Kein Browser-Crypto- oder SubtleCrypto-Code",
+    "Kein CryptoKey-, KeyStore- oder IndexedDB-Code",
+    "Keine Speicherung oder Recovery-Integration",
+    "Keine Änderung am I11-Core",
+    "Kein I08- oder I10-REOPEN"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "Der bestehende `ssi-world-checkpoint`-Record und seine Byte-Rahmung bleiben unverändert. Nur die Verifikationsorchestrierung wird verschärft. I08/I10/I11 bleiben unverändert eingefroren.",
+  "security": "Schließt zwei P1-Lücken: ein untrusted Checkpoint kann nicht länger seinen eigenen `key_id` als Vertrauensanker wählen; ein frei konstruiertes Coverage-Objekt kann nicht länger eine verifizierte I11-Kette vortäuschen.",
+  "test_plan": [
+    "feste Checkpoint-Byte-Rahmung unverändert gegen bestehenden Vektor prüfen",
+    "gültigen Checkpoint nur mit passendem externem expectedKeyId akzeptieren",
+    "abweichenden/Angreifer-key_id fail-closed ablehnen",
+    "Suffix-Truncation aus verkürzten events+chain fail-closed ablehnen",
+    "manipulierte I11-chain trotz passend konstruiertem Checkpoint fail-closed ablehnen",
+    "Repository Quality und nur triggerbasierte Regressionen grün halten"
+  ],
+  "rollback": "Korrektur-PR verwerfen; main bleibt auf dem bisherigen I12-C-Decision-Stand. Wegen der P1-Befunde bleibt Trusted-Checkpoint-Vollständigkeit dann fachlich nicht freigegeben.",
+  "evidence": [
+    "app/application/world-checkpoint.js",
+    "tests/test_i12_checkpoint_contract.py",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md",
+    "app/ui/styles.css"
+  ],
+  "result": "GREEN"
+}
