@@ -8,7 +8,11 @@ class I12Ed25519SignVerifyTests(unittest.TestCase):
         script = textwrap.dedent(r"""
             import assert from "node:assert/strict";
             import { webcrypto } from "node:crypto";
-            import { signEd25519, verifyEd25519 } from "./app/infrastructure/browser/ed25519-sign-verify.js";
+            import { generateEd25519KeyPair, signEd25519, verifyEd25519 } from "./app/infrastructure/browser/ed25519-sign-verify.js";
+            const generated = await generateEd25519KeyPair(webcrypto.subtle);
+            assert.equal(generated.privateKey.extractable, false);
+            assert.deepEqual(generated.privateKey.usages, ["sign"]);
+            assert.deepEqual(generated.publicKey.usages, ["verify"]);
             const hex = value => Uint8Array.from(Buffer.from(value, "hex"));
             const privateKey = await webcrypto.subtle.importKey("pkcs8", hex("302e020100300506032b6570042204209d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60"), {name:"Ed25519"}, false, ["sign"]);
             const publicKey = await webcrypto.subtle.importKey("raw", hex("d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"), {name:"Ed25519"}, false, ["verify"]);
