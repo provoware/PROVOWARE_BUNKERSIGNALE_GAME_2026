@@ -1,0 +1,32 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-025",
+  "checkpoint": "I12",
+  "title": "I12-B Chromium Ed25519 crypto smoke",
+  "purpose": "Den eingefrorenen I12-B Sign/Verify-Adapter im echten Chromium-Web-Crypto-Pfad gegen den bekannten RFC-8032-Vektor pruefen.",
+  "scope": [
+    "Chromium-Smoke fuer importKey -> sign -> verify",
+    "RFC-8032-Leernachrichtenvektor byteidentisch pruefen",
+    "manipulierte Signatur im Browser fail-closed pruefen",
+    "pfadselektiven GitHub-Actions-Gate ergaenzen"
+  ],
+  "non_goals": [
+    "Keine Produktlogik",
+    "Kein KeyStore oder Persistence",
+    "Kein Backup, Recovery oder Rotation",
+    "Keine I12-C-Funktion",
+    "Kein REOPEN von I06 bis I11"
+  ],
+  "affected_owners": ["qa_regression", "security_integrity", "release_evidence"],
+  "compatibility": "Nur Testinfrastruktur; der eingefrorene I12-B Produktadapter bleibt unveraendert.",
+  "security": "Testschluessel sind ausschliesslich oeffentliche RFC-Testvektoren und werden weder gespeichert noch in Produktpfade uebernommen.",
+  "test_plan": [
+    "Chromium muss PKCS8 Private Key und RAW Public Key importieren",
+    "sign muss den bekannten RFC-8032-Vektor erzeugen",
+    "verify muss true liefern",
+    "manipulierte Signatur muss false liefern"
+  ],
+  "rollback": "PR/Branch verwerfen; main bleibt auf dem gruenen I12-B Sign/Verify-Stand.",
+  "evidence": ["tests/i12_ed25519_browser_smoke.html", ".github/workflows/i12-ed25519-browser-smoke.yml"],
+  "result": "GREEN"
+}
