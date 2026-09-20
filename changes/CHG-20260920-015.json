@@ -1,0 +1,33 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-015",
+  "checkpoint": "I11",
+  "title": "I11-B Chromium integrity validation",
+  "purpose": "Den Browser-SHA-256-Pfad mit Manipulations-, Reihenfolge- und reproduzierbarem 1000-Event-Profil abschließen, bevor I11-C geöffnet wird.",
+  "scope": [
+    "dedizierten Chromium-Smoke für I11-Hashkette ergänzen",
+    "Manipulation und Event-Umordnung im echten Browser fail-closed prüfen",
+    "Build-Zeit für exakt 1000 Events als CI-Evidence ausgeben",
+    "genau eine visuelle UX-Korrektur: deaktivierte generische Buttons zusätzlich sichtbar abblenden"
+  ],
+  "non_goals": [
+    "Kein Persistence- oder Recovery-Umbau",
+    "Kein I08/I10-REOPEN",
+    "Kein I11-C-Entscheid",
+    "Keine Signaturen oder Schlüsselverwaltung",
+    "Keine zweite visuelle Änderung"
+  ],
+  "affected_owners": ["orchestrator", "qa_regression", "security_integrity", "release_evidence"],
+  "compatibility": "Der Smoke konsumiert ausschließlich die bereits eingefrorenen I11-A/I11-B-Schnittstellen. Produktlogik und persistente Verträge bleiben unverändert.",
+  "security": "Manipulierte Eventbytes und umgeordnete Events müssen im echten Chromium fail-closed scheitern; der Browseradapter nutzt weiterhin ausschließlich SubtleCrypto SHA-256.",
+  "test_plan": [
+    "1000 deterministische Events im Chromium aufbauen und erfolgreich verifizieren",
+    "ein mittleres Event manipulieren und Verifikation false erwarten",
+    "zwei benachbarte Events umordnen und Verifikation false erwarten",
+    "gemessene Build-Zeit für 1000 Events im Workflow-Log dokumentieren",
+    "Repository Quality und bestehende Browser/UI-Regressionen grün halten"
+  ],
+  "rollback": "I11-B-Validierungsbranch verwerfen; main bleibt auf dem grünen Browser-SHA-256-Grundblock.",
+  "evidence": [".github/workflows/i11-hash-chain-browser-smoke.yml", "tests/i11_hash_chain_browser_smoke.html", "app/ui/styles.css"],
+  "result": "GREEN"
+}
