@@ -1,0 +1,16 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-016",
+  "checkpoint": "I11",
+  "title": "I11-C persistence decision",
+  "purpose": "Vor jedem Persistenzpatch entscheiden, ob die deterministische I11-Hashkette einen eigenen persistenten Zustand benötigt.",
+  "scope": ["I08-Eventstore, I09-Snapshotcache und I10-Backup/Restore gegen den I11-Vertrag prüfen", "on-demand Ableitung als verbindliche I11-C-Entscheidung dokumentieren", "REOPEN-Bedarf explizit bewerten"],
+  "non_goals": ["Kein Produkt- oder Persistenzcode", "Kein I08/I09/I10-REOPEN", "Keine Schema- oder Backupänderung", "Keine visuelle UX-Änderung im reinen Decision-Gate", "Noch kein finaler I11-Freeze"],
+  "affected_owners": ["orchestrator", "architecture_guardian", "security_integrity", "release_evidence"],
+  "compatibility": "I08 bleibt alleinige persistente Event-Wahrheit, I09 bleibt verwerfbarer Cache und I10 Backup v1 bleibt eventbasiert. I11 wird daraus on-demand abgeleitet.",
+  "security": "Keine zweite persistierte Integritätskopie vermeidet Synchronisationsdrift. Integritätsprüfung wird aus vollständigen kanonischen Eventbytes neu berechnet und bleibt fail-closed.",
+  "test_plan": ["Repository Quality für Dokumentations- und Governance-Konsistenz ausführen", "durch changes/** ausgelöste bestehende Browser/UI-Regressionen grün halten", "keine Persistenzdatei im Diff zulassen"],
+  "rollback": "Decision-Branch verwerfen; main bleibt auf dem vollständig grünen I11-B-Stand.",
+  "evidence": ["docs/I11_C_PERSISTENCE_DECISION.md", "docs/I08_INDEXEDDB_EVENT_STORE.md", "docs/I09_SNAPSHOT_CACHE.md", "docs/I10_STORAGE_HEALTH_EXPORT_BACKUP.md"],
+  "result": "GREEN"
+}
