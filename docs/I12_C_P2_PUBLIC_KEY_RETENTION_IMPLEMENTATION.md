@@ -58,3 +58,8 @@ P2 besitzt noch keine Orchestrierung, die vor einem späteren Signature-Write au
 ## Nächster Schritt
 
 Nach grünem P2-Freeze zuerst den nächsten I12-C-Masterplanpunkt gegen die eingefrorene Sequenz auflösen. P3 bleibt bis dahin gesperrt.
+
+
+## CI-Startpfad-Härtung
+
+Ein PR-Runner überschritt beim WebDriver-`POST /session` den allgemeinen 30-Sekunden-HTTP-Timeout, während derselbe P2-Produkt-Smoke auf dem Push-Head grün war. Deshalb erhält ausschließlich die WebDriver-Session-Erzeugung ein 60-Sekunden-Transportfenster. Die eigentliche P2-DOM-Testdeadline sowie Produkt- und Contract-Semantik bleiben unverändert.

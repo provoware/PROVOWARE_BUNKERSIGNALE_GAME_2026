@@ -39,12 +39,12 @@ jobs:
           python3 - <<'PY'
           import json, time, urllib.request
           base = "http://127.0.0.1:9515"
-          def call(method, path, payload=None):
+          def call(method, path, payload=None, timeout=30):
               data = None if payload is None else json.dumps(payload).encode()
               req = urllib.request.Request(base + path, data=data, method=method, headers={"Content-Type": "application/json"})
-              with urllib.request.urlopen(req, timeout=30) as response:
+              with urllib.request.urlopen(req, timeout=timeout) as response:
                   return json.load(response)["value"]
-          session = call("POST", "/session", {"capabilities": {"alwaysMatch": {"browserName": "chrome", "goog:chromeOptions": {"args": ["--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"]}}}})["sessionId"]
+          session = call("POST", "/session", {"capabilities": {"alwaysMatch": {"browserName": "chrome", "goog:chromeOptions": {"args": ["--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"]}}}}, timeout=60)["sessionId"]
           try:
               call("POST", f"/session/{session}/url", {"url": "http://127.0.0.1:8765/tests/i12_public_key_store_browser_smoke.html"})
               deadline = time.monotonic() + 12
