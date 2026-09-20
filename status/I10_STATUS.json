@@ -1,0 +1,30 @@
+{
+  "checkpoint": "I10",
+  "product_version": "0.1.0-alpha.0",
+  "generated_at_utc": "2026-09-20T00:01:25Z",
+  "overall_status": "GREEN",
+  "gates": {"G1": "GREEN", "G4": "GREEN", "G6": "GREEN", "G7": "GREEN", "G8": "GREEN"},
+  "fingerprint_sha256": "87cbcf8a64cb58d4eb4ea5292b0a4dd0c29cc206e85ea125a4fc3c023d27bf1f",
+  "tests": {
+    "repository_quality_run_388": "PASS",
+    "i10_restore_chromium_run_10": "PASS",
+    "i10_export_backup_run_14": "PASS",
+    "i10_storage_health_run_17": "PASS",
+    "i10_game_ui_shell_run_17": "PASS",
+    "browser_smoke_run_87": "PASS",
+    "atomic_no_clobber": "PASS",
+    "abort_zero_partial_events": "PASS",
+    "export_restore_reexport_parity": "PASS",
+    "frozen_i08_predecessor": "UNCHANGED",
+    "frozen_i09_predecessor": "UNCHANGED"
+  },
+  "reviews": [
+    {"role": "orchestrator", "status": "PASS", "evidence": "I10-A/B/C vollständig; I11 bleibt bis zum I10-Freeze gesperrt."},
+    {"role": "architecture_guardian", "status": "PASS", "evidence": "Kein I08/I09-REOPEN; Restore-Capability ist separat und atomar."},
+    {"role": "qa_regression", "status": "PASS", "evidence": "Alle sechs relevanten triggerbasierten Workflow-Gates sind GREEN."},
+    {"role": "security_integrity", "status": "PASS", "evidence": "Ungültige Backups erreichen keine Schreibfähigkeit; no-clobber und Abort sind fail-closed."},
+    {"role": "ux_accessibility", "status": "PASS", "evidence": "Game-UI-Regression bleibt GREEN; I10-C-UX-Änderung bleibt isoliert."},
+    {"role": "release_evidence", "status": "PASS", "evidence": "Freeze an governed Fingerprint 87cbcf8a64cb58d4eb4ea5292b0a4dd0c29cc206e85ea125a4fc3c023d27bf1f gebunden."}
+  ],
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime"
+}

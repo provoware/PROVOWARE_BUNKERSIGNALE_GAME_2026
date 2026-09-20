@@ -9,7 +9,7 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Bereich | Stand |
 | --- | --- |
 | Produktversion | `0.1.0-alpha.0` |
-| Aktueller Checkpoint | **I10 – Storage Health + Export Backup (B: Export Backup v1)** |
+| Aktueller Checkpoint | **I10 – Storage Health + Export Backup · GREEN/FROZEN** |
 | Nächster Checkpoint | **I11 – Hash Chain** |
 | Runtime | Browser, local-first |
 | Buildschritt | nicht erforderlich |
@@ -19,7 +19,7 @@ Local-first Browser-Prototyp mit strengem Checkpoint-, Evidence- und Regression-
 | Spieloberfläche | **I10-P0 – read-only Regression Shell aktiv** |
 | Storage Health | **I10-A – read-only Estimate/Persistenzstatus + 75/90-%-Ampel** |
 | Export Backup | **I10-B – Schema + Validator + deterministischer read-only Export implementiert** |
-| Restore | **I10-C – Vertrag festgelegt; noch nicht implementiert** |
+| Restore | **I10-C – validate-before-mutate + atomarer no-clobber IndexedDB-Restore implementiert** |
 | Spiellogik | noch nicht aktiv |
 
 Bereits umgesetzt:
@@ -37,6 +37,7 @@ Bereits umgesetzt:
 - **I10-P0** – read-only Game UI Regression Shell mit Figuren-, Szenen-, Detail- und Ereignisbereich; alle Spielaktionen bleiben deaktiviert.
 - **I10-A** – read-only Storage Health über Browser-Estimate/Persistenzstatus mit deterministischer Normal/Knapp/Kritisch-Klassifikation.
 - **I10-B** – World Backup v1 mit registriertem Schema, I06-Validator, kanonischen Bytes und read-only I08-Welt-Readback.
+- **I10-C** – Restore mit vollständigem Preflight, Content-Lock-Prüfung und atomarer `restoreIfEmpty`-Capability ohne Teilwrites. **I10 ist damit GREEN/FROZEN.**
 
 ## Schnellstart
 
@@ -98,7 +99,7 @@ Dokumentationsindex: **[docs/README.md](docs/README.md)**
 - I10-P0 stellt ausschließlich eine read-only Spielansicht für DOM-/Layout-/Fokusregression bereit; sie erzeugt keine Commands, Events oder Persistenzmutationen.
 - I10-A liest ausschließlich Browser-Storage-Schätzwerte; 75 % beginnt `warning`, 90 % beginnt `critical`, Persistenzstatus bleibt davon getrennt.
 - Neue Runtime-Abhängigkeiten benötigen eine begründete Architekturentscheidung.
-- I10-B erzeugt ausschließlich deterministische Backupdaten im Speicher; Dateidownload und I10-C Restore bleiben getrennte spätere Schritte. Hashketten, Crypto, produktive Contentpakete und echte Spiellogik werden weiterhin nicht vorgezogen.
+- I10-C prüft Backup und Content-Basis vor jeder Mutation und koppelt no-clobber + Batch-Write in einer IndexedDB-Transaktion. Hashketten, Crypto, produktive Contentpakete und echte Spiellogik werden weiterhin nicht vorgezogen.
 
 ## Lizenzstatus
 

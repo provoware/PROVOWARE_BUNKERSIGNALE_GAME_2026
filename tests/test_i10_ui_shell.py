@@ -45,10 +45,10 @@ class I10GameUiRegressionShellTests(unittest.TestCase):
         self.assertIn(".ssi-scene-card { border-top: 0.2rem solid var(--ssi-accent);", source)
         self.assertIn("@media (max-width: 42rem)", source)
 
-    def test_i10_is_active_but_storage_export_logic_is_not_started(self) -> None:
+    def test_i10_is_frozen_without_game_shell_scope_creep(self) -> None:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
         self.assertEqual(manifest["checkpoint"], "I10")
-        self.assertEqual(manifest["status"], "active_i10")
+        self.assertEqual(manifest["status"], "frozen_i10")
         self.assertEqual(manifest["next_checkpoint"], "I11")
         source = GAME.read_text(encoding="utf-8").lower()
         for forbidden in ("navigator.storage", "showSaveFilePicker".lower(), "quota", "exportworld", "importworld"):
