@@ -56,7 +56,7 @@ Für I12-A ist folgende versionierte Rahmung als exakter Byte-Testvektor eingefr
 + `<event_hash>\n`
 + `<canonical UTF-8 I06 event bytes>`
 
-Vor Signaturprüfung MUSS das zugehörige I11-Kettenglied bereits erfolgreich gegen Event und Kette verifiziert sein.
+Vor Signaturprüfung MUSS das zugehörige I11-Kettenglied bereits erfolgreich gegen Event und Kette verifiziert sein. Zusätzlich wird der aktuelle Event-Inhalt erneut kanonisch serialisiert und sein I11-Hash aus `previous_hash + canonicalEventBytes(event)` nachgerechnet. Ein bloß weitergereichtes `i11Verified: true` genügt nicht; stimmt der aktuelle Event-Hash nicht exakt mit `chainEntry.event_hash` überein, schlägt Signieren fehl und Verifizieren liefert fail-closed `false`.
 
 ### Eingefrorener I12-A-Testvektor
 

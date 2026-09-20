@@ -1,3 +1,5 @@
+import { frameHashInput } from "./hash-chain.js";
+
 const WORLD_ID = /^world:[0-9a-f]{24}$/;
 const EVENT_ID = /^event:[0-9a-f]{24}$/;
 const ACTOR_ID = /^actor:[0-9a-f]{24}$/;
@@ -33,9 +35,16 @@ function assertExactKeys(value, expected, label) {
   }
 }
 
-function signatureInput({ worldId, event, chainEntry, eventBytes, i11Verified }) {
+async function signatureInput({ worldId, event, chainEntry, i11Verified }, { canonicalEventBytes, sha256Hex }) {
   if (i11Verified !== true) throw new TypeError("successful I11 verification is required");
   if (!event || chainEntry?.event_id !== event.event_id) throw new TypeError("I11 chain entry does not match event");
+  if (typeof canonicalEventBytes !== "function" || typeof sha256Hex !== "function") {
+    throw new TypeError("I11 binding dependencies are required");
+  }
+  const eventBytes = canonicalEventBytes(event);
+  assertBytes(eventBytes, "canonical event bytes");
+  const expectedHash = await sha256Hex(frameHashInput(chainEntry.previous_hash, eventBytes));
+  if (expectedHash !== chainEntry.event_hash) throw new TypeError("current event is not bound to verified I11 entry");
   return frameEventSignatureInput({
     worldId,
     previousHash: chainEntry.previous_hash,
@@ -81,18 +90,18 @@ export function createEventSignatureRecord({ worldId, event, keyId, signature })
   return record;
 }
 
-export async function signEventDetached(context, { signBytes }) {
+export async function signEventDetached(context, { signBytes, canonicalEventBytes, sha256Hex }) {
   if (typeof signBytes !== "function") throw new TypeError("signBytes capability is required");
-  const input = signatureInput(context);
+  const input = await signatureInput(context, { canonicalEventBytes, sha256Hex });
   const signature = await signBytes(input);
   return createEventSignatureRecord({ worldId: context.worldId, event: context.event, keyId: context.keyId, signature });
 }
 
-export async function verifyEventDetached(record, context, { verifyBytes }) {
+export async function verifyEventDetached(record, context, { verifyBytes, canonicalEventBytes, sha256Hex }) {
   if (context.i11Verified !== true || typeof verifyBytes !== "function") return false;
   try {
     if (!validateEventSignatureRecord(record, { worldId: context.worldId, event: context.event })) return false;
-    const input = signatureInput(context);
+    const input = await signatureInput(context, { canonicalEventBytes, sha256Hex });
     return (await verifyBytes(input, record.signature, record.key_id)) === true;
   } catch {
     return false;

@@ -42,24 +42,40 @@ class I12SignatureContractTests(unittest.TestCase):
     def test_detached_orchestration_requires_i11_and_fails_closed(self) -> None:
         self.run_node(r"""
             import assert from "node:assert/strict";
+            import { createHash } from "node:crypto";
             import { signEventDetached, verifyEventDetached } from "./app/application/event-signature.js";
-            const event = { event_id:"event:000000000000000000000001", author_id:"actor:000000000000000000000001" };
+            import { frameHashInput } from "./app/application/hash-chain.js";
+            import { canonicalJson } from "./app/application/world-backup.js";
+            const encoder = new TextEncoder();
+            const event = {
+              event_id:"event:000000000000000000000001", event_type:"test.event", payload:{},
+              author_id:"actor:000000000000000000000001", sequence:1, lamport:0,
+              ruleset_version:"1.0.0", metadata:{},
+            };
+            const canonicalEventBytes = value => encoder.encode(canonicalJson(value));
+            const sha256Hex = async bytes => createHash("sha256").update(bytes).digest("hex");
+            const previousHash = "0".repeat(64);
+            const eventHash = await sha256Hex(frameHashInput(previousHash, canonicalEventBytes(event)));
             const context = {
-              worldId:"world:000000000000000000000001", event, eventBytes:new TextEncoder().encode("event"),
-              chainEntry:{event_id:event.event_id, previous_hash:"0".repeat(64), event_hash:"1".repeat(64)},
+              worldId:"world:000000000000000000000001", event,
+              chainEntry:{event_id:event.event_id, previous_hash:previousHash, event_hash:eventHash},
               keyId:"key:sha256:"+"2".repeat(64), i11Verified:true,
             };
+            const deps = { canonicalEventBytes, sha256Hex };
             let signedInput;
             const signBytes = async bytes => { signedInput = bytes; return "A".repeat(86); };
-            const record = await signEventDetached(context, {signBytes});
+            const record = await signEventDetached(context, {signBytes, ...deps});
             assert.equal(record.event_id, event.event_id);
             assert.equal(await verifyEventDetached(record, context, {verifyBytes: async (bytes, signature, keyId) =>
-              Buffer.from(bytes).equals(Buffer.from(signedInput)) && signature === record.signature && keyId === record.key_id}), true);
-            await assert.rejects(() => signEventDetached({...context, i11Verified:false}, {signBytes}), /I11 verification/);
-            assert.equal(await verifyEventDetached(record, {...context, i11Verified:false}, {verifyBytes:async()=>true}), false);
-            assert.equal(await verifyEventDetached(record, {...context, chainEntry:{...context.chainEntry, event_hash:"x".repeat(64)}}, {verifyBytes:async()=>true}), false);
-            assert.equal(await verifyEventDetached({...record, author_id:"actor:000000000000000000000002"}, context, {verifyBytes:async()=>true}), false);
-            assert.equal(await verifyEventDetached({...record, signature:"A".repeat(85)+"B"}, context, {verifyBytes:async()=>true}), false);
+              Buffer.from(bytes).equals(Buffer.from(signedInput)) && signature === record.signature && keyId === record.key_id, ...deps}), true);
+            await assert.rejects(() => signEventDetached({...context, i11Verified:false}, {signBytes, ...deps}), /I11 verification/);
+            assert.equal(await verifyEventDetached(record, {...context, i11Verified:false}, {verifyBytes:async()=>true, ...deps}), false);
+            assert.equal(await verifyEventDetached(record, {...context, chainEntry:{...context.chainEntry, event_hash:"1".repeat(64)}}, {verifyBytes:async()=>true, ...deps}), false);
+            const mutated = {...event, payload:{changed:true}};
+            await assert.rejects(() => signEventDetached({...context, event:mutated}, {signBytes, ...deps}), /not bound to verified I11 entry/);
+            assert.equal(await verifyEventDetached(record, {...context, event:mutated}, {verifyBytes:async()=>true, ...deps}), false);
+            assert.equal(await verifyEventDetached({...record, author_id:"actor:000000000000000000000002"}, context, {verifyBytes:async()=>true, ...deps}), false);
+            assert.equal(await verifyEventDetached({...record, signature:"A".repeat(85)+"B"}, context, {verifyBytes:async()=>true, ...deps}), false);
         """)
 
     def test_core_has_no_browser_or_persistence_dependency(self) -> None:
