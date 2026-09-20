@@ -1,0 +1,38 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-032",
+  "checkpoint": "I12",
+  "title": "I12-C non-extractable CryptoKey persistence proof",
+  "purpose": "Den in I12-C vorgeschriebenen isolierten Chromium-Nachweis erbringen, dass ein nicht extrahierbarer Ed25519-CryptoKey einen IndexedDB-Close/Reopen-Zyklus überlebt, ohne bereits einen produktiven Store einzuführen.",
+  "scope": [
+    "separater test-only IndexedDB-Store",
+    "Delete-Lifecycle vollständig vor Open abwarten",
+    "non-extractable Key speichern, schließen, neu öffnen und sign/verify prüfen",
+    "Duplicate-Key no-clobber und Missing-Key fail-closed prüfen",
+    "genau eine visuelle UX-Änderung: dezenter Schatten für .ssi-card"
+  ],
+  "non_goals": [
+    "kein produktiver KeyStore oder Signature-Store",
+    "keine DB-Version oder Migration des Produktstores",
+    "kein I08- oder I10-REOPEN",
+    "keine Rotation oder Recovery",
+    "kein Backup-Schema-Patch"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "security_integrity", "ux_accessibility", "release_evidence"],
+  "compatibility": "I08/I10 sowie produktive I12-A/B-Adapter bleiben unverändert; der Proof besitzt einen eigenen DB-Namen und ist ausschließlich Testinfrastruktur.",
+  "security": "Der private Ed25519-Key wird non-extractable erzeugt; Export muss auch nach Reopen fehlschlagen. Duplicate add darf den aktiven Key nicht überschreiben.",
+  "test_plan": [
+    "I12 CryptoKey Persistence Chromium Smoke",
+    "durch styles.css ausgelöste bestehende UI/Browser-Regressionen",
+    "Repository Quality",
+    "finaler Diff auf test-only Persistence und genau eine CSS-Regel prüfen"
+  ],
+  "rollback": "Branch/PR verwerfen; main und alle produktiven Stores bleiben unverändert.",
+  "evidence": [
+    "tests/i12_cryptokey_persistence_browser_smoke.html",
+    ".github/workflows/i12-cryptokey-persistence-smoke.yml"
+  ],
+  "result": "PENDING",
+  "residual_risk": "Der Proof belegt Browser-Persistenz im getesteten Chromium/Origin, aber keine plattformübergreifende Recovery und noch keinen produktiven Store-Vertrag.",
+  "next_step": "Nur bei vollständig grünen Gates den Proof dokumentarisch abschließen; danach erst den kleinsten produktiven I12-Persistence-Adapter planen."
+}
