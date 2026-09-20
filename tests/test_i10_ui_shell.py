@@ -8,6 +8,7 @@ UI = ROOT / "app/ui/app.js"
 CSS = ROOT / "app/ui/styles.css"
 BOOT = ROOT / "app/bootstrap/main.js"
 MANIFEST = ROOT / "manifests/project.manifest.json"
+I10_STATUS = ROOT / "status/I10_STATUS.json"
 
 
 class I10GameUiRegressionShellTests(unittest.TestCase):
@@ -47,9 +48,11 @@ class I10GameUiRegressionShellTests(unittest.TestCase):
 
     def test_i10_is_frozen_without_game_shell_scope_creep(self) -> None:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
-        self.assertEqual(manifest["checkpoint"], "I10")
-        self.assertEqual(manifest["status"], "frozen_i10")
-        self.assertEqual(manifest["next_checkpoint"], "I11")
+        status = json.loads(I10_STATUS.read_text(encoding="utf-8"))
+        self.assertGreaterEqual(int(manifest["checkpoint"][1:]), 10)
+        self.assertEqual(status["checkpoint"], "I10")
+        self.assertEqual(status["overall_status"], "GREEN")
+        self.assertTrue(all(value == "GREEN" for value in status["gates"].values()))
         source = GAME.read_text(encoding="utf-8").lower()
         for forbidden in ("navigator.storage", "showSaveFilePicker".lower(), "quota", "exportworld", "importworld"):
             with self.subTest(forbidden=forbidden):

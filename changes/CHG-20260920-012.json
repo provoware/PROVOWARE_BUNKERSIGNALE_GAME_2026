@@ -1,0 +1,43 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-012",
+  "checkpoint": "I11",
+  "title": "I11 hash-chain contract and planning gate",
+  "purpose": "Den nächsten Checkpoint nach dem eingefrorenen I10 vor Produktcode verbindlich auf Scope, Non-Goals, Architekturgrenzen, Reihenfolge und Exit-Gates festlegen.",
+  "scope": [
+    "I11 als separaten deterministischen Hashketten-Vertrag definieren",
+    "SHA-256, Genesis-Vorgänger und fail-closed Verifikationsanforderungen festlegen",
+    "I11-A/B/C-Reihenfolge mit explizitem Persistence-/REOPEN-Entscheidungsgate festlegen",
+    "genau eine isolierte visuelle UX-Korrektur: Browser-Control-Farbschema auf die tatsächlich ausschließlich dunkle Shell begrenzen",
+    "test-only I10-REOPEN: den veralteten Regression-Guard so korrigieren, dass er den eingefrorenen I10-Status statt einen dauerhaft auf I10 fixierten globalen Projektcheckpoint prüft"
+  ],
+  "non_goals": [
+    "Kein Hash-Chain-Runtimecode in diesem Planning-Gate",
+    "Keine Änderung an I06, I08, I09 oder I10-Produktcode und keine Änderung an eingefrorener I10-Evidence",
+    "Keine Signaturen oder Schlüsselverwaltung aus I12",
+    "Keine Persistenzentscheidung vor grünem deterministischem Core und Browseradapter",
+    "Keine weitere visuelle Änderung"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "I00-I10-Produktstand und Evidence bleiben eingefroren. Der test-only I10-REOPEN korrigiert ausschließlich einen Regressionstest, der Fortschritt nach I10 fälschlich blockierte. I11 erweitert weder den I06-Envelope noch den I08-Store.",
+  "security": "Die Planung verlangt eindeutige Byte-Rahmung, SHA-256, Domänentrennung und fail-closed Verifikation; konkrete Testvektoren werden vor dem ersten Runtime-Patch eingefroren.",
+  "test_plan": [
+    "Repository Quality einschließlich des korrigierten I10-Freeze-Regression-Guards",
+    "allgemeiner Chromium-Smoke für die isolierte color-scheme-Änderung",
+    "keine checkpoint-spezifischen I11-Runtime-Gates vor I11-A"
+  ],
+  "rollback": "Branch verwerfen; main bleibt auf I10 GREEN/FROZEN.",
+  "evidence": [
+    "docs/I11_HASH_CHAIN.md",
+    "index.html",
+    "tests/test_i10_ui_shell.py",
+    "status/I10_STATUS.json"
+  ],
+  "result": "GREEN"
+}
