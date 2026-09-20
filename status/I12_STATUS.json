@@ -1,31 +1,72 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-20T23:08:00Z",
+  "generated_at_utc": "2026-09-20T23:12:00Z",
   "overall_status": "GREEN",
-  "gates": {"G0":"GREEN","G1":"GREEN","G6":"GREEN","G8":"GREEN"},
-  "fingerprint_sha256": "f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be",
+  "gates": {
+    "G0": "GREEN",
+    "G1": "GREEN",
+    "G6": "GREEN",
+    "G8": "GREEN"
+  },
+  "fingerprint_sha256": "0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_p1_signing_key_store": "PASS",
     "i12_c_p2_sequence_decision": "DOCUMENTED",
-    "next_i12_c_block": "P2_CONTRACT_GATE_HISTORICAL_PUBLIC_KEY_RETENTION",
-    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_GREEN",
+    "next_i12_c_block": "P2_IMPLEMENTATION_HISTORICAL_PUBLIC_KEY_RETENTION",
+    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_IMPLEMENTATION_GREEN",
     "product_persistence": "P1_ACTIVE_KEY_STORE_ONLY",
     "i08_reopen": "NO",
     "i10_reopen": "NO",
-    "private_key_backup": "NOT_ALLOWED_V1"
+    "private_key_backup": "NOT_ALLOWED_V1",
+    "i12_c_p2_public_key_contract": "DOCUMENTED",
+    "p2_public_key_representation": "RAW_ED25519_32_BYTES",
+    "p2_api": "PUT_IF_ABSENT_READ_BY_ID",
+    "p2_conflict_policy": "IDEMPOTENT_IDENTICAL_FAIL_CLOSED_DIFFERENT"
   },
   "reviews": [
-    {"role":"orchestrator","status":"PASS","evidence":"I12-C Folgearbeit ist jetzt P2 vor P3 sequenziert."},
-    {"role":"architecture_guardian","status":"PASS","evidence":"P2 Historical Public-Key Retention ist der naechste Contract-only Block."},
-    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine Store-/Schemaaenderung in diesem Decision Gate."},
-    {"role":"qa_regression","status":"PASS","evidence":"Nur Governance-Evidence wird erneut gegated."},
-    {"role":"security_integrity","status":"PASS","evidence":"Persistente Signaturen bleiben gesperrt, bis historische Public Keys dauerhaft aufloesbar geplant sind."},
-    {"role":"ux_accessibility","status":"PASS","evidence":"Keine UI-Aenderung im Decision-only Scope."},
-    {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik veraendert."},
-    {"role":"release_evidence","status":"PASS","evidence":"Sequence Decision an f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be gebunden."}
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "P2 Contract Gate vollstaendig dokumentiert."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "P2 public_keys bleibt additiv und getrennt von P1 signing_keys."
+    },
+    {
+      "role": "data_schema_auditor",
+      "status": "PASS",
+      "evidence": "Noch keine DB-/Schemaaenderung; additive Migration bleibt Folgeblock."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "P2 Contract-Faelle und Exit-Gates sind vor Implementierung gebunden."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "Raw-Bytes/key_id-Bindung und fail-closed Konfliktpolitik sind festgelegt."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "Keine UI-Aenderung im Contract-only Scope."
+    },
+    {
+      "role": "content_canon",
+      "status": "PASS",
+      "evidence": "Keine Gameplay-/Contentlogik veraendert."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "Contract Gate an 0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b gebunden."
+    }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
 }
