@@ -4,7 +4,7 @@
 <output id="result" data-result="RUNNING">RUNNING</output>
 <script type="module">
 import { deriveKeyId } from "../app/application/event-signature.js";
-import { createSha256Hex } from "../app/infrastructure/browser/sha256.js";
+import { createBrowserSha256Hex } from "../app/infrastructure/browser/sha256.js";
 import {
   PUBLIC_KEY_STORE_ERROR,
   createIndexedDbPublicKeyStore,
@@ -13,7 +13,7 @@ import {
 const result = document.querySelector("#result");
 const keepAlive = setInterval(() => {}, 50);
 const DB_NAME = "i12-p2-public-key-store-smoke";
-const sha256Hex = createSha256Hex(crypto.subtle);
+const sha256Hex = createBrowserSha256Hex(crypto.subtle);
 const derive = bytes => deriveKeyId(bytes, { sha256Hex });
 const requestResult = request => new Promise((resolve, reject) => {
   request.onsuccess = () => resolve(request.result);
@@ -86,11 +86,6 @@ try {
   await deleteDb();
 
   const pair = await crypto.subtle.generateKey({ name: "Ed25519" }, false, ["sign", "verify"]);
-  const legacy = await requestResult(indexedDB.open(DB_NAME, 1));
-  legacy.createObjectStore;
-  legacy.close();
-  await deleteDb();
-
   const legacyReq = indexedDB.open(DB_NAME, 1);
   legacyReq.onupgradeneeded = () => legacyReq.result.createObjectStore("signing_keys", { keyPath: "slot" });
   const legacyDb = await requestResult(legacyReq);
@@ -135,6 +130,42 @@ try {
     PUBLIC_KEY_STORE_ERROR.OPEN_FAILED,
   );
 
+  const queued = value => {
+    const request = new EventTarget();
+    request.result = value;
+    queueMicrotask(() => request.dispatchEvent(new Event("success")));
+    return request;
+  };
+  const fakeTransaction = new EventTarget();
+  fakeTransaction.error = null;
+  fakeTransaction.abort = () => queueMicrotask(() => fakeTransaction.dispatchEvent(new Event("abort")));
+  fakeTransaction.objectStore = () => ({
+    get: () => queued(undefined),
+    add: () => { throw new DOMException("injected clone/queue failure", "DataCloneError"); },
+  });
+  const fakeDb = {
+    objectStoreNames: { contains: () => true },
+    transaction: () => fakeTransaction,
+    close() {},
+  };
+  const failingWriteIndexedDB = {
+    open() {
+      const request = new EventTarget();
+      request.result = fakeDb;
+      queueMicrotask(() => request.dispatchEvent(new Event("success")));
+      return request;
+    },
+  };
+  const failingWriteStore = createIndexedDbPublicKeyStore({
+    indexedDB: failingWriteIndexedDB,
+    deriveKeyId: derive,
+    dbName: "unused-write",
+  });
+  await expectCode(
+    () => failingWriteStore.putIfAbsent(recordA),
+    PUBLIC_KEY_STORE_ERROR.WRITE_FAILED,
+  );
+
   await deleteDb();
 
   Object.assign(result.dataset, {
@@ -145,7 +176,7 @@ try {
     conflict: "closed",
     corruption: "closed",
     p1: "preserved",
-    api: "minimal",
+    writeFailure: "closed",\n    api: "minimal",
   });
   result.textContent = "PASS";
 } catch (error) {

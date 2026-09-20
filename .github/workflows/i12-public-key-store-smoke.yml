@@ -53,7 +53,7 @@ jobs:
                   if value.get("result") != "RUNNING":
                       break
                   time.sleep(0.1)
-              expected = {"result":"PASS","representation":"raw32","keyId":"verified","idempotent":"true","conflict":"closed","corruption":"closed","p1":"preserved","api":"minimal"}
+              expected = {"result":"PASS","representation":"raw32","keyId":"verified","idempotent":"true","conflict":"closed","corruption":"closed","p1":"preserved","writeFailure":"closed","api":"minimal"}
               assert value == expected, value
               print(json.dumps(value, sort_keys=True))
           finally:
