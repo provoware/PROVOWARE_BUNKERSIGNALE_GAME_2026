@@ -2,7 +2,7 @@
   "checkpoint": "I11",
   "generated_at_utc": "2026-09-20T11:43:34Z",
   "status": "GREEN",
-  "fingerprint_sha256": "68f5d8df3009d40cb03d8ab25cafc54d352752a14832dab5e3a889d112a8292c",
+  "fingerprint_sha256": "6ec730aab6959690168b65c1e7d36de191446f426409cc03e9cdc1e016580d73",
   "checks": [
     {
       "name": "repository_quality",
@@ -45,7 +45,13 @@
       "detail": "Kein I12+-Funktionsscope vorgezogen."
     }
   ],
-  "file_hashes": {},
+  "file_hashes": {
+    "changes/CHG-20260920-012.json": "2673a1724fd6fa055311af9d54175bb894d88a7d5c2535a1d541291b4cf8c831",
+    "changes/CHG-20260920-013.json": "bb67b75e51136a17ebe0f0dbfdc481d46599d0e81a9262dc89cd98120bd1c256",
+    "changes/CHG-20260920-014.json": "c07fe26cb2457cf93ad0dc8416af7cdd69ea42a1ffb45a95b563ea59f3326a35",
+    "changes/CHG-20260920-015.json": "cfc161225635e79027273962e0ae5d55451174bb9038a73e003fdcc227dafc8f",
+    "changes/CHG-20260920-016.json": "6c1d49147a80bd530e90c4bfe33cfc809ddb632b01ef6d5d57193e0ab1d0c5b5"
+  },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
@@ -86,7 +92,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Finaler unveränderter I11-main ist durch Quality #436 an Fingerprint 68f5d8df3009d40cb03d8ab25cafc54d352752a14832dab5e3a889d112a8292c gebunden."
+      "evidence": "Frozen I11 governed tree ist an Fingerprint 6ec730aab6959690168b65c1e7d36de191446f426409cc03e9cdc1e016580d73 gebunden; Quality #436 belegt den unveränderten I11-Produktstand vor der Evidence-Bindung."
     }
   ]
 }
