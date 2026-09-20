@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-030",
+  "checkpoint": "I12",
+  "title": "I12-C persistence and recovery decision gate",
+  "purpose": "I12 nach formalem Freeze ausschließlich für den dokumentarischen I12-C-Decision-Gate wieder öffnen und Persistence-, Lifecycle-, Lost-Key-, Rotation- sowie Backup/Restore-Regeln festlegen.",
+  "scope": [
+    "I12 Decision-only REOPEN dokumentieren",
+    "lokale Persistence für privaten CryptoKey, Public Keys und detached Signatures fachlich entscheiden",
+    "Lost-Key und explizite Rotation festlegen",
+    "I10 World Backup v1 unverändert lassen",
+    "separaten I12-Store als spätere Zielgrenze bevorzugen"
+  ],
+  "non_goals": [
+    "Kein produktiver Store",
+    "Keine DB-Versionserhöhung oder Migration",
+    "Kein KeyStore oder Signature-Store",
+    "Kein Recovery- oder Rotation-Code",
+    "Kein Backup-Schema-Patch",
+    "Kein I08- oder I10-REOPEN",
+    "Keine UI-Aenderung"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "I08-Event-Store und I10-World-Backup-v1 bleiben unveraendert; I12-A/B-Verträge werden nicht geändert.",
+  "security": "Private Schlüssel bleiben nicht extrahierbar. Kein privates Schlüsselmaterial wird in Backup, Logs oder Evidence aufgenommen. Trusted Checkpoints bleiben von lokalem veränderlichem State getrennt.",
+  "test_plan": [
+    "Repository Quality nach Decision-Dokumentation",
+    "frozen I12 Evidence auf neuen Decision-Tree bewusst neu binden",
+    "keine I08/I10-Datei im finalen Diff",
+    "keine produktive Persistence-Implementierung im finalen Diff"
+  ],
+  "rollback": "Decision-PR verwerfen; main bleibt auf formal frozen_i12. Kein Produktzustand oder Store wurde verändert.",
+  "evidence": [
+    "docs/I12_C_PERSISTENCE_RECOVERY_DECISION.md",
+    "manifests/project.manifest.json",
+    "evidence/I12_EVIDENCE.json",
+    "status/I12_STATUS.json"
+  ],
+  "result": "GREEN"
+}
