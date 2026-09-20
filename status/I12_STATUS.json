@@ -1,67 +1,33 @@
 {
-  "checkpoint": "I12",
-  "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-20T18:55:00Z",
-  "overall_status": "GREEN",
-  "gates": {
-    "G0": "GREEN",
-    "G1": "GREEN",
-    "G6": "GREEN",
-    "G8": "GREEN"
+  "checkpoint":"I12",
+  "product_version":"0.1.0-alpha.0",
+  "generated_at_utc":"2026-09-20T20:05:00Z",
+  "overall_status":"GREEN",
+  "gates":{"G0":"GREEN","G1":"GREEN","G6":"GREEN","G8":"GREEN"},
+  "fingerprint_sha256":"d4b9d02317b7d8b10ccc6f1f64adec9fe1c16c4334fa1099c2daad5a4a1b0932",
+  "tests":{
+    "i12_ab_exit_gates_14_of_14":"PASS",
+    "i12_c_decision_gate":"DOCUMENTED",
+    "i12_trusted_checkpoint_hardening":"PASS",
+    "i12_cryptokey_persistence_chromium":"PASS",
+    "i12_cryptokey_persistence_run":"35534340402",
+    "private_key_after_reopen":"NON_EXTRACTABLE",
+    "duplicate_key":"NO_CLOBBER",
+    "missing_key":"FAIL_CLOSED",
+    "product_persistence":"NOT_STARTED",
+    "i08_reopen":"NO",
+    "i10_reopen":"NO",
+    "private_key_backup":"NOT_ALLOWED_V1"
   },
-  "fingerprint_sha256": "84e5d2dfb90970cdbf4b9feae91f5a059e95ae90a111b3d801239d4f83772d82",
-  "tests": {
-    "frozen_i12_post_merge_quality_551": "PASS",
-    "i12_ab_exit_gates_14_of_14": "PASS",
-    "i12_c_decision_gate": "DOCUMENTED",
-    "i12_c_implementation": "NOT_STARTED",
-    "i08_reopen": "NO",
-    "i10_reopen": "NO",
-    "private_key_backup": "NOT_ALLOWED_V1",
-    "next_proof": "CHROMIUM_CRYPTOKEY_PERSISTENCE_TEST_ONLY",
-    "i12_trusted_checkpoint_hardening": "PASS"
-  },
-  "reviews": [
-    {
-      "role": "orchestrator",
-      "status": "PASS",
-      "evidence": "I12-A Trusted-Checkpoint-Verifikation wurde ausschließlich zur P1-Sicherheitskorrektur reopened; I12-B und I08/I10/I11 bleiben unverändert."
-    },
-    {
-      "role": "architecture_guardian",
-      "status": "PASS",
-      "evidence": "Separater I12-Persistenzbereich ist die bevorzugte spätere Grenze; I08/I10 bleiben unverändert."
-    },
-    {
-      "role": "data_schema_auditor",
-      "status": "PASS",
-      "evidence": "Kein Schema und keine bestehende DB-Version wurden verändert; World Backup v1 bleibt exakt unverändert."
-    },
-    {
-      "role": "qa_regression",
-      "status": "PASS",
-      "evidence": "Frozen-I12 Post-Merge Quality #551 war GREEN; Decision-Tree wird nach Evidence-Neubindung erneut vollständig geprüft."
-    },
-    {
-      "role": "security_integrity",
-      "status": "PASS",
-      "evidence": "Trusted Checkpoint verlangt externen expectedKeyId und erneut erfolgreich verifizierte I11-Coverage; selbstgewählter Key und ungeprüfte Coverage werden fail-closed abgewiesen."
-    },
-    {
-      "role": "ux_accessibility",
-      "status": "PASS",
-      "evidence": "Genau eine isolierte UX-Korrektur: lange Metadaten-Labels dürfen bei hohem Zoom umbrechen."
-    },
-    {
-      "role": "content_canon",
-      "status": "PASS",
-      "evidence": "Keine Gameplay-/Contentlogik oder Event-Wahrheit wird verändert."
-    },
-    {
-      "role": "release_evidence",
-      "status": "PASS",
-      "evidence": "Aktiver I12-Korrekturbaum ist an governed Fingerprint 84e5d2dfb90970cdbf4b9feae91f5a059e95ae90a111b3d801239d4f83772d82 gebunden; historischer Frozen-I12-Fingerprint bleibt in der Git-Historie erhalten."
-    }
+  "reviews":[
+    {"role":"orchestrator","status":"PASS","evidence":"I12-C Proof blieb test-only; produktive Persistence bleibt gesperrt."},
+    {"role":"architecture_guardian","status":"PASS","evidence":"Separater Test-DB-Name; keine I08/I10- oder Produktstore-Kopplung."},
+    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine Produkt-DB-Version, Migration oder Backup-Schemaänderung."},
+    {"role":"qa_regression","status":"PASS","evidence":"ChromeDriver-Persistence-Proof grün; finaler Quality-/Regression-Gate folgt nach Evidence-Bindung."},
+    {"role":"security_integrity","status":"PASS","evidence":"Non-extractable bleibt nach Reopen erhalten; no-clobber und missing-key fail-closed belegt."},
+    {"role":"ux_accessibility","status":"PASS","evidence":"Genau eine isolierte visuelle Änderung: dezenter .ssi-card-Schatten; keine Interaktionslogik."},
+    {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik verändert."},
+    {"role":"release_evidence","status":"PASS","evidence":"I12-C Proof ist an governed Fingerprint d4b9d02317b7d8b10ccc6f1f64adec9fe1c16c4334fa1099c2daad5a4a1b0932 gebunden."}
   ],
-  "review_mode": "sequential_role_review_no_parallel_agent_runtime"
+  "review_mode":"sequential_role_review_no_parallel_agent_runtime"
 }
