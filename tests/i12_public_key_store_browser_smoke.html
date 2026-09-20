@@ -1,0 +1,157 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>I12 P2 Historical Public Key Store Smoke</title>
+<output id="result" data-result="RUNNING">RUNNING</output>
+<script type="module">
+import { deriveKeyId } from "../app/application/event-signature.js";
+import { createSha256Hex } from "../app/infrastructure/browser/sha256.js";
+import {
+  PUBLIC_KEY_STORE_ERROR,
+  createIndexedDbPublicKeyStore,
+} from "../app/infrastructure/browser/indexeddb-public-key-store.js";
+
+const result = document.querySelector("#result");
+const keepAlive = setInterval(() => {}, 50);
+const DB_NAME = "i12-p2-public-key-store-smoke";
+const sha256Hex = createSha256Hex(crypto.subtle);
+const derive = bytes => deriveKeyId(bytes, { sha256Hex });
+const requestResult = request => new Promise((resolve, reject) => {
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+const transactionDone = transaction => new Promise((resolve, reject) => {
+  transaction.oncomplete = resolve;
+  transaction.onabort = () => reject(transaction.error ?? new Error("transaction aborted"));
+  transaction.onerror = () => reject(transaction.error ?? new Error("transaction failed"));
+});
+const deleteDb = () => new Promise((resolve, reject) => {
+  const request = indexedDB.deleteDatabase(DB_NAME);
+  request.onsuccess = resolve;
+  request.onerror = () => reject(request.error);
+  request.onblocked = () => reject(new Error("database deletion blocked"));
+});
+const expectCode = async (operation, code) => {
+  try { await operation(); }
+  catch (error) {
+    if (error?.code === code) return;
+    throw error;
+  }
+  throw new Error("expected error " + code);
+};
+const same = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+
+try {
+  await deleteDb();
+
+  const bytesA = Uint8Array.from({ length: 32 }, (_, i) => i);
+  const bytesB = Uint8Array.from({ length: 32 }, (_, i) => 255 - i);
+  const keyA = await derive(bytesA);
+  const keyB = await derive(bytesB);
+  const recordA = { key_id: keyA, algorithm: "Ed25519", public_key_bytes: bytesA };
+
+  const store = createIndexedDbPublicKeyStore({ indexedDB, deriveKeyId: derive, dbName: DB_NAME });
+  if (Object.keys(store).sort().join(",") !== "putIfAbsent,readById") throw new Error("unexpected P2 API surface");
+  if (await store.readById(keyA) !== null) throw new Error("unknown key did not return null");
+
+  await expectCode(
+    () => store.putIfAbsent({ ...recordA, public_key_bytes: bytesA.slice(0, 31) }),
+    PUBLIC_KEY_STORE_ERROR.INVALID_RECORD,
+  );
+  await expectCode(
+    () => store.putIfAbsent({ ...recordA, key_id: keyB }),
+    PUBLIC_KEY_STORE_ERROR.KEY_ID_MISMATCH,
+  );
+
+  await store.putIfAbsent(recordA);
+  const first = await store.readById(keyA);
+  if (!first || !same(first.public_key_bytes, bytesA)) throw new Error("P2 readback mismatch");
+  first.public_key_bytes[0] ^= 0xff;
+  const second = await store.readById(keyA);
+  if (!same(second.public_key_bytes, bytesA)) throw new Error("P2 readback aliases mutable bytes");
+
+  await store.putIfAbsent({ key_id: keyA, algorithm: "Ed25519", public_key_bytes: bytesA.slice() });
+  if (!same((await store.readById(keyA)).public_key_bytes, bytesA)) throw new Error("idempotent duplicate changed record");
+
+  const collisionStore = createIndexedDbPublicKeyStore({
+    indexedDB,
+    dbName: DB_NAME,
+    deriveKeyId: async () => keyA,
+  });
+  await expectCode(
+    () => collisionStore.putIfAbsent({ key_id: keyA, algorithm: "Ed25519", public_key_bytes: bytesB }),
+    PUBLIC_KEY_STORE_ERROR.CONFLICT,
+  );
+  if (!same((await store.readById(keyA)).public_key_bytes, bytesA)) throw new Error("conflict clobbered existing record");
+
+  await deleteDb();
+
+  const pair = await crypto.subtle.generateKey({ name: "Ed25519" }, false, ["sign", "verify"]);
+  const legacy = await requestResult(indexedDB.open(DB_NAME, 1));
+  legacy.createObjectStore;
+  legacy.close();
+  await deleteDb();
+
+  const legacyReq = indexedDB.open(DB_NAME, 1);
+  legacyReq.onupgradeneeded = () => legacyReq.result.createObjectStore("signing_keys", { keyPath: "slot" });
+  const legacyDb = await requestResult(legacyReq);
+  const legacyTx = legacyDb.transaction("signing_keys", "readwrite");
+  legacyTx.objectStore("signing_keys").add({ slot: "active", key_id: keyA, private_key: pair.privateKey, public_key: pair.publicKey });
+  await transactionDone(legacyTx);
+  legacyDb.close();
+
+  const upgradeStore = createIndexedDbPublicKeyStore({ indexedDB, deriveKeyId: derive, dbName: DB_NAME });
+  await upgradeStore.putIfAbsent(recordA);
+  const upgradedDb = await requestResult(indexedDB.open(DB_NAME, 2));
+  if (!upgradedDb.objectStoreNames.contains("signing_keys") || !upgradedDb.objectStoreNames.contains("public_keys")) {
+    throw new Error("P2 upgrade did not preserve both stores");
+  }
+  const checkTx = upgradedDb.transaction("signing_keys", "readonly");
+  const legacyRecord = await requestResult(checkTx.objectStore("signing_keys").get("active"));
+  await transactionDone(checkTx);
+  upgradedDb.close();
+  if (legacyRecord?.key_id !== keyA || legacyRecord.private_key.extractable) throw new Error("P2 upgrade changed P1 record");
+
+  const corruptDb = await requestResult(indexedDB.open(DB_NAME, 2));
+  const corruptTx = corruptDb.transaction("public_keys", "readwrite");
+  corruptTx.objectStore("public_keys").put({ key_id: keyB, algorithm: "Ed25519", public_key_bytes: new Uint8Array(31) });
+  await transactionDone(corruptTx);
+  corruptDb.close();
+  await expectCode(
+    () => upgradeStore.readById(keyB),
+    PUBLIC_KEY_STORE_ERROR.INVALID_RECORD,
+  );
+
+  const failingIndexedDB = {
+    open() {
+      const request = new EventTarget();
+      request.error = new Error("injected open failure");
+      queueMicrotask(() => request.dispatchEvent(new Event("error")));
+      return request;
+    },
+  };
+  const failingStore = createIndexedDbPublicKeyStore({ indexedDB: failingIndexedDB, deriveKeyId: derive, dbName: "unused" });
+  await expectCode(
+    () => failingStore.putIfAbsent(recordA),
+    PUBLIC_KEY_STORE_ERROR.OPEN_FAILED,
+  );
+
+  await deleteDb();
+
+  Object.assign(result.dataset, {
+    result: "PASS",
+    representation: "raw32",
+    keyId: "verified",
+    idempotent: "true",
+    conflict: "closed",
+    corruption: "closed",
+    p1: "preserved",
+    api: "minimal",
+  });
+  result.textContent = "PASS";
+} catch (error) {
+  result.dataset.result = "FAIL";
+  result.textContent = `FAIL ${error.message}`;
+} finally {
+  clearInterval(keepAlive);
+}
+</script>

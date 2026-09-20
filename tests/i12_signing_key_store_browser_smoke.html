@@ -73,7 +73,7 @@ try {
   await deleteDb();
   if (await store.readActive() !== null) throw new Error("recreated empty store did not return null");
 
-  const rawDb = await requestResult(indexedDB.open(DB_NAME, 1));
+  const rawDb = await requestResult(indexedDB.open(DB_NAME, 2));
   const tx = rawDb.transaction("signing_keys", "readwrite");
   tx.objectStore("signing_keys").add({ slot: "active", key_id: KEY_A, private_key: "corrupt", public_key: "corrupt" });
   await transactionDone(tx);
