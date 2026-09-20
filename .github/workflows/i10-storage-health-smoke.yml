@@ -67,8 +67,8 @@ jobs:
 
           await call('Runtime.enable');
           const expression = `(async () => {
-            const { readBrowserStorageHealth } = await import('/app/infrastructure/browser/storage-health.js');
-            const { classifyStorageHealth } = await import('/app/application/storage-health.js');
+            const { readBrowserStorageHealth } = await import(new URL('/app/infrastructure/browser/storage-health.js', location.href).href);
+            const { classifyStorageHealth } = await import(new URL('/app/application/storage-health.js', location.href).href);
 
             const sample = async (usage, quota, persisted=true) =>
               classifyStorageHealth(await readBrowserStorageHealth({
