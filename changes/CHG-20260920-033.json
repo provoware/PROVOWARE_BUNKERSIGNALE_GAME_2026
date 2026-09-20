@@ -1,0 +1,32 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-033",
+  "checkpoint": "I12",
+  "title": "I12-C persistence adapter contract",
+  "purpose": "Den kleinsten produktiven I12-Persistenzadapter vor Code verbindlich auf Store-Grenze, Ownership, atomaren No-Clobber-Pfad und Lost-Key-Verhalten begrenzen.",
+  "scope": [
+    "P1-Vertrag fuer genau einen aktiven lokalen Ed25519-Signaturschluessel dokumentieren",
+    "eigenen I12-Datenbank- und Store-Bereich festlegen",
+    "putIfAbsent/readActive und Transaktionsgrenze definieren",
+    "genau eine visuelle UX-Aenderung: deaktivierte Standardbuttons klarer absetzen"
+  ],
+  "non_goals": [
+    "Keine produktive Persistence-Implementierung",
+    "Keine detached Signature Persistence",
+    "Keine Rotation oder historische Key-Retention",
+    "Kein I08- oder I10-REOPEN",
+    "Keine Backup-/Restore-Aenderung",
+    "Keine Multi-Tab-Koordination"
+  ],
+  "affected_owners": ["architecture_guardian", "data_schema_auditor", "security_integrity", "ux_accessibility", "release_evidence"],
+  "compatibility": "I06/I08/I10 sowie bestehende I12-A/B-Cryptovertraege bleiben unveraendert; P1 wird auf eine separate I12-Persistenzgrenze beschraenkt.",
+  "security": "Private Keys bleiben nicht extrahierbar; kein Export, Logging, JSON-Backup, stiller Ersatz oder automatisches Repair. No-clobber muss spaeter in einer einzelnen Readwrite-Transaktion erfolgen.",
+  "test_plan": [
+    "Repository Quality",
+    "triggerbasierter Game-UI/Browser-Smoke fuer die isolierte CSS-Aenderung",
+    "finaler Diff-Check: keine I08/I10-/Schema-/produktive Persistence-Datei"
+  ],
+  "rollback": "Contract-Branch/PR verwerfen; main und alle gefrorenen Vorgaenger bleiben unveraendert.",
+  "evidence": ["docs/I12_C_PERSISTENCE_ADAPTER_CONTRACT.md", "app/ui/styles.css"],
+  "result": "GREEN"
+}
