@@ -3,7 +3,7 @@ const EVENT_ID = /^event:[0-9a-f]{24}$/;
 const ACTOR_ID = /^actor:[0-9a-f]{24}$/;
 const SHA256_HEX = /^[0-9a-f]{64}$/;
 const KEY_ID = /^key:sha256:[0-9a-f]{64}$/;
-const SIGNATURE_BASE64URL = /^[A-Za-z0-9_-]{86}$/;
+const SIGNATURE_BASE64URL = /^[A-Za-z0-9_-]{85}[AQgw]$/;
 const EVENT_SIGNATURE_KEYS = Object.freeze([
   "format",
   "format_version",
@@ -64,7 +64,7 @@ export function frameEventSignatureInput({ worldId, previousHash, eventHash, eve
 
 export async function deriveKeyId(publicKeyBytes, { sha256Hex }) {
   assertBytes(publicKeyBytes, "publicKeyBytes");
-  if (publicKeyBytes.length === 0) throw new TypeError("publicKeyBytes must not be empty");
+  if (publicKeyBytes.length !== 32) throw new TypeError("publicKeyBytes must be exactly 32 raw Ed25519 bytes");
   if (typeof sha256Hex !== "function") throw new TypeError("sha256Hex dependency is required");
   const digest = await sha256Hex(concat(KEY_ID_DOMAIN, publicKeyBytes));
   if (!SHA256_HEX.test(digest)) throw new TypeError("sha256Hex returned invalid hash");
