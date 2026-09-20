@@ -1,0 +1,16 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-028",
+  "checkpoint": "I12",
+  "title": "I12-B Chromium 1000 verify performance profile",
+  "purpose": "Den letzten offenen I12-B-Exit-Baustein umsetzen: 1000 sequenzielle Ed25519-Verifikationen im echten Chromium reproduzierbar messen und gegen einen dokumentierten CI-Regressionsgrenzwert pruefen.",
+  "scope": ["10 Warm-up-Verifikationen", "1000 sequenzielle Verify-Aufrufe", "5000-ms-CI-Regressionsgrenzwert", "Messwerte als DOM-Dataset fuer Workflow-Evidence", "lange Status-Chips per overflow-wrap stabilisieren"],
+  "non_goals": ["Kein KeyStore oder Persistence", "Kein Recovery oder Rotation", "Keine I12-C-Funktion", "Kein REOPEN von I06 bis I11", "Keine Endgeraete-Leistungsgarantie"],
+  "affected_owners": ["qa_regression", "security_integrity", "release_evidence"],
+  "compatibility": "Nur Test-/Evidence- und eine isolierte CSS-Aenderung; I12-A und produktive I12-B-Crypto-Pfade bleiben unveraendert.",
+  "security": "Profil verwendet nur den bereits eingefrorenen RFC-Testvektor und exportiert kein privates Schluesselmaterial.",
+  "test_plan": ["I12 Chromium smoke muss 1000 Verifikationen erfolgreich ausfuehren", "elapsed_ms muss numerisch dokumentiert werden", "5000-ms-Grenze muss eingehalten werden", "alle triggerbasierten Regressionen muessen gruen bleiben"],
+  "rollback": "PR verwerfen; main bleibt auf dem gruenen Public-Key-Import/Export-Stand. Restrisiko danach: erst I12-B final einfrieren und Evidence/Fingerprint binden, bevor I12-C geoeffnet wird.",
+  "evidence": ["tests/i12_ed25519_browser_smoke.html", ".github/workflows/i12-ed25519-browser-smoke.yml", "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md", "app/ui/styles.css"],
+  "result": "GREEN"
+}
