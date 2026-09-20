@@ -4,6 +4,7 @@
 <output id="result" data-result="RUNNING">RUNNING</output>
 <script type="module">
 const result = document.querySelector("#result");
+const keepAlive = setInterval(() => {}, 50);
 const DB_NAME = "i12-cryptokey-persistence-proof-v2";
 const STORE = "keys";
 const KEY_ID = "active";
@@ -70,5 +71,7 @@ try {
 } catch (error) {
   result.dataset.result = "FAIL";
   result.textContent = `FAIL ${error.message}`;
+} finally {
+  clearInterval(keepAlive);
 }
 </script>
