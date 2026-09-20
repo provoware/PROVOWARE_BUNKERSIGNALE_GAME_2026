@@ -28,7 +28,7 @@ function assertOrdered(events) {
     const previous = events[index - 1];
     if (event.sequence <= previous.sequence) throw new TypeError("event sequence must strictly increase");
     if (event.lamport < previous.lamport ||
-        (event.lamport === previous.lamport && event.event_id.localeCompare(previous.event_id) < 0)) {
+        (event.lamport === previous.lamport && event.event_id < previous.event_id)) {
       throw new TypeError("events are not in deterministic world order");
     }
   }
