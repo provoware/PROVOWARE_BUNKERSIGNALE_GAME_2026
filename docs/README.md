@@ -27,6 +27,9 @@ Die Dokumentation ist nach Verbindlichkeit getrennt. Bei Widersprüchen haben ma
 - `I09_SNAPSHOT_CACHE.md` – verwerfbarer Snapshot Cache und Replay-Fallback.
 - `I10_GAME_UI_REGRESSION_SHELL.md` – read-only Spieloberfläche als I10-P0 Regressionsreferenz.
 - `I10_STORAGE_HEALTH_EXPORT_BACKUP.md` – verbindlicher I10-Kernvertrag für Storage Health, Export Backup und Restore.
+- `I11_HASH_CHAIN.md` – eingefrorener I11-Integritätsvertrag für die deterministische Hashkette.
+- `I11_C_PERSISTENCE_DECISION.md` – I11-Entscheid: Hashkette bleibt on-demand ableitbar.
+- `I12_SIGNATURES_KEYS_AUTHENTICITY.md` – verbindlicher I12-Plan für detached Signaturen, Schlüssel und Authentizität.
 
 ## Architekturentscheidungen
 
