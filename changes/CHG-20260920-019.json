@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-019",
+  "checkpoint": "I12",
+  "title": "I12-A signature record framing and key id vectors",
+  "purpose": "Den kleinsten I12-A-Core ohne Browser-Crypto oder Persistenz implementieren: detached Signature-Record v1, exakte Signatur-Byte-Rahmung und deterministische key_id-Ableitung mit festen Testvektoren.",
+  "scope": [
+    "Application-Core für Signature-Record-v1-Struktur und fail-closed Record-Bindung ergänzen",
+    "versionierte I12-Signatur-Byte-Rahmung implementieren und vollständige Bytefolge als Testvektor binden",
+    "`key_id` als vollständigen SHA-256-Fingerprint über versionierte Domänentrennung plus rohe Ed25519-Public-Key-Bytes ableiten",
+    "`world_id`, `event_id` und `author_id` des detached Records gegen den geprüften Kontext binden",
+    "genau eine visuelle UX-Korrektur: mehrzeilige h1/h2-Überschriften gleichmäßiger umbrechen"
+  ],
+  "non_goals": [
+    "Kein Ed25519 sign/verify oder Browser-SubtleCrypto-Adapter",
+    "Kein CryptoKey, KeyStore oder IndexedDB",
+    "Keine Persistenz von Signature Records oder trusted checkpoints",
+    "Keine Änderung an I06/I08/I09/I10/I11",
+    "Keine Checkpoint-Signatur-Implementierung und kein I13/I14-Scope"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "I11 bleibt unverändert eingefroren. I12-A konsumiert nur Welt-ID, bereits geprüfte I11-Hashes, kanonische Eventbytes und injizierte SHA-256-Funktion.",
+  "security": "Record-Autor/Event/Welt werden fail-closed an den verifizierten Kontext gebunden. key_id verwendet den vollständigen SHA-256-Digest statt gekürzter IDs; private Schlüssel existieren in diesem Block nicht.",
+  "test_plan": [
+    "exakte I12-Signatur-Bytefolge und deren SHA-256-Vektor prüfen",
+    "deterministischen key_id-Festvektor für 32 Public-Key-Testbytes prüfen",
+    "world/event/author-Mismatch fail-closed prüfen",
+    "Application-Core auf Browser-/Persistenzabhängigkeiten prüfen",
+    "Repository Quality und nur triggerbasierte Browser/UI-Regressionen grün halten"
+  ],
+  "rollback": "I12-A-Branch verwerfen; main bleibt beim grünen I12-Planning-Correction-Stand.",
+  "evidence": [
+    "app/application/event-signature.js",
+    "tests/test_i12_signature_contract.py",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md",
+    "app/ui/styles.css"
+  ],
+  "result": "GREEN"
+}

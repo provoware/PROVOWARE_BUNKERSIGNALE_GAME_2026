@@ -48,7 +48,7 @@ Vor jeder Schlüssel-/Trust-Auswertung MUSS `record.world_id` zur geprüften Wel
 
 I12 signiert nicht nur nackte Eventbytes. Die Signatur wird an den geprüften I11-Kontext gebunden, damit ein gültiger Nachweis nicht still in eine andere Welt oder Kettenposition transplantiert werden kann.
 
-Vor dem ersten Runtime-Patch wird folgende versionierte Rahmung als exakter Byte-Testvektor eingefroren:
+Für I12-A ist folgende versionierte Rahmung als exakter Byte-Testvektor eingefroren:
 
 `provoware:i12:event-signature:v1\n`
 + `<world_id>\n`
@@ -57,6 +57,30 @@ Vor dem ersten Runtime-Patch wird folgende versionierte Rahmung als exakter Byte
 + `<canonical UTF-8 I06 event bytes>`
 
 Vor Signaturprüfung MUSS das zugehörige I11-Kettenglied bereits erfolgreich gegen Event und Kette verifiziert sein.
+
+### Eingefrorener I12-A-Testvektor
+
+Für `world:000000000000000000000001`, Genesis-`previous_hash`, den eingefrorenen I11-Test-`event_hash` `b583335b4025c08e3cd2c3ae9324edde696d05450ef2744b721e59fd20f6fc31` und dasselbe kanonische Standard-Testevent ergibt SHA-256 über die **gerahmten Signaturbytes**:
+
+`38aea67e517ee1458df28c0b6a73b2aa51c812e9baafb862ac9656b75d78a4a1`
+
+Die Tests binden zusätzlich die vollständige Bytefolge selbst; Änderungen an Domänentrennung, LF-Trennern, Welt-ID, I11-Hashes oder kanonischen Eventbytes sind damit Vertragsänderungen.
+
+## `key_id` v1
+
+`key_id` ist kein gekürzter Domain-Identifier, sondern ein vollständiger kryptografischer Fingerprint:
+
+`key:sha256:<64 lowercase hex>`
+
+Die Eingabe für SHA-256 lautet exakt:
+
+`provoware:i12:key-id:v1\n` + `<32 rohe Ed25519-Public-Key-Bytes>`
+
+Für die Testbytes `00 01 02 ... 1f` ist der verbindliche Vektor:
+
+`key:sha256:ceb5f9a1d844ca3caef169e8d22b9f39875346044fe2d040131414fba6350a64`
+
+I12-A kennt dabei noch keinen Browser-`CryptoKey`; es verarbeitet ausschließlich bereits vorliegende Public-Key-Bytes plus injizierte SHA-256-Funktion.
 
 ## Coverage + Trusted Checkpoint
 
