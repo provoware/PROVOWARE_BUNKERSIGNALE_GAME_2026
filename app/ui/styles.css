@@ -29,7 +29,7 @@ h1 { margin: 0.25rem 0 0; }
 .ssi-tab, .ssi-button { min-height: 2.75rem; border: 1px solid var(--ssi-border); border-radius: 0.55rem; background: var(--ssi-panel); color: var(--ssi-text); padding: 0.6rem 0.9rem; cursor: pointer; }
 .ssi-tab[aria-pressed="true"] { border-color: var(--ssi-accent); box-shadow: inset 0 -0.2rem 0 var(--ssi-accent); font-weight: 700; }
 .ssi-tab:hover, .ssi-button:not(:disabled):hover { border-color: var(--ssi-accent); }
-.ssi-button:disabled { cursor: not-allowed; opacity: 0.65; }
+.ssi-button:disabled { cursor: not-allowed; opacity: 0.75; }
 :focus-visible { outline: 0.2rem solid var(--ssi-accent); outline-offset: 0.2rem; }
 .ssi-status { display: inline-flex; align-items: center; min-height: 2rem; border: 1px solid currentColor; border-radius: 999px; padding: 0.25rem 0.65rem; font-weight: 700; white-space: normal; text-align: center; }
 .ssi-status--ok { color: var(--ssi-ok); }
