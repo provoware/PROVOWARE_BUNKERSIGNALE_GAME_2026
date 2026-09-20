@@ -24,7 +24,7 @@ jobs:
             curl -fsS http://127.0.0.1:8765/tests/i12_cryptokey_persistence_browser_smoke.html >/dev/null 2>&1 && break
             sleep 0.1
           done
-          output="$("$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --dump-dom http://127.0.0.1:8765/tests/i12_cryptokey_persistence_browser_smoke.html)"
+          output="$("$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=5000 --dump-dom http://127.0.0.1:8765/tests/i12_cryptokey_persistence_browser_smoke.html)"
           printf '%s\n' "$output"
           grep -q 'data-result="PASS"' <<<"$output"
           grep -q 'data-reopened="true"' <<<"$output"
