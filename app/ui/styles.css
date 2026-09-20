@@ -23,6 +23,7 @@ button { font: inherit; }
 h1, h2 { line-height: 1.2; text-wrap: balance; }
 h1 { margin: 0.25rem 0 0; }
 .ssi-card, .ssi-panel { background: var(--ssi-panel); border: 1px solid var(--ssi-border); border-radius: var(--ssi-radius); padding: 1.25rem; }
+.ssi-card { box-shadow: 0 0.35rem 1rem rgb(0 0 0 / 20%); }
 .ssi-card--error { border-color: var(--ssi-error); }
 .ssi-panel > p { max-width: 68ch; text-wrap: pretty; }
 .ssi-tabs { display: flex; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap; }
