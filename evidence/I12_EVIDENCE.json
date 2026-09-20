@@ -1,44 +1,109 @@
 {
-  "checkpoint":"I12","generated_at_utc":"2026-09-20T23:08:00Z","status":"GREEN","fingerprint_sha256":"f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be",
-  "checks":[
-    {"name":"repository_quality","status":"PASS","detail":"Quality #634 ermittelte den governed P2-Sequence-Fingerprint f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus der neue CHG-036-Hash."},
-    {"name":"p1_frozen","status":"PASS","detail":"P1 Signing-Key-Store und sein gehärteter Chromium-Gate bleiben byteunveraendert."},
-    {"name":"p2_sequence_decision","status":"PASS","detail":"Die normative I12-Masterplanung legt P2 Historical Public-Key Retention verbindlich vor P3 detached Signature Persistence."},
-    {"name":"p2_scope","status":"PASS","detail":"P2-Ziel, Non-Goals, Freeze-Grenzen und Exit-Gates sind als Contract-only Folgeschritt festgelegt; noch keine P2-Implementierung."},
-    {"name":"predecessor_freeze","status":"PASS","detail":"I06/I08/I09/I10/I11 sowie I12-A/B und P1 bleiben unveraendert; kein I08-/I10-REOPEN."},
-    {"name":"scope_guard","status":"PASS","detail":"Decision-only: keine Produkt-, Schema-, Persistence-, UI- oder Testdatei geaendert."}
+  "checkpoint": "I12",
+  "generated_at_utc": "2026-09-20T23:12:00Z",
+  "status": "GREEN",
+  "fingerprint_sha256": "0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b",
+  "checks": [
+    {
+      "name": "repository_quality",
+      "status": "PASS",
+      "detail": "Quality #640 ermittelte den governed P2-Contract-Fingerprint 0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus CHG-037."
+    },
+    {
+      "name": "p1_frozen",
+      "status": "PASS",
+      "detail": "P1 signing_keys, Produktcode und Chromium-Gates bleiben unveraendert."
+    },
+    {
+      "name": "p2_contract",
+      "status": "PASS",
+      "detail": "Historische Public-Key-Retention ist auf 32 rohe Ed25519-Bytes, exakte key_id-Verifikation, separaten public_keys-Store sowie putIfAbsent/readById begrenzt."
+    },
+    {
+      "name": "p2_no_clobber",
+      "status": "PASS",
+      "detail": "Identischer Duplicate ist idempotent; gleicher key_id mit abweichenden Bytes ist fail-closed und darf nicht mutieren."
+    },
+    {
+      "name": "p3_lock",
+      "status": "PASS",
+      "detail": "Detached Signature Persistence bleibt bis zum vollstaendig gruenen P2-Implementierungs-Freeze gesperrt."
+    },
+    {
+      "name": "predecessor_freeze",
+      "status": "PASS",
+      "detail": "I06/I08/I09/I10/I11 sowie I12-A/B/P1 bleiben unveraendert; kein I08-/I10-REOPEN."
+    },
+    {
+      "name": "scope_guard",
+      "status": "PASS",
+      "detail": "Contract-only: keine Produkt-, DB-, Schema-, UI- oder Testcodeaenderung."
+    }
   ],
-  "file_hashes":{
-    "changes/CHG-20260920-017.json":"9d76cb206dd3e13a0793d4021dd156094e420eb5854180aa345c81cfc785d1f8",
-    "changes/CHG-20260920-018.json":"646651048c68e12e3ef6029e96b8139f5196e0faa50f768b651beb6a52d9cad8",
-    "changes/CHG-20260920-019.json":"0d5b1235fb738349cda2eefa2cd9f1536592e76818e3ca92e0087510bcdd6dab",
-    "changes/CHG-20260920-020.json":"662c49db4c975b5f2fa7381ddde9923f562b5473e9e665b34c5727c9a029fe7d",
-    "changes/CHG-20260920-021.json":"cf6d322f432c348e6ea59a8b7512b911e49b5140c1b50f0dd28623f432708429",
-    "changes/CHG-20260920-022.json":"96b85d4bc5228171cc22860e9eb5207192f8b60a71ab559d31fdb4572b1b7049",
-    "changes/CHG-20260920-023.json":"0a7454e747c5999ea9abc3299daad1c7e2dbac5c3d79b02ec29a4c62f0c1f9d6",
-    "changes/CHG-20260920-024.json":"d2f0114ea42788a85c8b1f78941ce70183410318324b33a289cd0e4e82927bb2",
-    "changes/CHG-20260920-025.json":"0ee6800acc29ed8ecb5e25ee1473597c64b521db86c91b9a04f356cb04d1157d",
-    "changes/CHG-20260920-026.json":"c82d845ca97ad1155877adf72c2ad1e84cd7e0bacecd22d06f4ec26b4eb8c5e9",
-    "changes/CHG-20260920-027.json":"acac79a6f327eed5c657eb437b5c064717ce9b187e6cdebe016c11a1e28bbe6e",
-    "changes/CHG-20260920-028.json":"b4fc8dd4f42711d0389f9fbdf9cc28eab028133430876dddeca9632a227d5712",
-    "changes/CHG-20260920-029.json":"b6b24c1b84b03c8ed1f51ca81e2c95de9097d2e900c45716a2508137d8a08405",
-    "changes/CHG-20260920-030.json":"088557d6e15807f536e3fe807b0a2472c4706c2f8cc8cac6188f326f28ff833c",
-    "changes/CHG-20260920-031.json":"dee3e403cf01efc6ec8dc7c58eb593a8ca985bfbd9bcf2ad5773c854cf7d0c0c",
-    "changes/CHG-20260920-032.json":"a4659a5d6239e1fec3d4ccf285826d05494e2edc445dc62d14971702852160b6",
-    "changes/CHG-20260920-033.json":"87ae62d812430560e0e351b3a387e41f6bdfe7a6b08bb2a5aaa00a8009f8b1ef",
-    "changes/CHG-20260921-034.json":"13f931361d3665b7a60cb7d8a05812e8e4c4dd31e4169935b628a6e7b94914ac",
-    "changes/CHG-20260921-035.json":"9397571e3dd0b48f1f5272d77cab5cad2692bb15aff5b30b2ca2ef2286646ed6",
-    "changes/CHG-20260921-036.json":"2c68942418aee9c16f6edbc061d4fb59ae57036751881cb3d2ea2530ad400aa2"
+  "file_hashes": {
+    "changes/CHG-20260920-017.json": "9d76cb206dd3e13a0793d4021dd156094e420eb5854180aa345c81cfc785d1f8",
+    "changes/CHG-20260920-018.json": "646651048c68e12e3ef6029e96b8139f5196e0faa50f768b651beb6a52d9cad8",
+    "changes/CHG-20260920-019.json": "0d5b1235fb738349cda2eefa2cd9f1536592e76818e3ca92e0087510bcdd6dab",
+    "changes/CHG-20260920-020.json": "662c49db4c975b5f2fa7381ddde9923f562b5473e9e665b34c5727c9a029fe7d",
+    "changes/CHG-20260920-021.json": "cf6d322f432c348e6ea59a8b7512b911e49b5140c1b50f0dd28623f432708429",
+    "changes/CHG-20260920-022.json": "96b85d4bc5228171cc22860e9eb5207192f8b60a71ab559d31fdb4572b1b7049",
+    "changes/CHG-20260920-023.json": "0a7454e747c5999ea9abc3299daad1c7e2dbac5c3d79b02ec29a4c62f0c1f9d6",
+    "changes/CHG-20260920-024.json": "d2f0114ea42788a85c8b1f78941ce70183410318324b33a289cd0e4e82927bb2",
+    "changes/CHG-20260920-025.json": "0ee6800acc29ed8ecb5e25ee1473597c64b521db86c91b9a04f356cb04d1157d",
+    "changes/CHG-20260920-026.json": "c82d845ca97ad1155877adf72c2ad1e84cd7e0bacecd22d06f4ec26b4eb8c5e9",
+    "changes/CHG-20260920-027.json": "acac79a6f327eed5c657eb437b5c064717ce9b187e6cdebe016c11a1e28bbe6e",
+    "changes/CHG-20260920-028.json": "b4fc8dd4f42711d0389f9fbdf9cc28eab028133430876dddeca9632a227d5712",
+    "changes/CHG-20260920-029.json": "b6b24c1b84b03c8ed1f51ca81e2c95de9097d2e900c45716a2508137d8a08405",
+    "changes/CHG-20260920-030.json": "088557d6e15807f536e3fe807b0a2472c4706c2f8cc8cac6188f326f28ff833c",
+    "changes/CHG-20260920-031.json": "dee3e403cf01efc6ec8dc7c58eb593a8ca985bfbd9bcf2ad5773c854cf7d0c0c",
+    "changes/CHG-20260920-032.json": "a4659a5d6239e1fec3d4ccf285826d05494e2edc445dc62d14971702852160b6",
+    "changes/CHG-20260920-033.json": "87ae62d812430560e0e351b3a387e41f6bdfe7a6b08bb2a5aaa00a8009f8b1ef",
+    "changes/CHG-20260921-034.json": "13f931361d3665b7a60cb7d8a05812e8e4c4dd31e4169935b628a6e7b94914ac",
+    "changes/CHG-20260921-035.json": "9397571e3dd0b48f1f5272d77cab5cad2692bb15aff5b30b2ca2ef2286646ed6",
+    "changes/CHG-20260921-036.json": "2c68942418aee9c16f6edbc061d4fb59ae57036751881cb3d2ea2530ad400aa2",
+    "changes/CHG-20260921-037.json": "132958159a0ee1af2d186a8db2f1d88d814ae5e3b08767f7bf33b6564db29709"
   },
-  "review_mode":"sequential_role_review_no_parallel_agent_runtime",
-  "reviews":[
-    {"role":"orchestrator","status":"PASS","evidence":"Nur die nach P1 offene I12-C-Sequenz wurde aufgeloest."},
-    {"role":"architecture_guardian","status":"PASS","evidence":"P2 Public-Key-Retention wird als Voraussetzung vor P3 Signature Persistence gesetzt; keine Produktarchitektur geaendert."},
-    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine DB-Version, Migration, Store- oder Schemaaenderung."},
-    {"role":"qa_regression","status":"PASS","evidence":"Decision-only; Repository Quality wird nach Evidence-Bindung erneut ausgefuehrt."},
-    {"role":"security_integrity","status":"PASS","evidence":"Historische Verifizierbarkeit und key_id-Aufloesbarkeit werden vor persistenten Signature Records priorisiert."},
-    {"role":"ux_accessibility","status":"PASS","evidence":"Keine UI-Aenderung; der explizit eingeengte Decision-only Scope bleibt rein dokumentarisch."},
-    {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik veraendert."},
-    {"role":"release_evidence","status":"PASS","evidence":"P2 Sequence Decision an governed Fingerprint f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be und kumulative CHG-Hashes gebunden."}
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
+  "reviews": [
+    {
+      "role": "orchestrator",
+      "status": "PASS",
+      "evidence": "Nur P2-Vertrag und seine Freeze-Grenzen wurden aufgeloest."
+    },
+    {
+      "role": "architecture_guardian",
+      "status": "PASS",
+      "evidence": "P2 trennt historischen Public-Key-Store vom unveraenderten P1 signing_keys-Store."
+    },
+    {
+      "role": "data_schema_auditor",
+      "status": "PASS",
+      "evidence": "Keine DB-Version, Migration oder Schemaaenderung in diesem Contract Gate."
+    },
+    {
+      "role": "qa_regression",
+      "status": "PASS",
+      "evidence": "Nur Repository Quality ist fuer den docs-only Contract-Block erforderlich; Contract-Faelle sind fuer die spaetere Implementierung eingefroren."
+    },
+    {
+      "role": "security_integrity",
+      "status": "PASS",
+      "evidence": "key_id muss exakt aus den gespeicherten 32 Bytes reproduziert werden; widerspruechliches Material ist fail-closed."
+    },
+    {
+      "role": "ux_accessibility",
+      "status": "PASS",
+      "evidence": "Keine UI-Aenderung im ausdruecklich eingeengten Contract-only Scope."
+    },
+    {
+      "role": "content_canon",
+      "status": "PASS",
+      "evidence": "Keine Gameplay-/Contentlogik veraendert."
+    },
+    {
+      "role": "release_evidence",
+      "status": "PASS",
+      "evidence": "P2 Contract Gate an governed Fingerprint 0c8cd5a8064c0989380226153730b54fa5dd63b26502eaf3e7fe705d3f7a070b und CHG-037 gebunden."
+    }
   ]
 }

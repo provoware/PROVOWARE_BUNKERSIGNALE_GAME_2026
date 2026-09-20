@@ -1,0 +1,36 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-037",
+  "checkpoint": "I12",
+  "title": "I12-C P2 historical public-key retention contract",
+  "purpose": "Den P2-Vertrag fuer historische Public-Key-Retention vor jeder IndexedDB-Implementierung vollstaendig einfrieren.",
+  "scope": [
+    "32 rohe Ed25519-Public-Key-Bytes als kanonische historische Repraesentation festlegen",
+    "key_id-Verifikation gegen die eingefrorene I12-v1-Ableitung erzwingen",
+    "separate P2-Store-/Ownership-Grenze und minimale putIfAbsent/readById-API festlegen",
+    "immutable/idempotent/no-clobber- und Konfliktverhalten definieren",
+    "P2-Contract-Testfaelle und Exit-Gates festschreiben"
+  ],
+  "non_goals": [
+    "Kein IndexedDB-Produktcode oder DB-Upgrade",
+    "Keine Aenderung am P1-signing_keys-Store",
+    "Keine detached Signature Persistence oder Rotation",
+    "Keine Backup-/Restore-, Trusted-Checkpoint- oder Authenticity-Export-Erweiterung",
+    "Keine UI- oder Produktlogikaenderung",
+    "Kein I08- oder I10-REOPEN"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "data_schema_auditor", "security_integrity", "qa_regression", "release_evidence"],
+  "compatibility": "P1 und alle I06/I08/I09/I10/I11/I12-A/B-Vertraege bleiben unveraendert. P2 plant nur einen spaeteren additiven public_keys-Store im separaten I12-Bereich.",
+  "security": "key_id muss aus exakt den gespeicherten 32 Public-Key-Bytes reproduzierbar sein; widerspruechliches Material darf vorhandene historische Keys niemals ueberschreiben.",
+  "test_plan": [
+    "Repository Quality",
+    "finaler Diff-Check auf ausschliesslich P2-Vertrag/Masterplanung, Change Record und I12-Evidence/Status",
+    "Scope-Check: keine Produkt-, DB-, Schema-, UI- oder Testcodeaenderung"
+  ],
+  "rollback": "Contract-Branch/PR verwerfen; der eingefrorene P1- und P2-Sequence-main bleibt unveraendert.",
+  "evidence": [
+    "docs/I12_C_P2_PUBLIC_KEY_RETENTION_CONTRACT.md",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md"
+  ],
+  "result": "GREEN"
+}

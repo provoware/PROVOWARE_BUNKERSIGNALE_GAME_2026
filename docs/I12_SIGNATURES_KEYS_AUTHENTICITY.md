@@ -187,6 +187,8 @@ Der aktive lokale Signing-Key-Store ist als **P1** grün eingefroren. Die verble
 
 Die Reihenfolge ist eine Architekturabhängigkeit, keine Aussage, dass P2 bereits implementiert werden darf. Der nächste freigegebene Schritt nach diesem Sequence Gate ist ausschließlich ein **P2 Contract Gate**; noch kein weiterer IndexedDB-Store.
 
+**P2 Contract Gate – Historical Public-Key Retention:** Der eingefrorene Vertrag verwendet als historische Wahrheit exakt 32 rohe Ed25519-Public-Key-Bytes. Diese Bytes müssen den bereits eingefrorenen `key_id` deterministisch reproduzieren. Geplant ist ein separater I12-`public_keys`-Store neben dem unveränderten P1-`signing_keys`-Store. Die minimale spätere API ist `putIfAbsent(record)` + `readById(keyId)`; byteidentische Duplicates sind idempotent, widersprüchliches Material für denselben `key_id` schlägt fail-closed fehl. P3 bleibt bis zum grünen P2-Freeze gesperrt.
+
 ## Non-Goals
 
 - keine Verschlüsselung von Welt- oder Eventdaten,
