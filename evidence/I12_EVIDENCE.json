@@ -1,13 +1,13 @@
 {
   "checkpoint": "I12",
-  "generated_at_utc": "2026-09-20T17:34:56Z",
+  "generated_at_utc": "2026-09-20T17:40:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "e6667a8336b9c578c243bb9c005e9f59ee520aa2087480494054b621e80fc595",
+  "fingerprint_sha256": "9c3b7219d17ae356a06f38cbb8f9a5a44d1d3b3cbdbbdf1368647ab9f67d79b2",
   "checks": [
     {
       "name": "repository_quality",
       "status": "PASS",
-      "detail": "Post-Merge Quality #543 GREEN auf main 178f3d53f06522fe91133f54362d395ea3a80e86; Freeze-Tree Quality #546 GREEN."
+      "detail": "Frozen-I12 main Quality #551 GREEN; I12-C Decision-Tree initial Quality #555 erwartbar nur wegen veralteter Evidence RED; governed Decision-Fingerprint 9c3b7219d17ae356a06f38cbb8f9a5a44d1d3b3cbdbbdf1368647ab9f67d79b2 wurde daraus gebunden."
     },
     {
       "name": "i11_before_i12",
@@ -72,7 +72,7 @@
     {
       "name": "scope_guard",
       "status": "PASS",
-      "detail": "Kein I13-Recovery-, I14-Multi-Tab-, KeyStore-, Persistence- oder I12-C-Implementierungsscope vorgezogen."
+      "detail": "I12-C ist ausschließlich als Decision Gate geöffnet: kein Store, keine Migration, keine Produkt-Persistenz, kein Recovery-/Rotation-Code und kein I08/I10-REOPEN."
     }
   ],
   "file_hashes": {
@@ -88,49 +88,50 @@
     "changes/CHG-20260920-026.json": "c82d845ca97ad1155877adf72c2ad1e84cd7e0bacecd22d06f4ec26b4eb8c5e9",
     "changes/CHG-20260920-027.json": "acac79a6f327eed5c657eb437b5c064717ce9b187e6cdebe016c11a1e28bbe6e",
     "changes/CHG-20260920-028.json": "b4fc8dd4f42711d0389f9fbdf9cc28eab028133430876dddeca9632a227d5712",
-    "changes/CHG-20260920-029.json": "b6b24c1b84b03c8ed1f51ca81e2c95de9097d2e900c45716a2508137d8a08405"
+    "changes/CHG-20260920-029.json": "b6b24c1b84b03c8ed1f51ca81e2c95de9097d2e900c45716a2508137d8a08405",
+    "changes/CHG-20260920-030.json": "088557d6e15807f536e3fe807b0a2472c4706c2f8cc8cac6188f326f28ff833c"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "I12-A/B vollständig; alle 14 I12-Exit-Gates geprüft; I12-C blieb gesperrt."
+      "evidence": "I12-A/B bleiben unverändert; I12 wurde nur für den dokumentarischen I12-C Decision Gate reopened."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Application/Infrastructure-Grenzen bleiben erhalten; kein I06/I08/I09/I10/I11-REOPEN erforderlich."
+      "evidence": "Separater I12-Persistenzbereich ist die bevorzugte spätere Grenze; I08/I10 bleiben unverändert."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "I06-Envelope und bestehende Stores/Snapshots/Backups bleiben unverändert; detached I12-Verträge sind separat."
+      "evidence": "Kein Schema und keine bestehende DB-Version wurden verändert; World Backup v1 bleibt exakt unverändert."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Post-Merge Quality #543 GREEN; I12 Chromium #5, I11 Chromium #19 und Generic Browser #117 GREEN."
+      "evidence": "Frozen-I12 Post-Merge Quality #551 war GREEN; Decision-Tree wird nach Evidence-Neubindung erneut vollständig geprüft."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "I11-vor-I12, author binding, tamper fail-closed, trusted checkpoint coverage, non-extractable private key und unsupported fail-closed sind belegt."
+      "evidence": "Private Keys bleiben non-extractable; Lost-Key/Rotation sind fail-closed und explizit; lokaler Checkpoint allein gilt nicht als externer Trust Anchor."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "I12-UX-Änderungen blieben isoliert; UI-/Browser-Regressionen blieben GREEN."
+      "evidence": "Decision-only Scope enthält keine UI-Aenderung."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "I12 verändert keine Gameplay-/Contentlogik."
+      "evidence": "Keine Gameplay-/Contentlogik oder Event-Wahrheit wird verändert."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Frozen I12 governed tree ist an Fingerprint e6667a8336b9c578c243bb9c005e9f59ee520aa2087480494054b621e80fc595 gebunden; Quality #546 bestätigt den finalen governed Tree vor der Evidence-Bindung."
+      "evidence": "Aktiver I12-C Decision-Tree ist an governed Fingerprint 9c3b7219d17ae356a06f38cbb8f9a5a44d1d3b3cbdbbdf1368647ab9f67d79b2 gebunden; historischer Frozen-I12-Fingerprint bleibt in der Git-Historie erhalten."
     }
   ]
 }
