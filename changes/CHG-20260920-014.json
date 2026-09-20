@@ -1,0 +1,32 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-014",
+  "checkpoint": "I11",
+  "title": "I11-B browser SHA-256 adapter foundation",
+  "purpose": "Den eingefrorenen I11-A-Core an die vorhandene Browser-Crypto-Fähigkeit anbinden, ohne Persistenz- oder Domainverträge zu verändern.",
+  "scope": [
+    "kleinen Web-Crypto-SHA-256-Adapter in der Browser-Infrastructure ergänzen",
+    "I11-A-Festvektor gegen den Adapter regressionsprüfen",
+    "fehlende Capability und Digest-Fehler stabil an der Schichtgrenze übersetzen",
+    "genau eine visuelle UX-Korrektur: generische deaktivierte Aktionsbuttons zeigen einen gesperrten Cursor"
+  ],
+  "non_goals": [
+    "Kein I11-C-Persistenzentscheid",
+    "Keine Änderung an I06/I08/I09/I10",
+    "Noch kein finaler I11-Freeze",
+    "Keine Signaturen oder Schlüsselverwaltung aus I12",
+    "Keine zweite visuelle Änderung"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "security_integrity", "release_evidence"],
+  "compatibility": "Der Adapter erfüllt ausschließlich die bereits injizierte sha256Hex-Schnittstelle des I11-A-Cores. Event-, Storage-, Snapshot- und Backup-Verträge bleiben unverändert; kein REOPEN erforderlich.",
+  "security": "SHA-256 wird ausschließlich über SubtleCrypto.digest verwendet. Eingaben müssen Uint8Array sein; fehlende Capability und Browserfehler werden ohne vendor-spezifische Details stabil übersetzt.",
+  "test_plan": [
+    "Browser-Adapter gegen den eingefrorenen I11-A-SHA-256-Vektor prüfen",
+    "Negativfälle für fehlende SubtleCrypto-Capability, Digest-Fehler und falschen Eingabetyp prüfen",
+    "Repository Quality und allgemeine Chromium-/UI-Smokes ausführen",
+    "I11-B Chromium-Manipulations-/Reihenfolge- und 1000-Event-Profil als nächsten isolierten Block ergänzen"
+  ],
+  "rollback": "I11-B-Branch verwerfen; main bleibt auf dem grünen und eingefrorenen I11-A-Stand.",
+  "evidence": ["app/infrastructure/browser/sha256.js", "tests/test_i11_browser_sha256.py", "app/ui/styles.css"],
+  "result": "GREEN"
+}
