@@ -12,7 +12,5 @@
   "test_plan": ["generiertes Paar enthaelt private/public Key", "privateKey.extractable ist false", "Usages sind sign/verify", "bestehender RFC-8032 sign/verify Vektor bleibt gruen"],
   "rollback": "Branch/PR verwerfen; main bleibt auf dem gruenen Chromium-Smoke-Stand.",
   "evidence": ["app/infrastructure/browser/ed25519-sign-verify.js", "tests/test_i12_ed25519_sign_verify.py"],
-  "result": "PENDING_GATES",
-  "residual_risk": "Public-key import/export und 1000-Verify-Profil bleiben als getrennte I12-B-Teilbloecke offen.",
-  "next_step": "Nur relevante PR-Gates pruefen; bei Gruen scope-clean squash-mergen."
+  "result": "GREEN"
 }
