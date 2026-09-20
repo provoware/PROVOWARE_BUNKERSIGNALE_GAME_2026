@@ -46,8 +46,8 @@ Bis ein eigener Asset-Pipeline-Checkpoint existiert:
 
 | Visual-Iteration | genau ein Aspekt | Zieldatei/Artefakt | Status |
 | --- | --- | --- | --- |
-| VW-001 | Hauptkomposition: Bunkerblick + Ausbauumfeld | `docs/visual-world/VW-001_BUNKER_OVERLOOK.md` | AKTIV |
-| VW-002 | Bunkerfront: Form, Maßstab, Eingangshierarchie | später festlegen | GEPLANT |
+| VW-001 | Hauptkomposition: Bunkerblick + Ausbauumfeld | `docs/visual-world/VW-001_BUNKER_OVERLOOK.md` | ABGESCHLOSSEN |
+| VW-002 | Bunkerfront: Form, Maßstab, Eingangshierarchie | `docs/visual-world/VW-002_BUNKER_FRONT.md` | AKTIV |
 | VW-003 | Vorfeld-/Wegeachsen für spätere Aufbauten | später festlegen | GEPLANT |
 | VW-004 | Material-/Alterungslogik | später festlegen | GEPLANT |
 | VW-005 | Licht-/Atmosphärenhierarchie | später festlegen | GEPLANT |

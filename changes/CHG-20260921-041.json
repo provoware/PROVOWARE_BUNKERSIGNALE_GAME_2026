@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-041",
+  "checkpoint": "I12",
+  "title": "P2-L application registration barrier and VW-002",
+  "purpose": "Den eingefrorenen P2-L Active-Key-Registration-Contract als kleinsten Application-Block implementieren und parallel exakt einen isolierten Visual-World-Aspekt VW-002 planen.",
+  "scope": [
+    "ensureActiveSigningKeyRegistered als reine Application-Orchestrierung implementieren",
+    "stabile P2-L Application-Fehlercodes und fail-closed Mapping implementieren",
+    "Call-Trace und Sign-before-P2-success-Barriere als Contract-Tests binden",
+    "VW-002 Form, Massstab und Eingangshierarchie der Bunkerfront als einzigen Visual-World-Aspekt definieren"
+  ],
+  "non_goals": [
+    "Keine P3 Detached Signature Persistence",
+    "Keine Signatur-Persistence oder Sign-Orchestrierungsintegration",
+    "Keine DB-/Schema-/P1-/P2-Adapteraenderung",
+    "Keine Rotation oder Backup-/Restore-Erweiterung",
+    "Kein I08-/I10-REOPEN",
+    "Kein CSS-/DOM-/Runtime-Visual-Patch"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "P1/P2 APIs und DB-Version bleiben unveraendert; neue Application-Orchestrierung ist capability-injected und browser-/persistence-unabhaengig. VW-002 bleibt reine Planung.",
+  "security": "P2-L registriert den aus P1 gelesenen aktiven Public Key fail-closed in P2 und liefert erst nach erfolgreichem putIfAbsent zurueck; Signieren ist nicht Bestandteil des Moduls.",
+  "test_plan": [
+    "P2-L Node Contract-Test mit allen eingefrorenen Fehlercodes",
+    "exakter Call-Trace read-export-derive-register",
+    "Nachweis sign niemals vor erfolgreichem P2-success",
+    "P1/P2 API unveraendert",
+    "Repository Quality und triggerbasierte Regressionen"
+  ],
+  "rollback": "PR verwerfen; main bleibt auf dem gruenen P2-L-Contract-Freeze.",
+  "evidence": [
+    "app/application/active-key-registration.js",
+    "tests/test_i12_active_key_registration.py",
+    "docs/visual-world/VW-002_BUNKER_FRONT.md",
+    "docs/VISUAL_WORLD_MASTERPLAN.md"
+  ],
+  "result": "GREEN"
+}
