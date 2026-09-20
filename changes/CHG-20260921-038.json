@@ -1,0 +1,39 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-038",
+  "checkpoint": "I12",
+  "title": "I12-C P2 historical public-key store",
+  "purpose": "Den eingefrorenen P2-Vertrag als kleinsten additiven I12-Public-Key-Store mit realen Chromium-Contract-Tests implementieren.",
+  "scope": [
+    "I12-Datenbank additiv auf Version 2 anheben und public_keys anlegen",
+    "indexeddb-public-key-store.js mit putIfAbsent/readById implementieren",
+    "key_id gegen die bestehende deriveKeyId-Capability verifizieren",
+    "idempotent/no-clobber/conflict/corruption/P1-upgrade Contract-Faelle im Chromium-Smoke binden",
+    "P1 ausschliesslich fuer DB-v2-Kompatibilitaet anpassen"
+  ],
+  "non_goals": [
+    "Keine detached Signature Persistence",
+    "Keine Rotation oder Actor-Trust-Persistence",
+    "Keine Backup-/Restore- oder Trusted-Checkpoint-Erweiterung",
+    "Keine UI-Aenderung",
+    "Kein I08- oder I10-REOPEN"
+  ],
+  "affected_owners": ["architecture_guardian", "data_schema_auditor", "qa_regression", "security_integrity", "release_evidence"],
+  "compatibility": "P1-API und signing_keys-Semantik bleiben unveraendert; die gemeinsame I12-DB wird additiv von v1 auf v2 erweitert.",
+  "security": "Public-Key-Bytes werden vor Write an key_id gebunden; historische Records sind immutable/no-clobber und Konflikte fail-closed.",
+  "test_plan": [
+    "I12 P2 Chromium public-key-store smoke",
+    "bestehender I12 P1 signing-key-store smoke",
+    "triggerbasierte Repository Quality / Browser / I11 / Ed25519 Regressionen",
+    "finaler Scope-Diff ohne P3/I08/I10/Backup/UI"
+  ],
+  "rollback": "P2-PR verwerfen; main bleibt auf dem gruen eingefrorenen P2-Contract ohne DB-v2-Produktcode.",
+  "evidence": [
+    "app/infrastructure/browser/indexeddb-public-key-store.js",
+    "app/infrastructure/browser/indexeddb-signing-key-store.js",
+    "tests/i12_public_key_store_browser_smoke.html",
+    "tests/i12_signing_key_store_browser_smoke.html",
+    "docs/I12_C_P2_PUBLIC_KEY_RETENTION_IMPLEMENTATION.md"
+  ],
+  "result": "GREEN"
+}
