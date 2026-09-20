@@ -1,7 +1,7 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-20T23:46:00Z",
+  "generated_at_utc": "2026-09-20T23:53:30Z",
   "overall_status": "GREEN",
   "gates": {
     "G0": "GREEN",
@@ -9,14 +9,14 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "ed7fe580e92aedd53ac51d2f49151424caa5614b8072a84ae6fb8ffedb754711",
+  "fingerprint_sha256": "9f9daae794ae2bced7ddaf6606ecca4412724acd1294f9081427f36103ca16a0",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_p1_signing_key_store": "PASS",
     "i12_c_p2_sequence_decision": "DOCUMENTED",
-    "next_i12_c_block": "P2_L_IMPLEMENTATION_ACTIVE_KEY_REGISTRATION_BARRIER",
-    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_L_IMPLEMENTATION_GREEN",
+    "next_i12_c_block": "P2_L_FREEZE_THEN_RESOLVE_NEXT_MASTERPLAN_POINT",
+    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_L_FREEZE_GREEN",
     "product_persistence": "P1_ACTIVE_KEY_PLUS_P2_HISTORICAL_PUBLIC_KEYS",
     "i08_reopen": "NO",
     "i10_reopen": "NO",
@@ -43,51 +43,58 @@
     "p2_l_function": "ENSURE_ACTIVE_SIGNING_KEY_REGISTERED",
     "p2_l_barrier": "P1_READ_EXPORT_DERIVE_VERIFY_P2_REGISTER_BEFORE_SIGN",
     "p2_l_error_surface": "STABLE_APPLICATION_CODES",
-    "p2_l_sign_before_registration": "FORBIDDEN",
+    "p2_l_sign_before_registration": "PROVEN_FORBIDDEN",
     "visual_world_agent": "DELEGATED_SPECIALIST_ACTIVE",
     "visual_world_iteration_rule": "ONE_ASPECT_PER_ITERATION",
-    "visual_world_current": "VW_001_BUNKER_OVERLOOK_PLANNED"
+    "visual_world_current": "VW_002_BUNKER_FRONT_PLANNED",
+    "i12_c_p2_l_application": "PASS",
+    "p2_l_application_module": "ACTIVE_KEY_REGISTRATION",
+    "p2_l_call_trace": "READ_EXPORT_DERIVE_REGISTER",
+    "p2_l_error_mapping": "PASS",
+    "p2_l_return_copy": "PASS",
+    "visual_world_vw001": "COMPLETED",
+    "visual_world_vw002": "FORM_SCALE_ENTRANCE_HIERARCHY"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-L Contract Gate und Visual-World-Governance sauber getrennt."
+      "evidence": "Kleinster P2-L Application-Block plus genau ein isolierter VW-002-Planungsaspekt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Keine Runtime-/Schichtaenderung; Kernrollen-Registry unveraendert."
+      "evidence": "Application-Modul ist capability-injected und besitzt keine Browser-/Persistence-Abhaengigkeit."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "Keine Daten-/Schemaaenderung."
+      "evidence": "Keine DB-, Schema- oder Adapteraenderung."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Alle ausgeloesten relevanten Gates gruen; Evidence danach gebunden."
+      "evidence": "P2-L Contract-Test sowie Browser #156, I11 #58 und Ed25519 #44 gruen."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Sign-Barrier und stabile Fehleroberflaeche vertraglich eingefroren."
+      "evidence": "P2-Registrierung ist harte Return-Barriere; Fehler fail-closed; kein Signieren im Modul."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "Visual-World-Agent besitzt klare Accessibility- und Ein-Aspekt-Grenzen."
+      "evidence": "VW-002 bleibt Planung; keine Runtime-UI-Aenderung."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "Bunker-Hauptkomposition als erste storykausale Visual-Iteration geplant."
+      "evidence": "VW-002 konkretisiert nur die in VW-001 gesetzte Bunkerfront und reservierten Ausbaukorridore."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Finaler Scope an ed7fe580e92aedd53ac51d2f49151424caa5614b8072a84ae6fb8ffedb754711 gebunden."
+      "evidence": "Finaler governed Scope an 9f9daae794ae2bced7ddaf6606ecca4412724acd1294f9081427f36103ca16a0 und CHG-041 gebunden."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
