@@ -1,0 +1,102 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>I12 P1 Signing Key Store Smoke</title>
+<output id="result" data-result="RUNNING">RUNNING</output>
+<script type="module">
+import {
+  SIGNING_KEY_STORE_ERROR,
+  createIndexedDbSigningKeyStore,
+} from "../app/infrastructure/browser/indexeddb-signing-key-store.js";
+
+const result = document.querySelector("#result");
+const keepAlive = setInterval(() => {}, 50);
+const DB_NAME = "i12-p1-signing-key-store-smoke";
+const KEY_A = "key:sha256:" + "a".repeat(64);
+const KEY_B = "key:sha256:" + "b".repeat(64);
+const requestResult = request => new Promise((resolve, reject) => {
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+const transactionDone = transaction => new Promise((resolve, reject) => {
+  transaction.oncomplete = resolve;
+  transaction.onabort = () => reject(transaction.error ?? new Error("transaction aborted"));
+  transaction.onerror = () => reject(transaction.error ?? new Error("transaction failed"));
+});
+const deleteDb = () => new Promise((resolve, reject) => {
+  const request = indexedDB.deleteDatabase(DB_NAME);
+  request.onsuccess = resolve;
+  request.onerror = () => reject(request.error);
+  request.onblocked = () => reject(new Error("database deletion blocked"));
+});
+const expectCode = async (operation, code) => {
+  try {
+    await operation();
+  } catch (error) {
+    if (error?.code === code) return;
+    throw error;
+  }
+  throw new Error("expected error " + code);
+};
+
+try {
+  await deleteDb();
+  const store = createIndexedDbSigningKeyStore({ indexedDB, dbName: DB_NAME });
+  if (Object.keys(store).sort().join(",") !== "putIfAbsent,readActive") throw new Error("unexpected P1 API surface");
+  if (await store.readActive() !== null) throw new Error("empty store did not return null");
+
+  const pairA = await crypto.subtle.generateKey({ name: "Ed25519" }, false, ["sign", "verify"]);
+  const pairB = await crypto.subtle.generateKey({ name: "Ed25519" }, false, ["sign", "verify"]);
+  const recordA = { slot: "active", key_id: KEY_A, private_key: pairA.privateKey, public_key: pairA.publicKey };
+  const recordB = { slot: "active", key_id: KEY_B, private_key: pairB.privateKey, public_key: pairB.publicKey };
+
+  await expectCode(
+    () => store.putIfAbsent({ ...recordA, key_id: "invalid" }),
+    SIGNING_KEY_STORE_ERROR.INVALID_RECORD,
+  );
+
+  await store.putIfAbsent(recordA);
+  const persisted = await store.readActive();
+  if (persisted?.key_id !== KEY_A || persisted.private_key.extractable) throw new Error("persisted record invalid");
+
+  const bytes = new TextEncoder().encode("provoware:i12:p1-store:v1");
+  const signature = await crypto.subtle.sign({ name: "Ed25519" }, persisted.private_key, bytes);
+  if (!await crypto.subtle.verify({ name: "Ed25519" }, persisted.public_key, signature, bytes)) {
+    throw new Error("persisted key cannot sign/verify");
+  }
+
+  await expectCode(
+    () => store.putIfAbsent(recordB),
+    SIGNING_KEY_STORE_ERROR.ALREADY_EXISTS,
+  );
+  if ((await store.readActive())?.key_id !== KEY_A) throw new Error("duplicate write clobbered active key");
+
+  await deleteDb();
+  if (await store.readActive() !== null) throw new Error("recreated empty store did not return null");
+
+  const rawDb = await requestResult(indexedDB.open(DB_NAME, 1));
+  const tx = rawDb.transaction("signing_keys", "readwrite");
+  tx.objectStore("signing_keys").add({ slot: "active", key_id: KEY_A, private_key: "corrupt", public_key: "corrupt" });
+  await transactionDone(tx);
+  rawDb.close();
+
+  await expectCode(
+    () => store.readActive(),
+    SIGNING_KEY_STORE_ERROR.INVALID_RECORD,
+  );
+  await deleteDb();
+
+  Object.assign(result.dataset, {
+    result: "PASS",
+    empty: "null",
+    persisted: "true",
+    noClobber: "true",
+    corrupt: "closed",
+  });
+  result.textContent = "PASS";
+} catch (error) {
+  result.dataset.result = "FAIL";
+  result.textContent = `FAIL ${error.message}`;
+} finally {
+  clearInterval(keepAlive);
+}
+</script>

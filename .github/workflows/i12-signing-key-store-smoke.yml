@@ -1,0 +1,56 @@
+name: i12-signing-key-store-smoke
+
+on:
+  push:
+    paths:
+      - 'app/infrastructure/browser/indexeddb-signing-key-store.js'
+      - 'tests/i12_signing_key_store_browser_smoke.html'
+      - '.github/workflows/i12-signing-key-store-smoke.yml'
+  pull_request:
+    paths:
+      - 'app/infrastructure/browser/indexeddb-signing-key-store.js'
+      - 'tests/i12_signing_key_store_browser_smoke.html'
+      - '.github/workflows/i12-signing-key-store-smoke.yml'
+
+jobs:
+  chromium-p1-store:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Chromium P1 signing key store contract
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          driver="$(command -v chromedriver || true)"
+          test -n "$driver"
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/i12-p1-http.log" 2>&1 &
+          server_pid=$!
+          "$driver" --port=9515 >"$RUNNER_TEMP/i12-p1-driver.log" 2>&1 &
+          driver_pid=$!
+          trap 'kill "$driver_pid" "$server_pid" 2>/dev/null || true' EXIT
+          for _ in {1..80}; do
+            curl -fsS http://127.0.0.1:9515/status >/dev/null 2>&1 && break
+            sleep 0.1
+          done
+          python3 - <<'PY'
+          import json, time, urllib.request
+          base = "http://127.0.0.1:9515"
+          def call(method, path, payload=None):
+              data = None if payload is None else json.dumps(payload).encode()
+              req = urllib.request.Request(base + path, data=data, method=method, headers={"Content-Type": "application/json"})
+              with urllib.request.urlopen(req, timeout=10) as response:
+                  return json.load(response)["value"]
+          session = call("POST", "/session", {"capabilities": {"alwaysMatch": {"browserName": "chrome", "goog:chromeOptions": {"args": ["--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"]}}}})["sessionId"]
+          try:
+              call("POST", f"/session/{session}/url", {"url": "http://127.0.0.1:8765/tests/i12_signing_key_store_browser_smoke.html"})
+              deadline = time.monotonic() + 10
+              while time.monotonic() < deadline:
+                  value = call("POST", f"/session/{session}/execute/sync", {"script": "return Object.assign({}, document.querySelector('#result').dataset);", "args": []})
+                  if value.get("result") != "RUNNING":
+                      break
+                  time.sleep(0.1)
+              assert value == {"result":"PASS", "empty":"null", "persisted":"true", "noClobber":"true", "corrupt":"closed"}, value
+              print(json.dumps(value, sort_keys=True))
+          finally:
+              call("DELETE", f"/session/{session}")
+          PY
