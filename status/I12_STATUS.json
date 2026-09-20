@@ -1,33 +1,29 @@
 {
-  "checkpoint":"I12",
-  "product_version":"0.1.0-alpha.0",
-  "generated_at_utc":"2026-09-20T20:05:00Z",
-  "overall_status":"GREEN",
-  "gates":{"G0":"GREEN","G1":"GREEN","G6":"GREEN","G8":"GREEN"},
-  "fingerprint_sha256":"d4b9d02317b7d8b10ccc6f1f64adec9fe1c16c4334fa1099c2daad5a4a1b0932",
-  "tests":{
-    "i12_ab_exit_gates_14_of_14":"PASS",
-    "i12_c_decision_gate":"DOCUMENTED",
-    "i12_trusted_checkpoint_hardening":"PASS",
-    "i12_cryptokey_persistence_chromium":"PASS",
-    "i12_cryptokey_persistence_run":"35534340402",
-    "private_key_after_reopen":"NON_EXTRACTABLE",
-    "duplicate_key":"NO_CLOBBER",
-    "missing_key":"FAIL_CLOSED",
-    "product_persistence":"NOT_STARTED",
-    "i08_reopen":"NO",
-    "i10_reopen":"NO",
-    "private_key_backup":"NOT_ALLOWED_V1"
+  "checkpoint": "I12",
+  "product_version": "0.1.0-alpha.0",
+  "generated_at_utc": "2026-09-20T22:00:00Z",
+  "overall_status": "GREEN",
+  "gates": {"G0":"GREEN","G1":"GREEN","G6":"GREEN","G8":"GREEN"},
+  "fingerprint_sha256": "d1b74e5e62de50f2ec9046d9a27e457b86722ec0c464094e0f9c6c16a7fc3899",
+  "tests": {
+    "i12_ab_exit_gates_14_of_14": "PASS",
+    "i12_c_decision_gate": "DOCUMENTED",
+    "i12_cryptokey_persistence_chromium": "PASS",
+    "i12_p1_adapter_contract": "DOCUMENTED",
+    "product_persistence": "NOT_STARTED",
+    "i08_reopen": "NO",
+    "i10_reopen": "NO",
+    "private_key_backup": "NOT_ALLOWED_V1"
   },
-  "reviews":[
-    {"role":"orchestrator","status":"PASS","evidence":"I12-C Proof blieb test-only; produktive Persistence bleibt gesperrt."},
-    {"role":"architecture_guardian","status":"PASS","evidence":"Separater Test-DB-Name; keine I08/I10- oder Produktstore-Kopplung."},
-    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine Produkt-DB-Version, Migration oder Backup-Schemaänderung."},
-    {"role":"qa_regression","status":"PASS","evidence":"ChromeDriver-Persistence-Proof grün; finaler Quality-/Regression-Gate folgt nach Evidence-Bindung."},
-    {"role":"security_integrity","status":"PASS","evidence":"Non-extractable bleibt nach Reopen erhalten; no-clobber und missing-key fail-closed belegt."},
-    {"role":"ux_accessibility","status":"PASS","evidence":"Genau eine isolierte visuelle Änderung: dezenter .ssi-card-Schatten; keine Interaktionslogik."},
-    {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik verändert."},
-    {"role":"release_evidence","status":"PASS","evidence":"I12-C Proof ist an governed Fingerprint d4b9d02317b7d8b10ccc6f1f64adec9fe1c16c4334fa1099c2daad5a4a1b0932 gebunden."}
+  "reviews": [
+    {"role":"orchestrator","status":"PASS","evidence":"I12-C Contract-only; produktive Persistence bleibt gesperrt."},
+    {"role":"architecture_guardian","status":"PASS","evidence":"Separater I12-DB/Store-Vertrag; keine I08/I10-Kopplung."},
+    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine Produkt-DB-Version, Migration oder Backup-Schemaaenderung."},
+    {"role":"qa_regression","status":"PASS","evidence":"Triggerbasierte Browser-/I10-/I11-/I12-Smokes waren auf dem Contract-Head gruen; Quality wird nach Evidence-Bindung erneut validiert."},
+    {"role":"security_integrity","status":"PASS","evidence":"Atomarer No-clobber und fail-closed Lost-Key sind verbindliche P1-Grenzen."},
+    {"role":"ux_accessibility","status":"PASS","evidence":"Genau eine isolierte CSS-Aenderung fuer deaktivierte Standardbuttons."},
+    {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik veraendert."},
+    {"role":"release_evidence","status":"PASS","evidence":"Contract-Tree an d1b74e5e62de50f2ec9046d9a27e457b86722ec0c464094e0f9c6c16a7fc3899 gebunden."}
   ],
-  "review_mode":"sequential_role_review_no_parallel_agent_runtime"
+  "review_mode": "sequential_role_review_no_parallel_agent_runtime"
 }
