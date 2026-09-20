@@ -42,6 +42,8 @@ Der geplante Record enthält mindestens:
 
 Der Record ist **kein Teil des I06-Event-Envelopes**.
 
+Vor jeder Schlüssel-/Trust-Auswertung MUSS `record.world_id` zur geprüften Welt, `record.event_id` zum geprüften Event und insbesondere `record.author_id` exakt zu `event.author_id` des bereits validierten I06-Events passen. Jede Abweichung ist ein fail-closed Authentizitätsfehler. Die detached Metadaten dürfen niemals eine vom signierten Event abweichende Autorenzuordnung erzeugen.
+
 ## Signierte Bytes v1
 
 I12 signiert nicht nur nackte Eventbytes. Die Signatur wird an den geprüften I11-Kontext gebunden, damit ein gültiger Nachweis nicht still in eine andere Welt oder Kettenposition transplantiert werden kann.
@@ -55,6 +57,38 @@ Vor dem ersten Runtime-Patch wird folgende versionierte Rahmung als exakter Byte
 + `<canonical UTF-8 I06 event bytes>`
 
 Vor Signaturprüfung MUSS das zugehörige I11-Kettenglied bereits erfolgreich gegen Event und Kette verifiziert sein.
+
+## Coverage + Trusted Checkpoint
+
+Per-Event-Signaturen beweisen ausschließlich die Authentizität der jeweils vorhandenen, geprüften Events. Sie beweisen **nicht allein**, dass das lokale Eventlog vollständig ist. Wird ein gültiger Suffix aus Events und zugehörigen detached Signaturen gemeinsam entfernt, kann der verbleibende Präfix intern weiterhin korrekt sein.
+
+Für eine Aussage wie **"vollständig / kein Suffix-Rollback"** verlangt I12 daher zusätzlich einen vertrauenswürdigen erwarteten Checkpoint außerhalb des zu prüfenden veränderlichen Event-/Signature-Sets.
+
+Der geplante `ssi-world-checkpoint` v1 bindet mindestens:
+
+- `format = "ssi-world-checkpoint"`
+- `format_version = 1`
+- `world_id`
+- `event_count`
+- `head_event_id`
+- `head_hash`
+- `key_id`
+- `algorithm = "Ed25519"`
+- `signature`
+
+Die Checkpoint-Signatur besitzt eine eigene versionierte Domänentrennung. Ihre konkrete Byte-Rahmung und Testvektoren werden erst im dafür vorgesehenen I12-A-Teilblock eingefroren.
+
+Verifikation gegen einen trusted checkpoint ist fail-closed:
+
+1. `world_id` muss identisch sein.
+2. Der vollständig neu berechnete I11-Eventcount muss exakt `event_count` entsprechen.
+3. Das letzte geprüfte Event muss exakt `head_event_id` entsprechen.
+4. Der berechnete I11-Kettenkopf muss exakt `head_hash` entsprechen.
+5. Die Checkpoint-Signatur muss mit dem erwarteten Public Key gültig sein.
+
+Fehlt ein solcher vertrauenswürdiger Checkpoint, darf I12 **keine Rollback-/Vollständigkeitsgarantie** behaupten. Die zulässige Aussage bleibt dann auf "vorhandene Events intern integer und signiert" begrenzt.
+
+Wo der trusted checkpoint später gespeichert, exportiert oder wiederhergestellt wird, ist ausdrücklich **noch keine Persistence-Entscheidung**. Diese Frage bleibt I12-C vorbehalten.
 
 ## Schlüsselidentität und Vertrauen
 
@@ -87,7 +121,8 @@ Verbindliche Regeln für die spätere Umsetzung:
 - Byte-Rahmung und `key_id`-Ableitung mit festen Vektoren einfrieren.
 - detached Sign/Verify-Orchestrierung als injizierte Capabilities planen/implementieren.
 - I11-vor-I12 als harte Vorbedingung testen.
-- Negativfälle: falsche Welt, falsches Event, falscher Kettenhash, falscher Schlüssel, veränderte Signatur.
+- Negativfälle: falsche Welt, falsches Event, `record.author_id != event.author_id`, falscher Kettenhash, falscher Schlüssel, veränderte Signatur.
+- Coverage-Vertrag für trusted checkpoint und Suffix-Truncation als separaten Testvektor festschreiben; noch keine Ablage implementieren.
 - Noch keine Persistenz.
 
 ### I12-B – Browser Ed25519 adapter
@@ -134,13 +169,15 @@ I12 darf nur eingefroren werden, wenn:
 3. `key_id` deterministisch und durch feste Vektoren gebunden ist.
 4. gültige Ed25519-Signatur mit passendem Public Key erfolgreich verifiziert.
 5. Event-, Welt-, Kettenhash-, Schlüssel- oder Signaturmanipulation fail-closed erkannt wird.
-6. Actor↔Key-Vertrauensstatus getrennt von bloßer Signaturgültigkeit modelliert ist.
-7. private Schlüssel im Produktpfad nicht versehentlich exportiert oder geloggt werden.
-8. fehlende Web-Crypto-/Ed25519-Capability stabil und ohne Fallback behandelt wird.
-9. 1000 Verifikationen im dokumentierten Chromium-Smoke-Budget bleiben.
-10. I06/I08/I09/I10/I11 ohne begründeten REOPEN unverändert bleiben.
-11. Repository Quality + allgemeiner Chromium-Smoke + I12-spezifischer Crypto-Smoke grün bleiben.
-12. finaler Diff keine I13+-Recovery- oder I14+-Multi-Tab-Funktion vorzieht.
+6. `record.author_id` vor jeder Trust-Auswertung exakt an `event.author_id` gebunden und ein Mismatch fail-closed abgewiesen wird.
+7. Actor↔Key-Vertrauensstatus getrennt von bloßer Signaturgültigkeit modelliert ist.
+8. Suffix-Truncation nur dann als ausgeschlossen gilt, wenn Eventcount und Kettenkopf gegen einen gültigen trusted checkpoint geprüft wurden; ohne Checkpoint wird keine Vollständigkeitsgarantie behauptet.
+9. private Schlüssel im Produktpfad nicht versehentlich exportiert oder geloggt werden.
+10. fehlende Web-Crypto-/Ed25519-Capability stabil und ohne Fallback behandelt wird.
+11. 1000 Verifikationen im dokumentierten Chromium-Smoke-Budget bleiben.
+12. I06/I08/I09/I10/I11 ohne begründeten REOPEN unverändert bleiben.
+13. Repository Quality + allgemeiner Chromium-Smoke + I12-spezifischer Crypto-Smoke grün bleiben.
+14. finaler Diff keine I13+-Recovery- oder I14+-Multi-Tab-Funktion vorzieht.
 
 ## Freeze-Regel
 

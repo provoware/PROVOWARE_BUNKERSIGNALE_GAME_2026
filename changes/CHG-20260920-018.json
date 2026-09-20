@@ -1,0 +1,44 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-018",
+  "checkpoint": "I12",
+  "title": "I12 planning correction: author binding and suffix rollback coverage",
+  "purpose": "Die zwei nach Merge des I12-Planning-Gates gefundenen P1-Vertragslücken vor I12-A schließen: detached author_id darf nicht vom signierten Event-Autor abweichen und Vollständigkeit/Suffix-Rollback darf nur gegen einen vertrauenswürdigen erwarteten Kettenkopf behauptet werden.",
+  "scope": [
+    "`record.author_id` vor jeder Key-/Trust-Auswertung zwingend an `event.author_id` des verifizierten I06-Events binden",
+    "detached Record-Identität (`world_id`, `event_id`, `author_id`) fail-closed gegen den bereits geprüften Event-/Weltkontext validieren",
+    "einen separaten `ssi-world-checkpoint`-Coverage-Vertrag mit `event_count`, `head_event_id` und `head_hash` festlegen",
+    "klarstellen, dass ohne trusted checkpoint keine Rollback-/Vollständigkeitsgarantie behauptet werden darf",
+    "I12-A-Negativfälle und Exit-Gates entsprechend präzisieren"
+  ],
+  "non_goals": [
+    "Kein Runtime-, Crypto-, Schema-, Browser- oder Persistenzcode",
+    "Kein KeyStore und keine Ablage des trusted checkpoint",
+    "Keine Änderung am I06-Envelope, I08-Eventlog, I10-Backup oder I11-Hashkettenvertrag",
+    "Kein I13-Recovery- oder I14-Multi-Tab-Scope",
+    "Keine visuelle UX-Änderung im reinen Planning-Correction-Gate"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "I00-I11 bleiben unverändert eingefroren. Die Korrektur verschärft ausschließlich den noch aktiven I12-Plan und erzeugt keinen Vorgänger-REOPEN.",
+  "security": "Falsche Autorzuordnung wird fail-closed verhindert. Suffix-Truncation wird nicht länger aus per-Event-Signaturen abgeleitet, sondern erfordert einen separat vertrauenswürdigen signierten Checkpoint mit erwartetem Eventcount und Kettenkopf.",
+  "test_plan": [
+    "Repository Quality auf Dokument-/Change-Record-Konsistenz ausführen",
+    "finalen Diff auf exakt zwei I12-Dokumentationsdateien und null Runtime-/Persistenzänderungen prüfen",
+    "alle durch `changes/**` ausgelösten bestehenden Regression-Gates grün halten",
+    "erst nach grünem Merge I12-A öffnen"
+  ],
+  "rollback": "Correction-Branch verwerfen; main bleibt auf dem gemergten I12-Planning-Gate, I12-A bleibt gesperrt.",
+  "evidence": [
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md",
+    "changes/CHG-20260920-018.json",
+    "status/I11_STATUS.json"
+  ],
+  "result": "GREEN"
+}
