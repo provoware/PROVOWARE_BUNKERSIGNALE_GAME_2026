@@ -9,7 +9,7 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "68f5d8df3009d40cb03d8ab25cafc54d352752a14832dab5e3a889d112a8292c",
+  "fingerprint_sha256": "6ec730aab6959690168b65c1e7d36de191446f426409cc03e9cdc1e016580d73",
   "tests": {
     "repository_quality_run_436": "PASS",
     "i11_hash_chain_browser_run_2": "PASS",
@@ -56,7 +56,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Finaler unveränderter I11-main ist durch Quality #436 an Fingerprint 68f5d8df3009d40cb03d8ab25cafc54d352752a14832dab5e3a889d112a8292c gebunden."
+      "evidence": "Frozen I11 governed tree ist an Fingerprint 6ec730aab6959690168b65c1e7d36de191446f426409cc03e9cdc1e016580d73 gebunden; Quality #436 belegt den unveränderten I11-Produktstand vor der Evidence-Bindung."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
