@@ -1,0 +1,41 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>I11 Hash Chain Browser Smoke</title>
+<output id="result" data-result="RUNNING">RUNNING</output>
+<script type="module">
+import { buildHashChain, verifyHashChain } from "../app/application/hash-chain.js";
+import { createBrowserSha256Hex } from "../app/infrastructure/browser/sha256.js";
+
+const result = document.querySelector("#result");
+const encoder = new TextEncoder();
+const canonicalEventBytes = value => encoder.encode(JSON.stringify(value));
+const sha256Hex = createBrowserSha256Hex();
+const events = Array.from({ length: 1000 }, (_, index) => ({
+  event_id: `event:${String(index + 1).padStart(24, "0")}`,
+  event_type: "test.event",
+  payload: { value: index },
+  author_id: "actor:000000000000000000000001",
+  sequence: index + 1,
+  lamport: index,
+  ruleset_version: "1.0.0",
+  metadata: {},
+}));
+try {
+  const started = performance.now();
+  const chain = await buildHashChain(events, { canonicalEventBytes, sha256Hex });
+  const elapsed = Math.ceil(performance.now() - started);
+  if (!(await verifyHashChain(events, chain, { canonicalEventBytes, sha256Hex }))) throw new Error("baseline verification failed");
+  const changed = events.map((event, i) => i === 500 ? {...event, payload:{value:"tampered"}} : event);
+  if (await verifyHashChain(changed, chain, { canonicalEventBytes, sha256Hex })) throw new Error("tampering accepted");
+  const reordered = [...events];
+  [reordered[20], reordered[21]] = [reordered[21], reordered[20]];
+  if (await verifyHashChain(reordered, chain, { canonicalEventBytes, sha256Hex })) throw new Error("reordering accepted");
+  result.dataset.result = "PASS";
+  result.dataset.events = "1000";
+  result.dataset.budgetMs = String(elapsed);
+  result.textContent = `PASS 1000 events ${elapsed} ms`;
+} catch (error) {
+  result.dataset.result = "FAIL";
+  result.textContent = `FAIL ${error.message}`;
+}
+</script>
