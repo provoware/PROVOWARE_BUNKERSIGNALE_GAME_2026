@@ -1,0 +1,38 @@
+{
+  "$schema":"../schemas/change-record.schema.json",
+  "change_id":"CHG-20260921-040",
+  "checkpoint":"I12",
+  "title":"P2-L contract and Visual World governance",
+  "purpose":"P2-L Active-Key-Registration-Barrier vertraglich einfrieren und einen strikt isolierten Visual-World-Subagenten mit Ein-Aspekt-Planung etablieren.",
+  "scope":[
+    "P2-L Funktionssignatur, Capability-Injection, Rueckgabewert, Fehlercodes, Call-Barrier und Contract-Tests einfrieren",
+    "visual_world_director in bestehende Agenten-Governance aufnehmen",
+    "Visual-World-Masterplan mit Ein-Aspekt-Regel und Entwicklungsfolge anlegen",
+    "VW-001 als einzigen visuellen Aspekt dieser Iteration planerisch definieren",
+    "CI-/Traffic-Effizienzregeln ergaenzen"
+  ],
+  "non_goals":[
+    "Kein P2-L Application-Code",
+    "Keine P3 Detached Signature Persistence",
+    "Keine DB-/Schema-/Persistence-Aenderung",
+    "Keine Runtime-UI- oder CSS-Aenderung",
+    "Kein I08-/I10-REOPEN"
+  ],
+  "affected_owners":["orchestrator","architecture_guardian","qa_regression","security_integrity","ux_accessibility","content_canon","visual_world_director","release_evidence"],
+  "compatibility":"P1/P2 Runtime sowie I06/I08/I09/I10/I11/I12-A/B bleiben unveraendert; Visual-World-Arbeit ist reine Governance/Planung.",
+  "security":"Signieren bleibt bis zur erfolgreichen P2-L-Registration-Barrier gesperrt; Visual-Agent darf Security-/Persistence-Scope nicht oeffnen.",
+  "test_plan":[
+    "Repository Quality",
+    "Agent-Registry-Schema/Quality",
+    "finaler Diff ohne Produkt-, DB-, Schema-, UI- oder Testcode",
+    "genau ein Visual-World-Iterationsartefakt: VW-001"
+  ],
+  "rollback":"PR verwerfen; main bleibt auf dem gruen eingefrorenen P2-L-Decision-Stand.",
+  "evidence":[
+    "docs/I12_C_P2_L_ACTIVE_KEY_REGISTRATION_CONTRACT.md",
+    "agents/visual-world-director.md",
+    "docs/VISUAL_WORLD_MASTERPLAN.md",
+    "docs/visual-world/VW-001_BUNKER_OVERLOOK.md"
+  ],
+  "result":"GREEN"
+}
