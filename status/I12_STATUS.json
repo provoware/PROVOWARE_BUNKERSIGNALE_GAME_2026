@@ -19,7 +19,7 @@
     "i10_reopen": "NO",
     "private_key_backup": "NOT_ALLOWED_V1",
     "next_proof": "CHROMIUM_CRYPTOKEY_PERSISTENCE_TEST_ONLY",
-    "i12_trusted_checkpoint_hardening": "PENDING_FINAL_GREEN"
+    "i12_trusted_checkpoint_hardening": "PASS"
   },
   "reviews": [
     {
