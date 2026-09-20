@@ -1,138 +1,50 @@
 {
   "checkpoint": "I12",
-  "generated_at_utc": "2026-09-20T18:55:00Z",
+  "generated_at_utc": "2026-09-20T20:05:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "84e5d2dfb90970cdbf4b9feae91f5a059e95ae90a111b3d801239d4f83772d82",
+  "fingerprint_sha256": "d4b9d02317b7d8b10ccc6f1f64adec9fe1c16c4334fa1099c2daad5a4a1b0932",
   "checks": [
-    {
-      "name": "repository_quality",
-      "status": "PASS",
-      "detail": "I12 Trusted-Checkpoint-Hardening initial Quality #580 erwartbar ausschließlich wegen veralteter Evidence RED; governed Fingerprint 84e5d2dfb90970cdbf4b9feae91f5a059e95ae90a111b3d801239d4f83772d82 wurde daraus gebunden."
-    },
-    {
-      "name": "i11_before_i12",
-      "status": "PASS",
-      "detail": "Sign/Verify-Orchestrierung verlangt erfolgreiche aktuelle I11-Bindung; bloßes weitergereichtes Flag genügt nicht."
-    },
-    {
-      "name": "deterministic_signature_bytes",
-      "status": "PASS",
-      "detail": "Versionierte Event-Signatur-Rahmung und feste I12-A-Testvektoren sind gebunden."
-    },
-    {
-      "name": "deterministic_key_id",
-      "status": "PASS",
-      "detail": "key_id v1 nutzt exakt 32 rohe Ed25519-Public-Key-Bytes und festen SHA-256-Vektor."
-    },
-    {
-      "name": "ed25519_valid_signature",
-      "status": "PASS",
-      "detail": "RFC-8032-Leernachrichtenvektor signiert und verifiziert in Node WebCrypto und realem Chromium."
-    },
-    {
-      "name": "tamper_fail_closed",
-      "status": "PASS",
-      "detail": "Event-, Welt-, Kettenhash-, Schlüssel- und Signaturmanipulation werden fail-closed abgewiesen."
-    },
-    {
-      "name": "author_binding",
-      "status": "PASS",
-      "detail": "record.author_id muss exakt event.author_id entsprechen; Mismatch wird fail-closed abgewiesen."
-    },
-    {
-      "name": "trust_separation",
-      "status": "PASS",
-      "detail": "Integrität, kryptografische Authentizität und Actor-Vertrauen bleiben getrennte Aussagen."
-    },
-    {
-      "name": "trusted_checkpoint_coverage",
-      "status": "PASS",
-      "detail": "Trusted checkpoint akzeptiert Coverage nur nach erfolgreicher verifyHashChain(events, chain, ...) und nur wenn record.key_id dem extern erwarteten expectedKeyId entspricht; Suffix-Truncation, manipulierte Chain und selbstgewählter Angreifer-Key werden fail-closed abgewiesen."
-    },
-    {
-      "name": "private_key_protection",
-      "status": "PASS",
-      "detail": "Produktive private Ed25519-Schlüssel werden nicht extrahierbar erzeugt; Private-Key-Export wird nicht angeboten."
-    },
-    {
-      "name": "unsupported_fail_closed",
-      "status": "PASS",
-      "detail": "Fehlendes WebCrypto/Ed25519 wird stabil ohne Algorithmus-Fallback behandelt."
-    },
-    {
-      "name": "browser_profile_1000",
-      "status": "PASS",
-      "detail": "I12 Chromium #5: 1000 sequenzielle Verifikationen nach 10 Warm-ups in 62 ms; Gate 5000 ms."
-    },
-    {
-      "name": "predecessor_freeze",
-      "status": "PASS",
-      "detail": "I06/I08/I09/I10/I11 blieben ohne begründeten REOPEN unverändert."
-    },
-    {
-      "name": "scope_guard",
-      "status": "PASS",
-      "detail": "I12 ist eng für die P1-Trusted-Checkpoint-Korrektur reopened; kein Store, keine Migration, keine Produkt-Persistenz, kein Recovery-/Rotation-Code und kein I08/I10/I11-REOPEN."
-    }
+    {"name":"repository_quality","status":"PASS","detail":"Quality #601 lieferte nach finalem CHG-032 governed Fingerprint d4b9d02317b7d8b10ccc6f1f64adec9fe1c16c4334fa1099c2daad5a4a1b0932; RED war ausschließlich die erwartete noch ausstehende Evidence-Neubindung."},
+    {"name":"i11_before_i12","status":"PASS","detail":"Bestehender I11-vor-I12-Vertrag bleibt unverändert."},
+    {"name":"deterministic_signature_bytes","status":"PASS","detail":"I12-A Signaturrahmung bleibt unverändert."},
+    {"name":"deterministic_key_id","status":"PASS","detail":"key_id-v1-Vertrag bleibt unverändert."},
+    {"name":"ed25519_valid_signature","status":"PASS","detail":"Bestehender Ed25519-Adapter bleibt unverändert und grün."},
+    {"name":"tamper_fail_closed","status":"PASS","detail":"Bestehende Manipulationsgates bleiben unverändert."},
+    {"name":"author_binding","status":"PASS","detail":"Author-Bindung bleibt unverändert."},
+    {"name":"trust_separation","status":"PASS","detail":"Integrität, Signaturgültigkeit und Actor-Vertrauen bleiben getrennt."},
+    {"name":"trusted_checkpoint_coverage","status":"PASS","detail":"Trusted-Checkpoint-Hardening aus CHG-031 bleibt unverändert."},
+    {"name":"private_key_protection","status":"PASS","detail":"Chromium Persistence Run 35534340402 belegt: non-extractable Ed25519 Private Key bleibt nach IndexedDB Close/Reopen nicht exportierbar und kann weiter signieren."},
+    {"name":"cryptokey_persistence_proof","status":"PASS","detail":"Isolierter Test-Store: delete lifecycle awaited; store/close/reopen/sign/verify, duplicate no-clobber und missing-key fail-closed sind grün."},
+    {"name":"predecessor_freeze","status":"PASS","detail":"I06/I08/I09/I10/I11 blieben unverändert; kein REOPEN."},
+    {"name":"scope_guard","status":"PASS","detail":"Kein produktiver KeyStore/SignatureStore, keine Migration, kein Backup-Patch, keine Rotation oder Recovery. Genau eine visuelle Änderung: .ssi-card Schatten."}
   ],
   "file_hashes": {
-    "changes/CHG-20260920-017.json": "9d76cb206dd3e13a0793d4021dd156094e420eb5854180aa345c81cfc785d1f8",
-    "changes/CHG-20260920-018.json": "646651048c68e12e3ef6029e96b8139f5196e0faa50f768b651beb6a52d9cad8",
-    "changes/CHG-20260920-019.json": "0d5b1235fb738349cda2eefa2cd9f1536592e76818e3ca92e0087510bcdd6dab",
-    "changes/CHG-20260920-020.json": "662c49db4c975b5f2fa7381ddde9923f562b5473e9e665b34c5727c9a029fe7d",
-    "changes/CHG-20260920-021.json": "cf6d322f432c348e6ea59a8b7512b911e49b5140c1b50f0dd28623f432708429",
-    "changes/CHG-20260920-022.json": "96b85d4bc5228171cc22860e9eb5207192f8b60a71ab559d31fdb4572b1b7049",
-    "changes/CHG-20260920-023.json": "0a7454e747c5999ea9abc3299daad1c7e2dbac5c3d79b02ec29a4c62f0c1f9d6",
-    "changes/CHG-20260920-024.json": "d2f0114ea42788a85c8b1f78941ce70183410318324b33a289cd0e4e82927bb2",
-    "changes/CHG-20260920-025.json": "0ee6800acc29ed8ecb5e25ee1473597c64b521db86c91b9a04f356cb04d1157d",
-    "changes/CHG-20260920-026.json": "c82d845ca97ad1155877adf72c2ad1e84cd7e0bacecd22d06f4ec26b4eb8c5e9",
-    "changes/CHG-20260920-027.json": "acac79a6f327eed5c657eb437b5c064717ce9b187e6cdebe016c11a1e28bbe6e",
-    "changes/CHG-20260920-028.json": "b4fc8dd4f42711d0389f9fbdf9cc28eab028133430876dddeca9632a227d5712",
-    "changes/CHG-20260920-029.json": "b6b24c1b84b03c8ed1f51ca81e2c95de9097d2e900c45716a2508137d8a08405",
-    "changes/CHG-20260920-030.json": "088557d6e15807f536e3fe807b0a2472c4706c2f8cc8cac6188f326f28ff833c",
-    "changes/CHG-20260920-031.json": "dee3e403cf01efc6ec8dc7c58eb593a8ca985bfbd9bcf2ad5773c854cf7d0c0c"
+    "changes/CHG-20260920-017.json":"9d76cb206dd3e13a0793d4021dd156094e420eb5854180aa345c81cfc785d1f8",
+    "changes/CHG-20260920-018.json":"646651048c68e12e3ef6029e96b8139f5196e0faa50f768b651beb6a52d9cad8",
+    "changes/CHG-20260920-019.json":"0d5b1235fb738349cda2eefa2cd9f1536592e76818e3ca92e0087510bcdd6dab",
+    "changes/CHG-20260920-020.json":"662c49db4c975b5f2fa7381ddde9923f562b5473e9e665b34c5727c9a029fe7d",
+    "changes/CHG-20260920-021.json":"cf6d322f432c348e6ea59a8b7512b911e49b5140c1b50f0dd28623f432708429",
+    "changes/CHG-20260920-022.json":"96b85d4bc5228171cc22860e9eb5207192f8b60a71ab559d31fdb4572b1b7049",
+    "changes/CHG-20260920-023.json":"0a7454e747c5999ea9abc3299daad1c7e2dbac5c3d79b02ec29a4c62f0c1f9d6",
+    "changes/CHG-20260920-024.json":"d2f0114ea42788a85c8b1f78941ce70183410318324b33a289cd0e4e82927bb2",
+    "changes/CHG-20260920-025.json":"0ee6800acc29ed8ecb5e25ee1473597c64b521db86c91b9a04f356cb04d1157d",
+    "changes/CHG-20260920-026.json":"c82d845ca97ad1155877adf72c2ad1e84cd7e0bacecd22d06f4ec26b4eb8c5e9",
+    "changes/CHG-20260920-027.json":"acac79a6f327eed5c657eb437b5c064717ce9b187e6cdebe016c11a1e28bbe6e",
+    "changes/CHG-20260920-028.json":"b4fc8dd4f42711d0389f9fbdf9cc28eab028133430876dddeca9632a227d5712",
+    "changes/CHG-20260920-029.json":"b6b24c1b84b03c8ed1f51ca81e2c95de9097d2e900c45716a2508137d8a08405",
+    "changes/CHG-20260920-030.json":"088557d6e15807f536e3fe807b0a2472c4706c2f8cc8cac6188f326f28ff833c",
+    "changes/CHG-20260920-031.json":"dee3e403cf01efc6ec8dc7c58eb593a8ca985bfbd9bcf2ad5773c854cf7d0c0c",
+    "changes/CHG-20260920-032.json":"a4659a5d6239e1fec3d4ccf285826d05494e2edc445dc62d14971702852160b6"
   },
-  "review_mode": "sequential_role_review_no_parallel_agent_runtime",
-  "reviews": [
-    {
-      "role": "orchestrator",
-      "status": "PASS",
-      "evidence": "I12-A Trusted-Checkpoint-Verifikation wurde ausschließlich zur P1-Sicherheitskorrektur reopened; I12-B und I08/I10/I11 bleiben unverändert."
-    },
-    {
-      "role": "architecture_guardian",
-      "status": "PASS",
-      "evidence": "Separater I12-Persistenzbereich ist die bevorzugte spätere Grenze; I08/I10 bleiben unverändert."
-    },
-    {
-      "role": "data_schema_auditor",
-      "status": "PASS",
-      "evidence": "Kein Schema und keine bestehende DB-Version wurden verändert; World Backup v1 bleibt exakt unverändert."
-    },
-    {
-      "role": "qa_regression",
-      "status": "PASS",
-      "evidence": "Frozen-I12 Post-Merge Quality #551 war GREEN; Decision-Tree wird nach Evidence-Neubindung erneut vollständig geprüft."
-    },
-    {
-      "role": "security_integrity",
-      "status": "PASS",
-      "evidence": "Trusted Checkpoint kann weder seinen eigenen Trust-Anchor-Key auswählen noch ungeprüfte Coverage-Metadaten einschleusen; verifyHashChain und externer expectedKeyId sind verpflichtend."
-    },
-    {
-      "role": "ux_accessibility",
-      "status": "PASS",
-      "evidence": "Genau eine isolierte UX-Korrektur: lange Metadaten-Labels dürfen bei hohem Zoom umbrechen."
-    },
-    {
-      "role": "content_canon",
-      "status": "PASS",
-      "evidence": "Keine Gameplay-/Contentlogik oder Event-Wahrheit wird verändert."
-    },
-    {
-      "role": "release_evidence",
-      "status": "PASS",
-      "evidence": "Aktiver I12-Korrekturbaum ist an governed Fingerprint 84e5d2dfb90970cdbf4b9feae91f5a059e95ae90a111b3d801239d4f83772d82 gebunden; historischer Frozen-I12-Fingerprint bleibt in der Git-Historie erhalten."
-    }
+  "review_mode":"sequential_role_review_no_parallel_agent_runtime",
+  "reviews":[
+    {"role":"orchestrator","status":"PASS","evidence":"I12-C Proof blieb test-only; produktive Persistence bleibt gesperrt."},
+    {"role":"architecture_guardian","status":"PASS","evidence":"Separater Test-DB-Name; keine I08/I10- oder Produktstore-Kopplung."},
+    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine Produkt-DB-Version, Migration oder Backup-Schemaänderung."},
+    {"role":"qa_regression","status":"PASS","evidence":"ChromeDriver-Persistence-Proof grün; triggerbasierte Regressionen laufen auf finalem Head."},
+    {"role":"security_integrity","status":"PASS","evidence":"Non-extractable bleibt nach Reopen erhalten; no-clobber und missing-key fail-closed belegt."},
+    {"role":"ux_accessibility","status":"PASS","evidence":"Genau eine isolierte visuelle Änderung: dezenter .ssi-card-Schatten; keine Interaktionslogik."},
+    {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik verändert."},
+    {"role":"release_evidence","status":"PASS","evidence":"I12-C Proof ist an governed Fingerprint d4b9d02317b7d8b10ccc6f1f64adec9fe1c16c4334fa1099c2daad5a4a1b0932 gebunden."}
   ]
 }
