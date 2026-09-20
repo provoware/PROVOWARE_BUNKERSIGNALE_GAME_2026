@@ -37,7 +37,7 @@ h1 { margin: 0.25rem 0 0; }
 .ssi-status--critical { color: var(--ssi-error); }
 .ssi-status--info { color: var(--ssi-accent); }
 .ssi-meta { display: grid; grid-template-columns: minmax(8rem, 12rem) 1fr; gap: 0.65rem 1rem; }
-.ssi-meta dt { color: var(--ssi-muted); font-weight: 700; }
+.ssi-meta dt { color: var(--ssi-muted); font-weight: 700; overflow-wrap: anywhere; }
 .ssi-meta dd { margin: 0; line-height: 1.55; overflow-wrap: anywhere; }
 .ssi-health-list { list-style: none; padding: 0; margin: 1rem 0; }
 .ssi-health-row { display: flex; gap: 1rem; justify-content: space-between; align-items: start; padding: 0.85rem 0; border-top: 1px solid var(--ssi-border); }
