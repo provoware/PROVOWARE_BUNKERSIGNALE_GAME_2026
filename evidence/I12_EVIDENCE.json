@@ -1,14 +1,12 @@
 {
-  "checkpoint":"I12","generated_at_utc":"2026-09-20T23:02:00Z","status":"GREEN","fingerprint_sha256":"eceb7ae06481913922d7f66b14133dde06a8ad95649be516c70aca621c919cfe",
+  "checkpoint":"I12","generated_at_utc":"2026-09-20T23:08:00Z","status":"GREEN","fingerprint_sha256":"f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be",
   "checks":[
-    {"name":"repository_quality","status":"PASS","detail":"Quality #628/#629 ermittelten den governed Hotfix-Fingerprint eceb7ae06481913922d7f66b14133dde06a8ad95649be516c70aca621c919cfe; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus der neue CHG-035-Hash."},
-    {"name":"cryptokey_persistence_proof","status":"PASS","detail":"Der eingefrorene Chromium-Persistence-Proof bleibt unveraendert."},
-    {"name":"p1_contract","status":"PASS","detail":"Der eingefrorene P1-Vertrag bleibt unveraendert."},
-    {"name":"p1_signing_key_store","status":"PASS","detail":"Der produktive P1-Store aus PR #58 bleibt unveraendert; kein Produktpatch im Hotfix."},
-    {"name":"p1_smoke_startup_hardening","status":"PASS","detail":"Post-Merge Run #4 scheiterte vor Produkttest am 10s-WebDriver-Session-Timeout; Hotfix-Smokes #7 und #8 sind mit 30s Transporttimeout gruen, bei unveraendertem 10s DOM-Testfenster."},
-    {"name":"triggered_regressions","status":"PASS","detail":"Browser #141, I11 #43 und I12 Ed25519 #29 sind gruen."},
-    {"name":"predecessor_freeze","status":"PASS","detail":"I06/I08/I09/I10/I11 bleiben unveraendert; kein REOPEN."},
-    {"name":"scope_guard","status":"PASS","detail":"Hotfix aendert nur P1-CI-Transporttimeout und Entwicklerdokumentation; keine Produkt-, Testsemantik- oder weitere CSS-Aenderung."}
+    {"name":"repository_quality","status":"PASS","detail":"Quality #634 ermittelte den governed P2-Sequence-Fingerprint f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus der neue CHG-036-Hash."},
+    {"name":"p1_frozen","status":"PASS","detail":"P1 Signing-Key-Store und sein gehärteter Chromium-Gate bleiben byteunveraendert."},
+    {"name":"p2_sequence_decision","status":"PASS","detail":"Die normative I12-Masterplanung legt P2 Historical Public-Key Retention verbindlich vor P3 detached Signature Persistence."},
+    {"name":"p2_scope","status":"PASS","detail":"P2-Ziel, Non-Goals, Freeze-Grenzen und Exit-Gates sind als Contract-only Folgeschritt festgelegt; noch keine P2-Implementierung."},
+    {"name":"predecessor_freeze","status":"PASS","detail":"I06/I08/I09/I10/I11 sowie I12-A/B und P1 bleiben unveraendert; kein I08-/I10-REOPEN."},
+    {"name":"scope_guard","status":"PASS","detail":"Decision-only: keine Produkt-, Schema-, Persistence-, UI- oder Testdatei geaendert."}
   ],
   "file_hashes":{
     "changes/CHG-20260920-017.json":"9d76cb206dd3e13a0793d4021dd156094e420eb5854180aa345c81cfc785d1f8",
@@ -29,17 +27,18 @@
     "changes/CHG-20260920-032.json":"a4659a5d6239e1fec3d4ccf285826d05494e2edc445dc62d14971702852160b6",
     "changes/CHG-20260920-033.json":"87ae62d812430560e0e351b3a387e41f6bdfe7a6b08bb2a5aaa00a8009f8b1ef",
     "changes/CHG-20260921-034.json":"13f931361d3665b7a60cb7d8a05812e8e4c4dd31e4169935b628a6e7b94914ac",
-    "changes/CHG-20260921-035.json":"9397571e3dd0b48f1f5272d77cab5cad2692bb15aff5b30b2ca2ef2286646ed6"
+    "changes/CHG-20260921-035.json":"9397571e3dd0b48f1f5272d77cab5cad2692bb15aff5b30b2ca2ef2286646ed6",
+    "changes/CHG-20260921-036.json":"2c68942418aee9c16f6edbc061d4fb59ae57036751881cb3d2ea2530ad400aa2"
   },
   "review_mode":"sequential_role_review_no_parallel_agent_runtime",
   "reviews":[
-    {"role":"orchestrator","status":"PASS","evidence":"Hotfix bleibt rein auf den P1-Smoke-Transporttimeout begrenzt."},
-    {"role":"architecture_guardian","status":"PASS","evidence":"Produktarchitektur und P1-Adapter bleiben byteunveraendert."},
-    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine DB-, Store-, Migration- oder Backup-Schemaaenderung."},
-    {"role":"qa_regression","status":"PASS","evidence":"P1-Smokes #7/#8 sowie Browser #141, I11 #43 und Ed25519 #29 gruen."},
-    {"role":"security_integrity","status":"PASS","evidence":"Kein Key-/Produktpfad geaendert; nur CI-WebDriver-Transporttimeout erweitert."},
-    {"role":"ux_accessibility","status":"PASS","evidence":"Keine weitere UX-Aenderung; die exakt eine P1-UX-Aenderung aus PR #58 bleibt unveraendert."},
+    {"role":"orchestrator","status":"PASS","evidence":"Nur die nach P1 offene I12-C-Sequenz wurde aufgeloest."},
+    {"role":"architecture_guardian","status":"PASS","evidence":"P2 Public-Key-Retention wird als Voraussetzung vor P3 Signature Persistence gesetzt; keine Produktarchitektur geaendert."},
+    {"role":"data_schema_auditor","status":"PASS","evidence":"Keine DB-Version, Migration, Store- oder Schemaaenderung."},
+    {"role":"qa_regression","status":"PASS","evidence":"Decision-only; Repository Quality wird nach Evidence-Bindung erneut ausgefuehrt."},
+    {"role":"security_integrity","status":"PASS","evidence":"Historische Verifizierbarkeit und key_id-Aufloesbarkeit werden vor persistenten Signature Records priorisiert."},
+    {"role":"ux_accessibility","status":"PASS","evidence":"Keine UI-Aenderung; der explizit eingeengte Decision-only Scope bleibt rein dokumentarisch."},
     {"role":"content_canon","status":"PASS","evidence":"Keine Gameplay-/Contentlogik veraendert."},
-    {"role":"release_evidence","status":"PASS","evidence":"P1-Hotfix an governed Fingerprint eceb7ae06481913922d7f66b14133dde06a8ad95649be516c70aca621c919cfe und kumulative CHG-Hashes gebunden."}
+    {"role":"release_evidence","status":"PASS","evidence":"P2 Sequence Decision an governed Fingerprint f08c8e901a7a6583b1c6f966358db6dd29e06439282dc4d19f82b2b4e76f06be und kumulative CHG-Hashes gebunden."}
   ]
 }
