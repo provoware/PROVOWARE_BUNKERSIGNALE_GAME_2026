@@ -1,7 +1,7 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-20T23:21:00Z",
+  "generated_at_utc": "2026-09-20T23:30:00Z",
   "overall_status": "GREEN",
   "gates": {
     "G0": "GREEN",
@@ -9,14 +9,14 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "313d12126910f79a16637c3d5d6f04d7f522e217a919b0451f8ba682641ec1b1",
+  "fingerprint_sha256": "abed848ed42ebf3412d59f1798293707693a1a839b9bf4a984f0775257b82df9",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_p1_signing_key_store": "PASS",
     "i12_c_p2_sequence_decision": "DOCUMENTED",
-    "next_i12_c_block": "MASTERPLAN_RESOLUTION_REQUIRED",
-    "p3_detached_signature_persistence": "BLOCKED_UNTIL_NEXT_SCOPE_RESOLVED",
+    "next_i12_c_block": "P2_L_CONTRACT_GATE_ACTIVE_KEY_REGISTRATION_BARRIER",
+    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_L_GREEN",
     "product_persistence": "P1_ACTIVE_KEY_PLUS_P2_HISTORICAL_PUBLIC_KEYS",
     "i08_reopen": "NO",
     "i10_reopen": "NO",
@@ -35,33 +35,36 @@
     "p2_duplicate_conflict": "FAIL_CLOSED",
     "p2_corrupt_record": "FAIL_CLOSED",
     "p2_p1_upgrade_preservation": "PASS",
-    "p2_injected_write_failure": "FAIL_CLOSED"
+    "p2_injected_write_failure": "FAIL_CLOSED",
+    "i12_c_p2_lifecycle_registration_decision": "DOCUMENTED",
+    "p2_l_sequence": "P1_READ_EXPORT_DERIVE_VERIFY_P2_REGISTER_SIGN",
+    "p2_l_cross_store_write_transaction": "NOT_REQUIRED"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-Implementierung entspricht dem eingefrorenen Contract."
+      "evidence": "P2-L ist der verbindliche naechste I12-C-Block."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "P2 public_keys und P1 signing_keys bleiben getrennte Verantwortungen in derselben I12-DB."
+      "evidence": "Lifecycle-Orchestrierung liegt in Application; P1/P2 Infrastructure bleibt unveraendert."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "Additives DB-v2-Upgrade erhaelt vorhandene P1-Daten."
+      "evidence": "Keine Daten- oder Schemaaenderung."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "P2/P1 und alle triggerbasierten Regressionen gruen."
+      "evidence": "Decision-only; naechster Block ist Contract Gate, keine Implementierung."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Raw32/key_id-Bindung, immutable no-clobber und fail-closed Konflikte belegt."
+      "evidence": "P2-Registrierung ist harte Vorbedingung vor Signieren."
     },
     {
       "role": "ux_accessibility",
@@ -76,7 +79,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "P2 an 313d12126910f79a16637c3d5d6f04d7f522e217a919b0451f8ba682641ec1b1 gebunden."
+      "evidence": "Decision an abed848ed42ebf3412d59f1798293707693a1a839b9bf4a984f0775257b82df9 gebunden."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
