@@ -1,0 +1,35 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-020",
+  "checkpoint": "I12",
+  "title": "I12-A detached sign verify orchestration",
+  "purpose": "Den nächsten kleinsten I12-A-Block umsetzen: Signieren und Verifizieren ausschließlich über injizierte Capabilities und nur nach erfolgreicher I11-Verifikation.",
+  "scope": [
+    "signEventDetached und verifyEventDetached im Application-Core ergänzen",
+    "I11-Erfolg als harte Vorbedingung erzwingen",
+    "I11-chainEntry an event_id sowie previous_hash/event_hash an die eingefrorene I12-Rahmung binden",
+    "Negativtests für fehlendes I11, manipulierten Chain-Hash, Autor und Signatur ergänzen",
+    "visuelle UX isoliert verbessern: Status-Badges dürfen bei hohem Zoom umbrechen"
+  ],
+  "non_goals": [
+    "Kein SubtleCrypto- oder Browser-Ed25519-Adapter",
+    "Kein CryptoKey, KeyStore oder IndexedDB",
+    "Keine Persistenz oder trusted-checkpoint-Ablage",
+    "Kein REOPEN von I06/I08/I09/I10/I11",
+    "Keine I13/I14-Funktion"
+  ],
+  "affected_owners": ["orchestrator", "architecture_guardian", "qa_regression", "security_integrity", "ux_accessibility", "release_evidence"],
+  "compatibility": "I06/I08/I09/I10/I11 bleiben unverändert. I12 konsumiert ausschließlich bereits verifizierten I11-Kontext und injizierte signBytes/verifyBytes-Capabilities.",
+  "security": "Authentizitätsbewertung ist fail-closed. Ohne explizit erfolgreichen I11-Status wird nicht signiert bzw. Verifikation liefert false. Restrisiko: reale Ed25519-Crypto und Capability Detection folgen erst I12-B.",
+  "test_plan": [
+    "deterministische identische Sign-/Verify-Inputbytes prüfen",
+    "Signieren ohne I11-Erfolg muss abbrechen",
+    "Verifizieren ohne I11-Erfolg muss false liefern",
+    "Chain-Hash-, Autor- und Signaturmanipulation fail-closed prüfen",
+    "Application-Core weiterhin auf Browser-/Persistenzabhängigkeiten prüfen",
+    "nur triggerbasierte Quality-/Browser-/UI-Regressionen auswerten"
+  ],
+  "rollback": "PR/Branch verwerfen; main bleibt auf dem grünen I12-A Signature-Record-Core. Nächster Schritt nach Grün: Coverage/trusted-checkpoint-Vertrag separat auflösen.",
+  "evidence": ["app/application/event-signature.js", "tests/test_i12_signature_contract.py", "app/ui/styles.css"],
+  "result": "GREEN"
+}
