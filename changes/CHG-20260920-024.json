@@ -1,0 +1,34 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260920-024",
+  "checkpoint": "I12",
+  "title": "I12-B browser Ed25519 sign verify adapter",
+  "purpose": "Den naechsten kleinsten I12-B-Block umsetzen: Browser-Ed25519 sign/verify hinter der Infrastructure-Grenze mit festem bekannten Vektor.",
+  "scope": [
+    "signEd25519 ueber injizierbares/default SubtleCrypto implementieren",
+    "verifyEd25519 fail-closed ueber injizierbares/default SubtleCrypto implementieren",
+    "RFC-8032-Testvektor fuer leere Nachricht binden",
+    "manipulierte Signatur und fehlende Verify-Capability fail-closed testen"
+  ],
+  "non_goals": [
+    "Kein KeyStore oder Persistence",
+    "Kein Backup, Recovery oder Rotation",
+    "Kein produktiver Import/Export-Pfad",
+    "Noch kein Chromium-Crypto-Smoke",
+    "Kein REOPEN von I06 bis I11",
+    "Keine I12-C-Funktion"
+  ],
+  "affected_owners": ["architecture_guardian", "qa_regression", "security_integrity", "release_evidence"],
+  "compatibility": "Additiver Infrastructure-Adapter; I12-A und eingefrorene I06-I11-Vertraege bleiben unveraendert.",
+  "security": "Private Schluessel werden weder exportiert noch persistiert. Verify behandelt fehlende Capability, Browserfehler und manipulierte Signaturen fail-closed.",
+  "test_plan": [
+    "RFC-8032-Vektor muss byteidentische Signatur erzeugen",
+    "bekannte Signatur muss mit bekanntem Public Key verifizieren",
+    "manipulierte Signatur muss false liefern",
+    "fehlende Verify-Capability muss false liefern",
+    "Persistence-Abhaengigkeiten bleiben verboten"
+  ],
+  "rollback": "PR/Branch verwerfen; main bleibt auf dem gruenen I12-B Capability-Detection-Stand.",
+  "evidence": ["app/infrastructure/browser/ed25519-sign-verify.js", "tests/test_i12_ed25519_sign_verify.py"],
+  "result": "GREEN"
+}
