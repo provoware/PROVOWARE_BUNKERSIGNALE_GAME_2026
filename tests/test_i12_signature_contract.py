@@ -45,11 +45,15 @@ class I12SignatureContractTests(unittest.TestCase):
             assert.equal(keyId, "key:sha256:ceb5f9a1d844ca3caef169e8d22b9f39875346044fe2d040131414fba6350a64");
 
             const signature = "A".repeat(86);
+            const nonCanonicalSignature = "A".repeat(85) + "B";
             const record = createEventSignatureRecord({ worldId, event, keyId, signature });
             assert.equal(validateEventSignatureRecord(record, { worldId, event }), true);
             assert.equal(validateEventSignatureRecord({ ...record, author_id: "actor:000000000000000000000002" }, { worldId, event }), false);
             assert.equal(validateEventSignatureRecord({ ...record, event_id: "event:000000000000000000000002" }, { worldId, event }), false);
             assert.equal(validateEventSignatureRecord({ ...record, world_id: "world:000000000000000000000002" }, { worldId, event }), false);
+            assert.equal(validateEventSignatureRecord({ ...record, signature: nonCanonicalSignature }, { worldId, event }), false);
+            await assert.rejects(() => deriveKeyId(new Uint8Array(31), { sha256Hex }), /exactly 32 raw Ed25519 bytes/);
+            await assert.rejects(() => deriveKeyId(new Uint8Array(33), { sha256Hex }), /exactly 32 raw Ed25519 bytes/);
             assert.throws(() => frameEventSignatureInput({ worldId, previousHash: "A".repeat(64), eventHash, eventBytes }));
         """)
         result = subprocess.run(
