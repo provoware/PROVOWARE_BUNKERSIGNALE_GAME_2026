@@ -19,6 +19,10 @@ Die Welt bleibt atmosphärisch, während Bedienelemente jederzeit als Bedieneben
 
 Spätere UI-Flächen sollen durch Form, Abstand und lokale Helligkeitsruhe erkennbar sein – nicht ausschließlich durch Farbe. Transparenz darf Atmosphäre erhalten, aber keine Textur direkt unter Fließtext oder Primäraktionen durchschlagen lassen.
 
+## Fokus-Silhouette
+
+Der Tastaturfokus muss zusätzlich zur Farbe eine geschlossene, geometrisch ruhige Kontur besitzen. Weltkanten, Lichtstreifen und Landmarken dürfen diese Kontur weder fortsetzen noch optisch imitieren; zwischen Fokus-Silhouette und Weltdekor bleibt sichtbar Abstand.
+
 ## Accessibility
 
 - 200-%-Zoom darf keine wichtige Welt- oder Bedieninformation gegenseitig verdecken;
@@ -35,7 +39,7 @@ Keine Blur-Pflicht, keine Shader-Abhängigkeit und keine großen Masken-/Rastera
 
 - UI und Welt sind ohne Farbwissen unterscheidbar;
 - Text liegt auf kontraststabilen Flächen;
-- Fokus bleibt bei 100–200 % Zoom klar;
+- Fokus bleibt bei 100–200 % Zoom klar und besitzt eine von Weltkanten unabhängige Silhouette;
 - VW-001 bis VW-006 bleiben räumlich und atmosphärisch gültig;
 - keine Landmarke wirkt wie ein aktives UI-Signal;
 - keine Runtime-Funktion wird vorgezogen.
