@@ -49,8 +49,8 @@ Bis ein eigener Asset-Pipeline-Checkpoint existiert:
 | VW-001 | Hauptkomposition: Bunkerblick + Ausbauumfeld | `docs/visual-world/VW-001_BUNKER_OVERLOOK.md` | ABGESCHLOSSEN |
 | VW-002 | Bunkerfront: Form, Maßstab, Eingangshierarchie | `docs/visual-world/VW-002_BUNKER_FRONT.md` | ABGESCHLOSSEN |
 | VW-003 | Vorfeld-/Wegeachsen für spätere Aufbauten | `docs/visual-world/VW-003_FORECOURT_ROUTES.md` | ABGESCHLOSSEN |
-| VW-004 | Material-/Alterungslogik | `docs/visual-world/VW-004_MATERIAL_AGING.md` | AKTIV |
-| VW-005 | Licht-/Atmosphärenhierarchie | später festlegen | GEPLANT |
+| VW-004 | Material-/Alterungslogik | `docs/visual-world/VW-004_MATERIAL_AGING.md` | ABGESCHLOSSEN |
+| VW-005 | Licht-/Atmosphärenhierarchie | `docs/visual-world/VW-005_LIGHT_ATMOSPHERE.md` | AKTIV |
 | VW-006 | Landmarken und Fernsilhouette | später festlegen | GEPLANT |
 | VW-007 | UI↔Spielwelt-Lesbarkeit | später festlegen | GEPLANT |
 

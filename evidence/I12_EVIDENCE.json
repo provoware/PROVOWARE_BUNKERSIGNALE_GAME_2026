@@ -1,38 +1,43 @@
 {
   "checkpoint": "I12",
-  "generated_at_utc": "2026-09-21T00:06:00Z",
+  "generated_at_utc": "2026-09-21T00:14:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "9b13c14f49ac4815df7854574d164d04bf5e85659b65e15daea7d52336564649",
+  "fingerprint_sha256": "591838729592e724795edf36c39e4e7cf6396dcce8d1d61ad4f3db6abbf8c412",
   "checks": [
     {
-      "name": "repository_quality",
+      "name": "repository_quality_prebind",
       "status": "PASS",
-      "detail": "Quality #688 ermittelte den governed P2-LI-Contract/VW-004-Fingerprint 9b13c14f49ac4815df7854574d164d04bf5e85659b65e15daea7d52336564649; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus CHG-043."
+      "detail": "Quality #694/#695 ermittelten den governed P2-LI-Implementierungs/VW-005-Fingerprint 591838729592e724795edf36c39e4e7cf6396dcce8d1d61ad4f3db6abbf8c412; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus CHG-044."
     },
     {
-      "name": "p2_li_contract",
+      "name": "p2_li_application",
       "status": "PASS",
-      "detail": "Registered Sign Path ist auf signEventWithRegisteredActiveKey(context, capabilities), exakten Context, key_id nur aus P2-L, exakte Capability-Oberflaeche, Rueckgabewert und register->sign-Trace eingefroren."
+      "detail": "signEventWithRegisteredActiveKey implementiert exakten Context/Capability-Surface, fuehrt P2-L vor Signieren aus und uebernimmt ausschliesslich dessen bestaetigten key_id."
     },
     {
-      "name": "p2_li_error_surface",
+      "name": "p2_li_contract_tests",
       "status": "PASS",
-      "detail": "P2-L-Fehler bleiben unveraendert; P2-LI besitzt exakt CONTEXT_INVALID, CAPABILITY_INVALID und SIGN_FAILED als neue stabile Codes."
+      "detail": "Node Contract-Tests binden Erfolgs-Trace read-export-derive-register-sign, P2-L-Fehler mit 0 Sign-Aufrufen, Context/Capability-Guards, stabilen SIGN_FAILED-Pfad und Persistence-Abwesenheit."
     },
     {
       "name": "p2_li_persistence_lock",
       "status": "PASS",
-      "detail": "Signature-Store-/Persistence-Capabilities sind im P2-LI-Vertrag verboten; P3 bleibt bis zum gruenen P2-LI-Implementierungs-Freeze gesperrt."
+      "detail": "Keine Signature-Store-/Persistence-Capability oder DB-/Schemaaenderung im P2-LI-Modul; P3 bleibt gesperrt."
     },
     {
-      "name": "visual_world_vw004",
+      "name": "triggered_regressions",
       "status": "PASS",
-      "detail": "VW-004 definiert als einzigen Visual-World-Aspekt Materialfamilien und kausale Alterungslogik; kein Runtime-/CSS-/DOM-/Asset-Patch."
+      "detail": "Browser #163, I11 #65 und I12 Ed25519 #51 sind gruen."
+    },
+    {
+      "name": "visual_world_vw005",
+      "status": "PASS",
+      "detail": "VW-005 definiert als einzigen Visual-World-Aspekt die Licht- und Atmosphaerenhierarchie; kein Runtime-/CSS-/DOM-/Shader-/Asset-Patch."
     },
     {
       "name": "scope_guard",
       "status": "PASS",
-      "detail": "Contract-only: kein Produkt-, DB-, Schema-, UI- oder Testcode; P1/P2/P2-L und I08/I10 bleiben unveraendert."
+      "detail": "P1/P2/P2-L, DB/Schema, I08/I10, Rotation und Backup/Restore unveraendert."
     }
   ],
   "file_hashes": {
@@ -62,19 +67,20 @@
     "changes/CHG-20260921-040.json": "3d33a24cd8d4ab76c1aadbd2ab9efb1ffcc53cb983e0abfcec93bce7a996109a",
     "changes/CHG-20260921-041.json": "d9c71a8a33dac800b6a156dd07c17568eab29965132ee8fc77aa3775e3aa8b19",
     "changes/CHG-20260921-042.json": "b1f0c57809fb72458e4edfd29951fa296b630fd215a660884f83cc34e0efd88a",
-    "changes/CHG-20260921-043.json": "31c5ad046d5f6c83ba7bc59b4f4ca661bbadd34d5c029dee2fe8cbeed8c37667"
+    "changes/CHG-20260921-043.json": "31c5ad046d5f6c83ba7bc59b4f4ca661bbadd34d5c029dee2fe8cbeed8c37667",
+    "changes/CHG-20260921-044.json": "5065e9cea953dc3610e6093c92a964d69b83b344395ceb2602dffaf4a6271909"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-LI Contract Gate und genau ein isolierter VW-004-Planungsaspekt."
+      "evidence": "Kleinster P2-LI Application-Orchestrator plus genau ein isolierter VW-005-Planungsaspekt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Registered Sign Path bleibt Application-only und komponiert bestehende P2-L/I12-A-Capabilities ohne neue Persistenz."
+      "evidence": "Registered Sign Path ist reine Application-Komposition und importiert nur bestehende Application-Capabilities."
     },
     {
       "role": "data_schema_auditor",
@@ -84,27 +90,27 @@
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Contract-only; Quality #688 meldete nur erwartete Evidence-Neubindung."
+      "evidence": "P2-LI Contract-Tests sowie Browser #163, I11 #65 und Ed25519 #51 gruen."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Externer keyId und Persistence-Capabilities sind verboten; register-before-sign bleibt harte Invariante."
+      "evidence": "P2-L Registration ist harte Vorbedingung; externer keyId und Persistence-Capabilities werden fail-closed abgewiesen."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "VW-004 nutzt Material nur ergaenzend; Wege und Zugaenge bleiben ohne Farbe/Textur lesbar."
+      "evidence": "VW-005 bindet Licht nicht als einzige Information und beruecksichtigt reduzierte Bewegung/Lesbarkeit; keine Runtime-UI-Aenderung."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "VW-004 leitet Alterung aus Material, Nutzung, Feuchte und Wartungsverlust kausal ab und respektiert VW-001 bis VW-003."
+      "evidence": "VW-005 baut kausal auf VW-001 bis VW-004 auf und zieht Wetter, Landmarken oder Gameplay nicht vor."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Contract/VW-004 an governed Fingerprint 9b13c14f49ac4815df7854574d164d04bf5e85659b65e15daea7d52336564649 und CHG-043 gebunden."
+      "evidence": "P2-LI Implementation/VW-005 an governed Fingerprint 591838729592e724795edf36c39e4e7cf6396dcce8d1d61ad4f3db6abbf8c412 und CHG-044 gebunden."
     }
   ]
 }

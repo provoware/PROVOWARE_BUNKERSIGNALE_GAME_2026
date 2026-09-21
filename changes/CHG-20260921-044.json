@@ -1,0 +1,50 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-044",
+  "checkpoint": "I12",
+  "title": "P2-LI registered sign implementation and VW-005",
+  "purpose": "Den eingefrorenen P2-LI Registered Sign Path als kleinsten Application-Orchestrator implementieren und parallel exakt einen Visual-World-Aspekt VW-005 planen.",
+  "scope": [
+    "signEventWithRegisteredActiveKey als reine Application-Komposition implementieren",
+    "exakten Context und Capability-Surface fail-closed validieren",
+    "key_id ausschliesslich aus erfolgreichem P2-L uebernehmen",
+    "P2-L-Fehler unveraendert durchreichen und nachgelagerte Signaturfehler stabil kapseln",
+    "Contract-Tests fuer register-before-sign, Barrier-Fehler, Surface-Guards und Persistence-Abwesenheit binden",
+    "VW-005 Licht- und Atmosphaerenhierarchie als einzigen Visual-World-Aspekt definieren"
+  ],
+  "non_goals": [
+    "Keine P3 Detached Signature Persistence",
+    "Keine Signature-Store-/Persistence-Capability",
+    "Keine DB-/Schema-/P1-/P2-/P2-L-Aenderung",
+    "Keine Rotation oder Backup-/Restore-Erweiterung",
+    "Keine Runtime-UI-/CSS-/DOM-/Shader-/Asset-Aenderung",
+    "Kein I08-/I10-REOPEN"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "Bestehende I12-A/B-, P1-, P2- und P2-L-APIs bleiben unveraendert; P2-LI komponiert sie additiv in der Application-Schicht. VW-005 bleibt reine Planung.",
+  "security": "Signieren ist nur nach erfolgreicher P2-L-Registration moeglich, verwendet ausschliesslich deren bestaetigten key_id und besitzt keinerlei Signature-Persistence-Pfad.",
+  "test_plan": [
+    "P2-LI Node Contract-Tests",
+    "exakter Trace read-export-derive-register-sign",
+    "Sign-Aufruf 0-mal bei jedem P2-L-Fehler",
+    "externer keyId/extra Context und Persistence-Capability fail-closed",
+    "nachgelagerter Signaturfehler -> I12_REGISTERED_SIGN_FAILED",
+    "Repository Quality und triggerbasierte Regressionen"
+  ],
+  "rollback": "PR verwerfen; main bleibt auf dem gruen eingefrorenen P2-LI-Contract-Stand.",
+  "evidence": [
+    "app/application/registered-event-signature.js",
+    "tests/test_i12_registered_sign_path.py",
+    "docs/visual-world/VW-005_LIGHT_ATMOSPHERE.md",
+    "docs/VISUAL_WORLD_MASTERPLAN.md"
+  ],
+  "result": "GREEN"
+}
