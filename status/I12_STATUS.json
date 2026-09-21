@@ -1,7 +1,7 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-21T00:00:30Z",
+  "generated_at_utc": "2026-09-21T00:06:00Z",
   "overall_status": "GREEN",
   "gates": {
     "G0": "GREEN",
@@ -9,13 +9,13 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "55b5eccc6b6da381e881b5ac1c23644d486f6d4f74a53ba536c3e697da52793d",
+  "fingerprint_sha256": "9b13c14f49ac4815df7854574d164d04bf5e85659b65e15daea7d52336564649",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_p1_signing_key_store": "PASS",
     "i12_c_p2_sequence_decision": "DOCUMENTED",
-    "next_i12_c_block": "P2_LI_CONTRACT_GATE_REGISTERED_SIGN_PATH",
+    "next_i12_c_block": "P2_LI_IMPLEMENTATION_REGISTERED_SIGN_PATH",
     "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_LI_IMPLEMENTATION_GREEN",
     "product_persistence": "P1_ACTIVE_KEY_PLUS_P2_HISTORICAL_PUBLIC_KEYS",
     "i08_reopen": "NO",
@@ -46,7 +46,7 @@
     "p2_l_sign_before_registration": "PROVEN_FORBIDDEN",
     "visual_world_agent": "DELEGATED_SPECIALIST_ACTIVE",
     "visual_world_iteration_rule": "ONE_ASPECT_PER_ITERATION",
-    "visual_world_current": "VW_003_FORECOURT_ROUTES_PLANNED",
+    "visual_world_current": "VW_004_MATERIAL_AGING_PLANNED",
     "i12_c_p2_l_application": "PASS",
     "p2_l_application_module": "ACTIVE_KEY_REGISTRATION",
     "p2_l_call_trace": "READ_EXPORT_DERIVE_REGISTER",
@@ -57,18 +57,26 @@
     "i12_c_p2_li_decision": "DOCUMENTED",
     "p2_li_required_before_p3": "YES",
     "p2_li_sequence": "REGISTER_SUCCESS_CONFIRMED_KEY_ID_SIGN",
-    "p2_li_external_key_id": "FORBIDDEN"
+    "p2_li_external_key_id": "FORBIDDEN",
+    "i12_c_p2_li_contract": "DOCUMENTED",
+    "p2_li_function": "SIGN_EVENT_WITH_REGISTERED_ACTIVE_KEY",
+    "p2_li_context": "WORLD_EVENT_CHAIN_I11_ONLY",
+    "p2_li_capabilities": "EXACT_NO_PERSISTENCE_CAPABILITY",
+    "p2_li_error_surface": "CONTEXT_INVALID_CAPABILITY_INVALID_SIGN_FAILED_PLUS_P2L_ERRORS",
+    "p2_li_call_trace": "REGISTER_CONFIRMED_KEY_ID_SIGN",
+    "p2_li_signature_persistence": "FORBIDDEN",
+    "visual_world_vw003": "COMPLETED"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-LI als notwendiger Zwischenblock vor P3 aufgeloest; VW-003 bleibt isolierte Planung."
+      "evidence": "P2-LI Contract Gate und genau ein isolierter VW-004-Planungsaspekt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Integration gehoert in Application; P1/P2/P2-L/I12-A bleiben unveraendert."
+      "evidence": "Registered Sign Path bleibt Application-only und komponiert bestehende P2-L/I12-A-Capabilities ohne neue Persistenz."
     },
     {
       "role": "data_schema_auditor",
@@ -78,27 +86,27 @@
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Decision-only; Repository Quality meldete nur erwartete Evidence-Neubindung."
+      "evidence": "Contract-only; Quality #688 meldete nur erwartete Evidence-Neubindung."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Ein kuenftiger Sign-Orchestrator muss bestaetigten P2-L-key_id verwenden; direkter P3-Uebergang bleibt gesperrt."
+      "evidence": "Externer keyId und Persistence-Capabilities sind verboten; register-before-sign bleibt harte Invariante."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "VW-003 nutzt Geometrie/Breite/Freiraum statt reine Farbcodierung; keine Runtime-UI-Aenderung."
+      "evidence": "VW-004 nutzt Material nur ergaenzend; Wege und Zugaenge bleiben ohne Farbe/Textur lesbar."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "VW-003 leitet Wege kausal aus frueherer Logistik- und Service-Nutzung ab und widerspricht VW-001/VW-002 nicht."
+      "evidence": "VW-004 leitet Alterung aus Material, Nutzung, Feuchte und Wartungsverlust kausal ab und respektiert VW-001 bis VW-003."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Decision/VW-003 an governed Fingerprint 55b5eccc6b6da381e881b5ac1c23644d486f6d4f74a53ba536c3e697da52793d und CHG-042 gebunden."
+      "evidence": "Contract/VW-004 an governed Fingerprint 9b13c14f49ac4815df7854574d164d04bf5e85659b65e15daea7d52336564649 und CHG-043 gebunden."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"

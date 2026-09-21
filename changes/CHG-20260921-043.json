@@ -1,0 +1,48 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-043",
+  "checkpoint": "I12",
+  "title": "P2-LI registered sign path contract and VW-004",
+  "purpose": "Den P2-LI Registered-Sign-Path vor jeder Implementierung exakt einfrieren und parallel genau einen Visual-World-Aspekt VW-004 planen.",
+  "scope": [
+    "oeffentliche P2-LI-Funktionssignatur und exakten erlaubten Context festlegen",
+    "key_id ausschliesslich aus erfolgreicher P2-L-Barriere binden",
+    "Capability-Injection, stabile P2-LI-Fehlercodes, Rueckgabewert und Call-Trace einfrieren",
+    "Nachweisfalle fuer kein Signieren bei Barrier-Fehler und keinerlei Signature-Persistence definieren",
+    "VW-004 Material- und Alterungslogik als einzigen Visual-World-Aspekt definieren"
+  ],
+  "non_goals": [
+    "Keine P2-LI-Implementierung",
+    "Keine detached Signature Persistence oder Signature-Store-Capability",
+    "Keine DB-/Schema-/P1-/P2-/P2-L-Aenderung",
+    "Keine Rotation oder Backup-/Restore-Erweiterung",
+    "Keine UI-/CSS-/DOM-/Asset-Aenderung",
+    "Kein I08-/I10-REOPEN"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "I12-A/B, P1, P2 und P2-L bleiben unveraendert. P2-LI ist Contract-only; VW-004 bleibt reine visuelle Planung.",
+  "security": "Der spaetere Sign-Pfad darf keinen externen keyId akzeptieren und muss Registration-Erfolg vor jedem Sign-Aufruf erzwingen; Signature-Persistence bleibt verboten.",
+  "test_plan": [
+    "Repository Quality",
+    "finaler Diff ohne Produkt-, DB-, Schema-, UI- oder Testcode",
+    "Contract-Review fuer exakten Context, Capability-Oberflaeche und stabile Fehlercodes",
+    "Scope-Check: P3 weiterhin gesperrt",
+    "Visual-World-Ein-Aspekt-Regel: nur VW-004"
+  ],
+  "rollback": "Contract-PR verwerfen; main bleibt auf dem gruen eingefrorenen P2-LI-Decision-Stand.",
+  "evidence": [
+    "docs/I12_C_P2_LI_REGISTERED_SIGN_CONTRACT.md",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md",
+    "docs/visual-world/VW-004_MATERIAL_AGING.md",
+    "docs/VISUAL_WORLD_MASTERPLAN.md"
+  ],
+  "result": "GREEN"
+}
