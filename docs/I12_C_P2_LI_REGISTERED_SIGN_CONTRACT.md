@@ -12,18 +12,18 @@ Geplant ist exakt:
 
 ### `context`
 
-Erlaubt sind ausschließlich die bereits für I12-A/I11 erforderlichen Signaturdaten:
+Der Context besitzt **exakt** diese vier Felder:
 
 - `worldId`
 - `event`
 - `chainEntry`
 - `i11Verified`
 
-`keyId` ist im öffentlichen Context ausdrücklich verboten. Der verwendete `key_id` stammt ausschließlich aus der erfolgreichen P2-L-Barriere.
+Zusätzliche Felder sind fail-closed unzulässig. Insbesondere ist `keyId` im öffentlichen Context ausdrücklich verboten. Der verwendete `key_id` stammt ausschließlich aus der erfolgreichen P2-L-Barriere.
 
 ### `capabilities`
 
-Der Orchestrator erhält ausschließlich injizierte Capabilities:
+Der Orchestrator erhält exakt diese injizierten Capabilities:
 
 - `signingKeyStore`
 - `publicKeyStore`
@@ -32,6 +32,10 @@ Der Orchestrator erhält ausschließlich injizierte Capabilities:
 - `signBytes`
 - `canonicalEventBytes`
 - `sha256Hex`
+
+`signBytes` darf keine eigene externe `keyId`-Auswahl besitzen; die Bootstrap-Verdrahtung muss sie an den aktiven lokalen Signing-Key-Pfad binden. Rotation bleibt außerhalb dieses Contracts und darf diese Annahme nicht still verändern.
+
+Zusätzliche Persistence-/Signature-Store-Capabilities sind in diesem Objekt ausdrücklich verboten.
 
 Keine direkte Browser-, IndexedDB- oder UI-Abhängigkeit.
 
@@ -49,9 +53,15 @@ Bei jedem Fehler der Registration Barrier muss `signEventDetached(...)` beziehun
 
 ## Fehleroberfläche
 
-- P2-L-Fehler werden unverändert als bestehende `ActiveKeyRegistrationError`-Codes durchgereicht; kein zweiter Fehlerkatalog für dieselbe Ursache.
-- Fehler aus I12-A/Sign-Capability bleiben deren bestehende stabile Fehleroberfläche.
-- Der Orchestrator darf Ursachen nicht verschlucken, umdeuten oder als Erfolg behandeln.
+P2-L-Fehler werden unverändert als bestehende `ActiveKeyRegistrationError`-Codes durchgereicht; kein zweiter Fehlerkatalog für dieselbe Ursache.
+
+P2-LI selbst besitzt exakt drei neue stabile Application-Codes:
+
+- `I12_REGISTERED_SIGN_CONTEXT_INVALID` – Context besitzt falsche/missing/unerlaubte Felder, insbesondere `keyId`;
+- `I12_REGISTERED_SIGN_CAPABILITY_INVALID` – erforderliche Capability fehlt oder besitzt nicht die erwartete Funktionsoberfläche;
+- `I12_REGISTERED_SIGN_FAILED` – Registration war erfolgreich, aber I12-A/Sign-Capability schlägt danach fehl.
+
+Der Orchestrator darf rohe Sign-/I12-A-Fehler nicht als Erfolg behandeln. Bei `I12_REGISTERED_SIGN_FAILED` bleibt die Originalursache ausschließlich als `cause` erhalten; privates Schlüsselmaterial darf niemals in Message/Evidence/Logs serialisiert werden.
 
 ## Rückgabewert
 
@@ -78,6 +88,10 @@ Ausschließlich der von `signEventDetached(...)` erzeugte und validierte `ssi-ev
 8. öffentlicher Context mit `keyId` wird fail-closed abgewiesen statt ignoriert.
 9. Signaturfehler werden nicht als Registration-Erfolg umgedeutet.
 10. kein Signature-Persistence-Write existiert im Modul.
+11. fehlende oder zusätzliche Context-Felder → `I12_REGISTERED_SIGN_CONTEXT_INVALID`.
+12. fehlende/falsche Capability → `I12_REGISTERED_SIGN_CAPABILITY_INVALID`.
+13. Registration erfolgreich, Signaturpfad wirft → `I12_REGISTERED_SIGN_FAILED` und kein Persistenzversuch.
+14. Capability-Objekt mit Signature-Store-/Persistence-Capability wird fail-closed abgewiesen.
 
 ## Non-Goals
 
