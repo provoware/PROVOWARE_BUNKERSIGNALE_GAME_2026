@@ -1,0 +1,50 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-046",
+  "checkpoint": "I12",
+  "title": "Development discipline and CI efficiency optimization",
+  "purpose": "Die bestehende hohe Entwicklungsdisziplin beibehalten, aber erwartete rote CI-Zyklen, doppelte Quality-Laeufe, fachfremde Browser-Smokes und wiederholte Governance-Texte reduzieren.",
+  "scope": [
+    "Green-first Remote-Disziplin und Write-Batch-Regeln einfrieren",
+    "Codesparsamkeits- und Single-Source-of-Truth-Regeln praezisieren",
+    "Subagent-Reviews auf Diff-betroffene Verantwortungen fokussieren",
+    "quality auf PR plus main-push begrenzen und ueberholte Laeufe abbrechen",
+    "I01/I11/I12-Browser-Smoke-Pfade auf tatsaechliche Runtime-Abhaengigkeiten begrenzen",
+    "professionellen Effizienzreview als Referenz dokumentieren"
+  ],
+  "non_goals": [
+    "Keine Produktlogik",
+    "Keine Security-Vertragslockerung",
+    "Keine Testentfernung",
+    "Keine Evidence-/Fingerprint-Abschaffung",
+    "Keine DB-/Schema-/Persistence-Aenderung",
+    "Kein I08-/I10-/I11-Produkt-REOPEN"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Nur Entwicklungsprozess und CI-Routing werden optimiert. Produkt-, Persistenz-, Kryptografie- und Checkpoint-Semantik bleiben unveraendert.",
+  "security": "Relevante Gates bleiben erhalten; Trigger werden nur von fachfremden Governance-Pfaden entkoppelt. Post-Merge-Quality auf main bleibt aktiv.",
+  "test_plan": [
+    "Repository Quality",
+    "YAML/Workflow-Struktur ueber Repository-Validation",
+    "finaler Diff enthaelt keine Produktdatei",
+    "PR-Quality weiterhin aktiv",
+    "Post-Merge-Quality auf main weiterhin aktiv"
+  ],
+  "rollback": "Workflow- und Governance-Dateien auf den vorherigen Stand zuruecksetzen; Produktcode ist nicht betroffen.",
+  "evidence": [
+    "docs/DEVELOPMENT_EFFICIENCY_REVIEW.md",
+    "docs/DEVELOPMENT_RULES.md",
+    "docs/SUBAGENT_PROTOCOL.md",
+    ".github/workflows/quality.yml",
+    ".github/workflows/i01-browser-smoke.yml",
+    ".github/workflows/i11-hash-chain-browser-smoke.yml",
+    ".github/workflows/i12-ed25519-browser-smoke.yml"
+  ],
+  "result": "GREEN"
+}

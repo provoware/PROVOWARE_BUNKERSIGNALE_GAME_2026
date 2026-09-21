@@ -55,3 +55,17 @@ Der Agent darf keine Persistence-, Security-, Schema-, Recovery- oder Checkpoint
 ## Effizienzregel
 
 Für unabhängige Planungs-/Review-Schritte gilt: lesen und entscheiden zuerst, schreiben zuletzt. Mehrere kleine Dokumentationskorrekturen desselben Scopes SOLLEN in einem Governance-Commit gebündelt werden, damit triggerbasierte CI nicht unnötig mehrfach startet. Produkt-/UI-Patches bleiben davon getrennt, wenn ihre Gates andere Trigger besitzen.
+
+
+## Delta-Review statt Vollwiederholung
+
+Fachrollen pruefen standardmaessig nur den durch den aktuellen Diff betroffenen Verantwortungsbereich.
+
+- `architecture_guardian`, `qa_regression` und `security_integrity` bleiben harte Pflichtrollen fuer Produkt-/Security-Aenderungen.
+- `ux_accessibility` wird nur bei sichtbaren UI-/Interaktions-/Visual-Aenderungen inhaltlich neu geprueft.
+- `content_canon` wird nur bei Story-/Content-/Visual-World-Aenderungen inhaltlich neu geprueft.
+- `data_schema_auditor` wird nur bei Datenformat-, Store-, Schema-, ID- oder Migrationseinfluss inhaltlich neu geprueft.
+- Nicht betroffene Rollen duerfen in Evidence knapp als `UNCHANGED` dokumentiert werden; bestehende PASS-Anforderungen bleiben erhalten.
+- Reviews duerfen keine bereits gruenen unveraenderten Teilvertraege erneut ausschreiben. Referenz auf den eingefrorenen Vorganger genuegt.
+
+Ziel ist weniger Review-Text bei gleicher Gate-Haerte.

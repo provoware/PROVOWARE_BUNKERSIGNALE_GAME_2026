@@ -6,14 +6,11 @@ on:
       - 'index.html'
       - 'VERSION'
       - 'app/**'
-      - 'tests/**'
       - '.github/workflows/i01-browser-smoke.yml'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - 'changes/**'
-      - 'schemas/**'
-      - 'evidence/I*_EVIDENCE.*'
-      - 'status/I*_STATUS.json'
+
+concurrency:
+  group: i01-browser-smoke-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   chromium-smoke:
