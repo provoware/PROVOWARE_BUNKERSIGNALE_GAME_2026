@@ -33,7 +33,8 @@
     "finaler Diff ohne Produkt-, DB-, Schema-, UI- oder Testcode",
     "Scope-Check: P3 weiterhin gesperrt",
     "Freeze-Check: keine eingefrorene Produktdatei veraendert",
-    "Visual-World-Ein-Aspekt-Regel: nur VW-007"
+    "Visual-World-Ein-Aspekt-Regel: nur VW-007",
+    "Gate-Fehler vom 2026-09-21: PENDING war schemawidrig; bis zur erneuten vollstaendigen Gruenpruefung bleibt result RED"
   ],
   "rollback": "Contract-PR verwerfen; main bleibt auf dem gruenen P2-LV-Decision-Stand.",
   "evidence": [
@@ -41,5 +42,5 @@
     "docs/visual-world/VW-007_UI_WORLD_READABILITY.md",
     "docs/VISUAL_WORLD_MASTERPLAN.md"
   ],
-  "result": "PENDING"
+  "result": "RED"
 }
