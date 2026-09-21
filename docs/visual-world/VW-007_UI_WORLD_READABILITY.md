@@ -23,11 +23,15 @@ Spätere UI-Flächen sollen durch Form, Abstand und lokale Helligkeitsruhe erken
 
 Der Tastaturfokus muss zusätzlich zur Farbe eine geschlossene, geometrisch ruhige Kontur besitzen. Weltkanten, Lichtstreifen und Landmarken dürfen diese Kontur weder fortsetzen noch optisch imitieren; zwischen Fokus-Silhouette und Weltdekor bleibt sichtbar Abstand.
 
+## Statusflächen-Ruhezone
+
+Status-, Warn- und Fortschrittsflächen erhalten um Text und Symbolik eine dekorationsfreie Ruhezone. Nebel, Betonfugen, Lichtkanten und Landmarken dürfen diese Zone nicht schneiden; dadurch bleibt Status auch bei dichter Bunker-Atmosphäre sofort als Bedieninformation lesbar. Die Regel erzeugt keine neue Komponente und legt weder Farbe noch konkrete Pixelmaße fest.
+
 ## Accessibility
 
 - 200-%-Zoom darf keine wichtige Welt- oder Bedieninformation gegenseitig verdecken;
 - Fokus bleibt eindeutig und nicht nur farbcodiert;
-- Statusinformationen erhalten Text/Symbolik zusätzlich zu Farbe;
+- Statusinformationen erhalten Text/Symbolik zusätzlich zu Farbe und eine dekorationsfreie Ruhezone;
 - reduzierte Bewegung bleibt respektiert;
 - dekorative Weltbewegung darf Fokus, Lesen oder Zeigerverfolgung nicht stören.
 
@@ -40,6 +44,7 @@ Keine Blur-Pflicht, keine Shader-Abhängigkeit und keine großen Masken-/Rastera
 - UI und Welt sind ohne Farbwissen unterscheidbar;
 - Text liegt auf kontraststabilen Flächen;
 - Fokus bleibt bei 100–200 % Zoom klar und besitzt eine von Weltkanten unabhängige Silhouette;
+- Status-/Warn-/Fortschrittsflächen werden nicht von Weltdekor durchschnitten;
 - VW-001 bis VW-006 bleiben räumlich und atmosphärisch gültig;
 - keine Landmarke wirkt wie ein aktives UI-Signal;
 - keine Runtime-Funktion wird vorgezogen.
