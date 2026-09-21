@@ -1,0 +1,45 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-047",
+  "checkpoint": "I12",
+  "title": "P2-LV verified local signature evidence contract and VW-007",
+  "purpose": "Den nach P2-LV-Decision zwingenden Proof-Contract vor jeder Implementierung einfrieren und parallel exakt einen abgegrenzten Visual-World-Aspekt planen.",
+  "scope": [
+    "P2-LV Verified Local Signature Evidence Contract definieren",
+    "nicht frei konstruierbaren Laufzeit-Proof als Grenze zu spaeterem P3 festlegen",
+    "P2 als einzige historische Public-Key-Wahrheit und I12-A/B als einzige Verify-Logik binden",
+    "VW-007 UI-Spielwelt-Lesbarkeit als einzigen Visual-Aspekt definieren"
+  ],
+  "non_goals": [
+    "Keine P2-LV-Implementierung",
+    "Kein P3 Store oder Persistence-Contract",
+    "Keine DB-/Schema-/Produktcode-Aenderung",
+    "Keine UI-/CSS-/DOM-/Asset-Aenderung",
+    "Kein I08-/I10-/I11-REOPEN"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "Bestehende I12-A/B-, P1-, P2-, P2-L- und P2-LI-Vertraege bleiben unveraendert. P2-LV ist Contract-only; VW-007 bleibt reine Planung.",
+  "security": "Ein spaeterer Persistence-Pfad darf keinen frei gesetzten verified-Boolean akzeptieren. Der Erfolgsnachweis muss ausschliesslich aus erfolgreicher P2-LV-Verifikation des unveraenderten Records stammen.",
+  "test_plan": [
+    "Repository Quality",
+    "finaler Diff ohne Produkt-, DB-, Schema-, UI- oder Testcode",
+    "Scope-Check: P3 weiterhin gesperrt",
+    "Freeze-Check: keine eingefrorene Produktdatei veraendert",
+    "Visual-World-Ein-Aspekt-Regel: nur VW-007"
+  ],
+  "rollback": "Contract-PR verwerfen; main bleibt auf dem gruenen P2-LV-Decision-Stand.",
+  "evidence": [
+    "docs/I12_C_P2_LV_VERIFIED_LOCAL_SIGNATURE_CONTRACT.md",
+    "docs/visual-world/VW-007_UI_WORLD_READABILITY.md",
+    "docs/VISUAL_WORLD_MASTERPLAN.md"
+  ],
+  "result": "PENDING"
+}
