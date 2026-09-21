@@ -71,7 +71,7 @@
     "changes/CHG-20260921-044.json": "5065e9cea953dc3610e6093c92a964d69b83b344395ceb2602dffaf4a6271909",
     "changes/CHG-20260921-045.json": "236d46ec1b1fa5c6a3dc1d1c03091549a6ace07d7da275f093647ac74a3e9b28",
     "changes/CHG-20260921-046.json": "e14f88d462ca1db1d4a69319505ff2bd988286a95d8e4d8922c058e37141c162",
-    "changes/CHG-20260921-047.json": "43dcc2892b96cf729d4fdcb1e63d5713c6fcdc95965fec8b13ed40eff1334d8e"
+    "changes/CHG-20260921-047.json": "07c11a8f7027636116512c19d8a675e5bfd2ac4695cd8a5627ba73a8b5f25c36"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
