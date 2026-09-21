@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-045",
+  "checkpoint": "I12",
+  "title": "P2-LV generated signature verification decision and VW-006",
+  "purpose": "Nach gruenem P2-LI klaeren, ob P3 bereits freigegeben ist oder lokal erzeugte Signaturen vor Persistence noch selbst verifiziert werden muessen; parallel exakt einen Visual-World-Aspekt VW-006 planen.",
+  "scope": [
+    "P2-LV als verpflichtenden Verification-Zwischenblock vor P3 festlegen",
+    "lokal erzeugte Signature Records vor Persistence gegen P2-Public-Key und bestehende I12-Verifikation binden",
+    "P3 auf reine Persistenzmechanik begrenzen und Crypto-Verifikation in Application belassen",
+    "VW-006 Landmarken und Fernsilhouette als einzigen Visual-World-Aspekt definieren"
+  ],
+  "non_goals": [
+    "Keine P2-LV-Implementierung",
+    "Kein P3 Signature Store oder Contract",
+    "Keine DB-/Schema-/P1-/P2-/P2-L-/P2-LI-Aenderung",
+    "Keine Rotation oder Backup-/Restore-Erweiterung",
+    "Keine UI-/CSS-/DOM-/Asset-Aenderung",
+    "Kein I08-/I10-REOPEN"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "ux_accessibility",
+    "content_canon",
+    "release_evidence"
+  ],
+  "compatibility": "Bestehende I12-A/B-, P1-, P2-, P2-L- und P2-LI-Vertraege bleiben unveraendert. P2-LV ist Decision-only; VW-006 bleibt reine Planung.",
+  "security": "Ein lokal erzeugter Signature Record darf vor erfolgreicher Verifikation gegen den ueber P2 aufgeloesten historischen Public Key nicht an einen spaeteren Persistence-Pfad weitergegeben werden.",
+  "test_plan": [
+    "Repository Quality",
+    "finaler Diff ohne Produkt-, DB-, Schema-, UI- oder Testcode",
+    "Scope-Check: P3 weiterhin gesperrt",
+    "Visual-World-Ein-Aspekt-Regel: nur VW-006"
+  ],
+  "rollback": "Decision-PR verwerfen; main bleibt auf dem gruen eingefrorenen P2-LI-Stand.",
+  "evidence": [
+    "docs/I12_C_P2_LV_SIGNATURE_VERIFICATION_DECISION.md",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md",
+    "docs/visual-world/VW-006_LANDMARKS_HORIZON.md",
+    "docs/VISUAL_WORLD_MASTERPLAN.md"
+  ],
+  "result": "GREEN"
+}

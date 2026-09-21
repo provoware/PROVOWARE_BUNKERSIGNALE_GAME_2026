@@ -1,43 +1,38 @@
 {
   "checkpoint": "I12",
-  "generated_at_utc": "2026-09-21T00:14:00Z",
+  "generated_at_utc": "2026-09-21T00:20:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "591838729592e724795edf36c39e4e7cf6396dcce8d1d61ad4f3db6abbf8c412",
+  "fingerprint_sha256": "2b84cb994773724d0159a1351ef924a14b2b32be3f59791295dc3b77a390e463",
   "checks": [
     {
       "name": "repository_quality_prebind",
       "status": "PASS",
-      "detail": "Quality #694/#695 ermittelten den governed P2-LI-Implementierungs/VW-005-Fingerprint 591838729592e724795edf36c39e4e7cf6396dcce8d1d61ad4f3db6abbf8c412; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus CHG-044."
+      "detail": "Quality #700/#701 ermittelten den governed P2-LV-Decision/VW-006-Fingerprint 2b84cb994773724d0159a1351ef924a14b2b32be3f59791295dc3b77a390e463; RED war ausschliesslich die erwartete Evidence-/Status-Neubindung plus CHG-045."
     },
     {
-      "name": "p2_li_application",
+      "name": "p2_lv_decision",
       "status": "PASS",
-      "detail": "signEventWithRegisteredActiveKey implementiert exakten Context/Capability-Surface, fuehrt P2-L vor Signieren aus und uebernimmt ausschliesslich dessen bestaetigten key_id."
+      "detail": "Vor P3 ist eine Generated-Signature-Verification-Barrier erforderlich: lokal erzeugte Signature Records muessen gegen den historischen P2-Public-Key und bestehende I12-Verifikation selbst verifiziert werden."
     },
     {
-      "name": "p2_li_contract_tests",
+      "name": "p3_boundary",
       "status": "PASS",
-      "detail": "Node Contract-Tests binden Erfolgs-Trace read-export-derive-register-sign, P2-L-Fehler mit 0 Sign-Aufrufen, Context/Capability-Guards, stabilen SIGN_FAILED-Pfad und Persistence-Abwesenheit."
-    },
-    {
-      "name": "p2_li_persistence_lock",
-      "status": "PASS",
-      "detail": "Keine Signature-Store-/Persistence-Capability oder DB-/Schemaaenderung im P2-LI-Modul; P3 bleibt gesperrt."
+      "detail": "P3 bleibt reine Persistenzmechanik und darf Crypto-Verifikation nicht in Infrastructure verlagern; P3 bleibt bis zum gruenen P2-LV-Implementierungs-Freeze gesperrt."
     },
     {
       "name": "triggered_regressions",
       "status": "PASS",
-      "detail": "Browser #163, I11 #65 und I12 Ed25519 #51 sind gruen."
+      "detail": "Browser #165, I11 #67 und I12 Ed25519 #53 sind gruen."
     },
     {
-      "name": "visual_world_vw005",
+      "name": "visual_world_vw006",
       "status": "PASS",
-      "detail": "VW-005 definiert als einzigen Visual-World-Aspekt die Licht- und Atmosphaerenhierarchie; kein Runtime-/CSS-/DOM-/Shader-/Asset-Patch."
+      "detail": "VW-006 definiert als einzigen Visual-World-Aspekt Landmarken und Fernsilhouette; kein Runtime-/CSS-/DOM-/Asset-Patch."
     },
     {
       "name": "scope_guard",
       "status": "PASS",
-      "detail": "P1/P2/P2-L, DB/Schema, I08/I10, Rotation und Backup/Restore unveraendert."
+      "detail": "Decision-only: kein Produkt-, DB-, Schema-, UI- oder Testcode; P1/P2/P2-L/P2-LI und I08/I10 bleiben unveraendert."
     }
   ],
   "file_hashes": {
@@ -68,19 +63,20 @@
     "changes/CHG-20260921-041.json": "d9c71a8a33dac800b6a156dd07c17568eab29965132ee8fc77aa3775e3aa8b19",
     "changes/CHG-20260921-042.json": "b1f0c57809fb72458e4edfd29951fa296b630fd215a660884f83cc34e0efd88a",
     "changes/CHG-20260921-043.json": "31c5ad046d5f6c83ba7bc59b4f4ca661bbadd34d5c029dee2fe8cbeed8c37667",
-    "changes/CHG-20260921-044.json": "5065e9cea953dc3610e6093c92a964d69b83b344395ceb2602dffaf4a6271909"
+    "changes/CHG-20260921-044.json": "5065e9cea953dc3610e6093c92a964d69b83b344395ceb2602dffaf4a6271909",
+    "changes/CHG-20260921-045.json": "236d46ec1b1fa5c6a3dc1d1c03091549a6ace07d7da275f093647ac74a3e9b28"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "Kleinster P2-LI Application-Orchestrator plus genau ein isolierter VW-005-Planungsaspekt."
+      "evidence": "P2-LV als letzter notwendiger Pre-P3-Integrationsblock aufgeloest; VW-006 bleibt isolierte Planung."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Registered Sign Path ist reine Application-Komposition und importiert nur bestehende Application-Capabilities."
+      "evidence": "Verification bleibt Application-Verantwortung; P3 bleibt Persistence-only."
     },
     {
       "role": "data_schema_auditor",
@@ -90,27 +86,27 @@
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "P2-LI Contract-Tests sowie Browser #163, I11 #65 und Ed25519 #51 gruen."
+      "evidence": "Browser #165, I11 #67 und Ed25519 #53 gruen; Quality meldete nur erwartete Evidence-Neubindung."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "P2-L Registration ist harte Vorbedingung; externer keyId und Persistence-Capabilities werden fail-closed abgewiesen."
+      "evidence": "Lokal erzeugte Signatur darf vor erfolgreicher Verifikation gegen P2-Key nicht persistiert werden."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "VW-005 bindet Licht nicht als einzige Information und beruecksichtigt reduzierte Bewegung/Lesbarkeit; keine Runtime-UI-Aenderung."
+      "evidence": "VW-006 begrenzt Fernmarker, vermeidet reine Farbcodierung und behaelt Hauptmotiv/Wege lesbar."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "VW-005 baut kausal auf VW-001 bis VW-004 auf und zieht Wetter, Landmarken oder Gameplay nicht vor."
+      "evidence": "VW-006 erweitert die Welt kausal um Kommunikation/Versorgung/Restinfrastruktur ohne Gameplay-Versprechen."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "P2-LI Implementation/VW-005 an governed Fingerprint 591838729592e724795edf36c39e4e7cf6396dcce8d1d61ad4f3db6abbf8c412 und CHG-044 gebunden."
+      "evidence": "Decision/VW-006 an governed Fingerprint 2b84cb994773724d0159a1351ef924a14b2b32be3f59791295dc3b77a390e463 und CHG-045 gebunden."
     }
   ]
 }
