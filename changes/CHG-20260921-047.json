@@ -1,0 +1,44 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260921-047",
+  "checkpoint": "I12",
+  "title": "P2-LV verified local signature evidence contract",
+  "purpose": "Den letzten Pre-P3-Application-Vertrag fuer selbstverifizierte lokal erzeugte detached Signature Records exakt einfrieren, ohne Implementierung oder Persistence vorzuziehen.",
+  "scope": [
+    "P2-LV oeffentliche Verify-/Proof-API einfrieren",
+    "P2 readById als einzige historische Public-Key-Quelle festlegen",
+    "bestehendes verifyEventDetached und I12-B Public-Key-Import/Verify wiederverwenden",
+    "prozesslokalen nicht faelschbaren Evidence-Proof ohne verified-Boolean definieren",
+    "stabile Fehlercodes, Record-Snapshot, Contract-Tests und Exit-Gates einfrieren"
+  ],
+  "non_goals": [
+    "Keine P2-LV-Implementierung",
+    "Kein P3 Signature Store oder Persistence-Contract",
+    "Keine DB-/Schema-/P1-/P2-/P2-L-/P2-LI-Aenderung",
+    "Keine Rotation, Backup-/Restore- oder Trusted-Checkpoint-Persistence",
+    "Keine UI-/Visual-World-Aenderung",
+    "Kein I08-/I10-REOPEN"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Bestehende I12-A/B-, P1-, P2-, P2-L- und P2-LI-APIs bleiben unveraendert. Dieser Block ist Contract-only.",
+  "security": "Nur ein erfolgreich gegen den historischen P2-Public-Key verifizierter Record darf einen nicht faelschbaren prozesslokalen Evidence-Proof erhalten; freie verified-Booleans und Persistence-Capabilities sind verboten.",
+  "test_plan": [
+    "Repository Quality",
+    "Contract-Review der exakten API/Capability-/Fehleroberflaeche",
+    "Proof-Forgery-Negativfaelle fuer Spread/Clone/JSON/manuelles Objekt",
+    "Scope-Check: keinerlei Produkt-, DB-, Schema-, UI- oder Testcode",
+    "P3 bleibt bis P2-LV-Implementierungs-Freeze gesperrt"
+  ],
+  "rollback": "Contract-Branch verwerfen; main bleibt auf dem gruenen P2-LV-Decision-Stand.",
+  "evidence": [
+    "docs/I12_C_P2_LV_VERIFIED_LOCAL_SIGNATURE_EVIDENCE_CONTRACT.md",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md"
+  ],
+  "result": "GREEN"
+}

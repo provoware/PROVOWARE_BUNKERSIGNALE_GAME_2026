@@ -1,7 +1,7 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-21T00:29:00Z",
+  "generated_at_utc": "2026-09-21T07:59:00Z",
   "overall_status": "GREEN",
   "gates": {
     "G0": "GREEN",
@@ -9,13 +9,13 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "886e92ff03399070afb7fc43a01efe79465e32c79f8b14e08f1d2451b06ebc04",
+  "fingerprint_sha256": "b3e48f47992bda53fd0859f1b7e9486414676216d296813afa659d2118b1f122",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_p1_signing_key_store": "PASS",
     "i12_c_p2_sequence_decision": "DOCUMENTED",
-    "next_i12_c_block": "P2_LV_CONTRACT_GATE_VERIFIED_LOCAL_SIGNATURE_EVIDENCE",
+    "next_i12_c_block": "P2_LV_IMPLEMENTATION_VERIFIED_LOCAL_SIGNATURE_EVIDENCE",
     "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_LV_IMPLEMENTATION_GREEN",
     "product_persistence": "P1_ACTIVE_KEY_PLUS_P2_HISTORICAL_PUBLIC_KEYS",
     "i08_reopen": "NO",
@@ -87,18 +87,28 @@
     "browser_smoke_governance_noise": "REMOVED",
     "ci_cancel_superseded": "ENABLED",
     "code_economy_policy": "NO_ABSTRACTION_FOR_LINE_COUNT",
-    "documentation_source_of_truth": "ENFORCED"
+    "documentation_source_of_truth": "ENFORCED",
+    "i12_c_p2_lv_contract": "DOCUMENTED",
+    "p2_lv_function": "VERIFY_LOCAL_SIGNATURE_EVIDENCE",
+    "p2_lv_record_reader": "READ_VERIFIED_LOCAL_SIGNATURE_RECORD",
+    "p2_lv_context": "WORLD_EVENT_CHAIN_I11_ONLY",
+    "p2_lv_verify_core": "VERIFY_EVENT_DETACHED_REUSE",
+    "p2_lv_proof": "OPAQUE_PROCESS_LOCAL_NON_FORGEABLE",
+    "p2_lv_verified_boolean": "FORBIDDEN",
+    "p2_lv_signature_persistence": "ABSENT",
+    "green_first_exception": "REMOTE_FINGERPRINT_ONLY_LOCAL_CHECKOUT_UNAVAILABLE",
+    "targeted_ci": "QUALITY_ONLY"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "Green-first, Write-Batch und CI-Routing reduzieren Prozesskosten ohne Scope-/Freeze-Lockerung."
+      "evidence": "P2-LV Contract Gate bleibt der einzige fachliche Scope; Evidence-Bindung ist der einzige Folgewrite."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "UNCHANGED product architecture; nur Governance-/Workflow-Mechanik geaendert."
+      "evidence": "Application verifiziert; P3 bleibt Persistence-only; bestehende I12-A/B/P2-Schichten werden nur referenziert."
     },
     {
       "role": "data_schema_auditor",
@@ -108,17 +118,17 @@
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "PR-Quality bleibt verpflichtend; relevante Browser-Smokes bleiben pfadbasiert aktiv; post-merge Quality auf main bleibt erhalten."
+      "evidence": "Contract-only; Quality #713 zeigte ausschliesslich erwartete Evidence-Neubindung."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Keine Security-Gates entfernt; nur fachfremde Trigger entkoppelt und lokale Green-first-Pruefung verschaerft."
+      "evidence": "Nicht faelschbarer Proof, P2-only Key-Wahrheit und fail-closed Verify-Grenze sind vertraglich eingefroren."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "UNCHANGED; keine sichtbare Produkt-/Interaktionsaenderung."
+      "evidence": "UNCHANGED; keine sichtbare UI-/Interaktionsaenderung."
     },
     {
       "role": "content_canon",
@@ -128,7 +138,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "Fingerprint/Evidence bleibt verpflichtend; Bindung wird kuenftig vor erstem Remote-Push vorbereitet statt absichtlich rot in CI ermittelt."
+      "evidence": "CHG-047 und governed Fingerprint b3e48f47992bda53fd0859f1b7e9486414676216d296813afa659d2118b1f122 gebunden."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
