@@ -6,7 +6,10 @@ on:
       - 'app/infrastructure/browser/ed25519-sign-verify.js'
       - 'tests/i12_ed25519_browser_smoke.html'
       - '.github/workflows/i12-ed25519-browser-smoke.yml'
-      - 'changes/**'
+
+concurrency:
+  group: i12-ed25519-browser-smoke-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   chromium-ed25519:
