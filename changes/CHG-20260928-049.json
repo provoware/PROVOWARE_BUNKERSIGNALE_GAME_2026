@@ -1,0 +1,36 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260928-049",
+  "checkpoint": "I12",
+  "title": "P2-LV real cryptographic negative coverage",
+  "purpose": "Die eingefrorenen Negativfaelle fuer einen falschen historischen Public Key und eine syntaktisch gueltige manipulierte Signatur an der realen Ed25519-Grenze beweisen.",
+  "scope": [
+    "Echten Ed25519-Signaturdatensatz ueber die bestehenden I12-Capabilities erzeugen",
+    "Erfolgreiche Verifikation gegen den korrekten historischen Public Key pruefen",
+    "Falschen Public Key und bitweise manipulierte gueltig codierte Signatur fail-closed pruefen"
+  ],
+  "non_goals": [
+    "Keine Produktivcode- oder API-Aenderung",
+    "Kein P3 Signature Store oder Persistence-Code",
+    "Keine UI-, Schema-, Datenbank- oder Visual-World-Aenderung"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Nur die direkte P2-LV-Testabdeckung wird erweitert; Runtime und bestehende Vertraege bleiben unveraendert.",
+  "security": "Der Test beweist mit realer WebCrypto-Ausfuehrung, dass weder ein anderer Ed25519-Key noch eine weiterhin base64url-gueltige manipulierte Signatur Evidence ausstellt.",
+  "test_plan": [
+    "Gezielten P2-LV-Test ausfuehren",
+    "Repository Quality ausfuehren",
+    "Finalen Scope- und Diff-Check ausfuehren"
+  ],
+  "rollback": "Den zusaetzlichen P2-LV-Integrationstest und diesen Change Record entfernen.",
+  "evidence": [
+    "tests/test_i12_verified_local_signature_evidence.py",
+    "docs/I12_C_P2_LV_VERIFIED_LOCAL_SIGNATURE_EVIDENCE_CONTRACT.md"
+  ],
+  "result": "GREEN"
+}

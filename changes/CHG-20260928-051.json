@@ -1,0 +1,41 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260928-051",
+  "checkpoint": "I12",
+  "title": "P3 detached signature persistence implementation",
+  "purpose": "Verifizierte lokale Signature Records ausschliesslich ueber echte P2-LV-Evidence no-clobber in der separaten I12-Datenbank persistieren.",
+  "scope": [
+    "Evidence-verbrauchenden P3-Application-Pfad implementieren",
+    "Signature-Record-v1 Store mit deterministischem Event-Read und no-clobber Write implementieren",
+    "I12-Datenbank idempotent auf Version 3 erweitern und P1/P2 erhalten",
+    "Application- und realen Chromium-IndexedDB-Vertrag testen"
+  ],
+  "non_goals": [
+    "Keine Rotation, Recovery, Export- oder Multi-Tab-Funktion",
+    "Kein I08-/I10-REOPEN und keine Backup-/Restore-Aenderung",
+    "Keine UI- oder Visual-World-Aenderung"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "P1- und P2-Records bleiben beim I12-DB-Upgrade erhalten; bestehende Application-, I08- und I10-APIs bleiben unveraendert.",
+  "security": "Nur echte prozesslokale P2-LV-Evidence erreicht den Store; exakte Surfaces, no-clobber Writes und stabile Fehler verhindern freie oder widerspruechliche Persistenz.",
+  "test_plan": [
+    "Gezielte P3 Application- und P2-LV-Regressionstests ausfuehren",
+    "Realen Chromium-P3-Store-Smoke fuer Upgrade, Read, Duplicate, Konflikt und Korruption ausfuehren",
+    "Repository Quality und finalen Scope-/Diff-Check ausfuehren"
+  ],
+  "rollback": "P3-Module, direkte Tests und Workflow entfernen; I12-DB-Version in P1/P2 auf 2 zuruecksetzen und CHG-051/Evidence-Bindung entfernen.",
+  "evidence": [
+    "app/application/verified-signature-persistence.js",
+    "app/infrastructure/browser/indexeddb-signature-store.js",
+    "tests/test_i12_verified_signature_persistence.py",
+    "tests/i12_signature_store_browser_smoke.html"
+  ],
+  "result": "GREEN"
+}

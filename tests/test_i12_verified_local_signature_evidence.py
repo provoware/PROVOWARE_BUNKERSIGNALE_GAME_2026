@@ -111,6 +111,59 @@ class I12VerifiedLocalSignatureEvidenceTests(unittest.TestCase):
             await rejects(base, E.VERIFICATION_FAILED, record, {...context,chainEntry:{...context.chainEntry,event_hash:"9".repeat(64)}});
         ''')
 
+    def test_real_crypto_rejects_wrong_key_and_valid_tampered_signature(self):
+        self.run_node(r'''
+            import assert from "node:assert/strict";
+            import { webcrypto } from "node:crypto";
+            import { deriveKeyId, signEventDetached } from "./app/application/event-signature.js";
+            import { frameHashInput } from "./app/application/hash-chain.js";
+            import { verifyLocalSignatureEvidence } from "./app/application/verified-local-signature-evidence.js";
+            import { importEd25519PublicKey, signEd25519, verifyEd25519 } from "./app/infrastructure/browser/ed25519-sign-verify.js";
+            import { createBrowserSha256Hex } from "./app/infrastructure/browser/sha256.js";
+
+            const subtle = webcrypto.subtle;
+            const sha256Hex = createBrowserSha256Hex(subtle);
+            const encoder = new TextEncoder();
+            const canonicalEventBytes = event => encoder.encode(JSON.stringify(event));
+            const signingPair = await subtle.generateKey("Ed25519", true, ["sign", "verify"]);
+            const wrongPair = await subtle.generateKey("Ed25519", true, ["sign", "verify"]);
+            const signingBytes = new Uint8Array(await subtle.exportKey("raw", signingPair.publicKey));
+            const wrongBytes = new Uint8Array(await subtle.exportKey("raw", wrongPair.publicKey));
+            const keyId = await deriveKeyId(signingBytes, {sha256Hex});
+            const event = {event_id:"event:"+"1".repeat(24),author_id:"actor:"+"2".repeat(24)};
+            const eventBytes = canonicalEventBytes(event);
+            const previousHash = "4".repeat(64);
+            const context = {
+              worldId:"world:"+"3".repeat(24), event,
+              chainEntry:{event_id:event.event_id,previous_hash:previousHash,event_hash:await sha256Hex(frameHashInput(previousHash, eventBytes))},
+              i11Verified:true,
+            };
+            const record = await signEventDetached({...context,keyId}, {
+              signBytes: async bytes => Buffer.from(await signEd25519(bytes, signingPair.privateKey, subtle)).toString("base64url"),
+              canonicalEventBytes, sha256Hex,
+            });
+            const capabilities = publicKeyBytes => ({
+              publicKeyStore:{readById:async()=>({key_id:keyId,algorithm:"Ed25519",public_key_bytes:publicKeyBytes})},
+              importPublicKey:bytes=>importEd25519PublicKey(bytes, subtle),
+              verifySignature:(bytes,signature,key)=>verifyEd25519(bytes, Buffer.from(signature, "base64url"), key, subtle),
+              canonicalEventBytes, sha256Hex,
+            });
+
+            await verifyLocalSignatureEvidence(record, context, capabilities(signingBytes));
+            await assert.rejects(
+              () => verifyLocalSignatureEvidence(record, context, capabilities(wrongBytes)),
+              error => error.code === "I12_LOCAL_SIGNATURE_VERIFICATION_FAILED",
+            );
+            const signature = Buffer.from(record.signature, "base64url");
+            signature[0] ^= 1;
+            const tampered = {...record,signature:signature.toString("base64url")};
+            assert.equal(tampered.signature.length, record.signature.length);
+            await assert.rejects(
+              () => verifyLocalSignatureEvidence(tampered, context, capabilities(signingBytes)),
+              error => error.code === "I12_LOCAL_SIGNATURE_VERIFICATION_FAILED",
+            );
+        ''')
+
     def test_exact_surfaces_and_invalid_record_shape(self):
         self.run_node(r'''
             import assert from "node:assert/strict";

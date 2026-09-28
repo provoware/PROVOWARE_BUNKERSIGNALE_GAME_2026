@@ -1,0 +1,40 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260928-050",
+  "checkpoint": "I12",
+  "title": "P3 detached signature persistence contract",
+  "purpose": "Den kleinsten persistenten P3-Pfad fuer bereits verifizierte detached Signature Records vor jeder Implementierung eindeutig und fail-closed einfrieren.",
+  "scope": [
+    "P2-LV-Evidence als einzige Application-Write-Autorisierung festlegen",
+    "Signature-Record, zusammengesetzten Primaerschluessel und minimale Store-APIs einfrieren",
+    "No-clobber-, Idempotenz-, Migrations-, Fehler- und Testvertrag definieren"
+  ],
+  "non_goals": [
+    "Keine P3-Implementierung oder Datenbankversionsaenderung",
+    "Keine Rotation, Recovery, Export- oder Multi-Tab-Funktion",
+    "Kein I08-/I10-REOPEN und keine UI- oder Visual-World-Aenderung"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "P1, P2, P2-L, P2-LI, P2-LV sowie I08/I10 bleiben unveraendert; der Gate dokumentiert nur die spaetere P3-Grenze.",
+  "security": "Nur modulgueltige P2-LV-Evidence darf einen no-clobber Signature-Write ausloesen; freie Records und kopierte oder serialisierte Proofs bleiben untrusted.",
+  "test_plan": [
+    "Repository Quality fuer Dokument-, Schema- und Governance-Konsistenz ausfuehren",
+    "Fingerprint und I12-Evidence an den finalen Scope binden",
+    "Finalen Diff auf ausschliesslich Contract-/Governance-Dateien pruefen"
+  ],
+  "rollback": "P3-Contract, Masterplanverweis, diesen Change Record und seine Evidence-/Status-Bindung entfernen; P2-LV bleibt gruen eingefroren.",
+  "evidence": [
+    "docs/I12_C_P3_DETACHED_SIGNATURE_PERSISTENCE_CONTRACT.md",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md",
+    "status/I12_STATUS.json",
+    "evidence/I12_EVIDENCE.json"
+  ],
+  "result": "GREEN"
+}

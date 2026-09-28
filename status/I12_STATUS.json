@@ -9,15 +9,15 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "288c27b049b3aba86e821beda70e910a2e4f91ff17c5b869d2fba7513245bdfd",
+  "fingerprint_sha256": "cd3635e5c05739cafaca8fe4dac23a676c8684ba87bfa6a6886ee4e7ebd01985",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_p1_signing_key_store": "PASS",
     "i12_c_p2_sequence_decision": "DOCUMENTED",
-    "next_i12_c_block": "P3_DETACHED_SIGNATURE_PERSISTENCE_CONTRACT_GATE",
-    "p3_detached_signature_persistence": "CONTRACT_GATE_ALLOWED_IMPLEMENTATION_NOT_STARTED",
-    "product_persistence": "P1_ACTIVE_KEY_PLUS_P2_HISTORICAL_PUBLIC_KEYS",
+    "next_i12_c_block": "P3_BROWSER_CI_EVIDENCE",
+    "p3_detached_signature_persistence": "IMPLEMENTED_LOCAL_GATES_PASS_BROWSER_CI_CONFIGURED",
+    "product_persistence": "P1_ACTIVE_KEY_PLUS_P2_HISTORICAL_PUBLIC_KEYS_PLUS_P3_SIGNATURES",
     "i08_reopen": "NO",
     "i10_reopen": "NO",
     "private_key_backup": "NOT_ALLOWED_V1",
@@ -102,33 +102,45 @@
     "p2_lv_p2_key_lookup": "READ_BY_ID_ONLY",
     "p2_lv_verification_result": "EXACT_TRUE_REQUIRED",
     "p2_lv_evidence_forgery": "FAIL_CLOSED",
-    "p2_lv_record_snapshot": "FROZEN_EXACT_FIELDS"
+    "p2_lv_record_snapshot": "FROZEN_EXACT_FIELDS",
+    "p2_lv_real_ed25519_negative_paths": "PASS",
+    "i12_c_p3_contract": "DOCUMENTED",
+    "p3_write_authority": "P2_LV_EVIDENCE_ONLY",
+    "p3_primary_key": "WORLD_EVENT_KEY_ID",
+    "p3_conflict_policy": "IDEMPOTENT_IDENTICAL_FAIL_CLOSED_DIFFERENT",
+    "p3_i08_i10_reopen": "NO",
+    "i12_c_p3_application": "PASS",
+    "p3_signature_store": "IMPLEMENTED",
+    "p3_db_version": "3",
+    "p3_evidence_barrier": "PASS",
+    "p3_no_clobber": "CONTRACT_TEST_CONFIGURED",
+    "p3_browser_smoke": "NOT_RUN_LOCAL_BROWSER_UNAVAILABLE"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-LV Application ist der einzige fachliche Scope; P3 bleibt auf einen separaten Contract Gate begrenzt."
+      "evidence": "P3 Application + Store sind der einzige fachliche Scope; Folgefunktionen bleiben gesperrt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Application nutzt bestehende I12-A-Verifikation und P2-Key-Wahrheit ohne Infrastructure- oder Persistence-Rueckimport."
+      "evidence": "Application konsumiert modulgueltige Evidence; Infrastructure kapselt ausschliesslich die separate I12-IndexedDB."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "UNCHANGED; keine Daten-, Store-, Schema- oder Migrationaenderung."
+      "evidence": "I12 DB v3 ergaenzt nur signature_records/by_event und erhaelt P1/P2; Record-v1 bleibt unveraendert."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Gezielte P2-LV Tests binden die reale P2-Record-Rueckgabe sowie Positiv-, Fehler-, Trace- und Proof-Forgery-Pfade."
+      "evidence": "Application-Tests sind PASS; realer Chromium-Smoke ist als CI-Gate konfiguriert und lokal mangels Browser nicht ausgefuehrt."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "P2-only Key-Lookup, Exact-true-Verify und modulprivate WeakMap-Issuance sind fail-closed gebunden."
+      "evidence": "Forgery wird vor Store-Aufruf blockiert; Konflikte und korrupte Records schlagen fail-closed fehl."
     },
     {
       "role": "ux_accessibility",
@@ -143,7 +155,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "CHG-048 und korrigierter governed Fingerprint 288c27b049b3aba86e821beda70e910a2e4f91ff17c5b869d2fba7513245bdfd gebunden."
+      "evidence": "CHG-051 und governed Fingerprint cd3635e5c05739cafaca8fe4dac23a676c8684ba87bfa6a6886ee4e7ebd01985 gebunden; Browser-CI-Evidence bleibt extern ausstehend."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"

@@ -1,6 +1,7 @@
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 const STORE = "signing_keys";
 const PUBLIC_KEY_STORE = "public_keys";
+const SIGNATURE_STORE = "signature_records";
 const ACTIVE_SLOT = "active";
 const KEY_ID_RE = /^key:sha256:[0-9a-f]{64}$/;
 const RECORD_FIELDS = ["key_id", "private_key", "public_key", "slot"];
@@ -67,6 +68,10 @@ export function createIndexedDbSigningKeyStore({
       const db = request.result;
       if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: "slot" });
       if (!db.objectStoreNames.contains(PUBLIC_KEY_STORE)) db.createObjectStore(PUBLIC_KEY_STORE, { keyPath: "key_id" });
+      if (!db.objectStoreNames.contains(SIGNATURE_STORE)) {
+        const store = db.createObjectStore(SIGNATURE_STORE, { keyPath: ["world_id", "event_id", "key_id"] });
+        store.createIndex("by_event", ["world_id", "event_id"]);
+      }
     });
     return new Promise((resolve, reject) => {
       let settled = false;

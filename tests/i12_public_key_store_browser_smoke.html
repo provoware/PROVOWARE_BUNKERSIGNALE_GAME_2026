@@ -96,9 +96,9 @@ try {
 
   const upgradeStore = createIndexedDbPublicKeyStore({ indexedDB, deriveKeyId: derive, dbName: DB_NAME });
   await upgradeStore.putIfAbsent(recordA);
-  const upgradedDb = await requestResult(indexedDB.open(DB_NAME, 2));
-  if (!upgradedDb.objectStoreNames.contains("signing_keys") || !upgradedDb.objectStoreNames.contains("public_keys")) {
-    throw new Error("P2 upgrade did not preserve both stores");
+  const upgradedDb = await requestResult(indexedDB.open(DB_NAME, 3));
+  if (!["signing_keys", "public_keys", "signature_records"].every(name => upgradedDb.objectStoreNames.contains(name))) {
+    throw new Error("P3 upgrade did not preserve I12 stores");
   }
   const checkTx = upgradedDb.transaction("signing_keys", "readonly");
   const legacyRecord = await requestResult(checkTx.objectStore("signing_keys").get("active"));
@@ -106,7 +106,7 @@ try {
   upgradedDb.close();
   if (legacyRecord?.key_id !== keyA || legacyRecord.private_key.extractable) throw new Error("P2 upgrade changed P1 record");
 
-  const corruptDb = await requestResult(indexedDB.open(DB_NAME, 2));
+  const corruptDb = await requestResult(indexedDB.open(DB_NAME, 3));
   const corruptTx = corruptDb.transaction("public_keys", "readwrite");
   corruptTx.objectStore("public_keys").put({ key_id: keyB, algorithm: "Ed25519", public_key_bytes: new Uint8Array(31) });
   await transactionDone(corruptTx);
