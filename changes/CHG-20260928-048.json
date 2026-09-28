@@ -1,0 +1,43 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260928-048",
+  "checkpoint": "I12",
+  "title": "P2-LV verified local signature evidence application",
+  "purpose": "Lokal erzeugte detached Signature Records vor jeder spaeteren Persistenz gegen den historischen P2-Public-Key fail-closed verifizieren und an einen nicht faelschbaren prozesslokalen Proof binden.",
+  "scope": [
+    "Exakte P2-LV Context- und Capability-Surfaces validieren",
+    "Historischen Public Key ausschliesslich ueber P2 readById aufloesen und importieren",
+    "Bestehendes verifyEventDetached fuer Record-, I11- und Signaturpruefung wiederverwenden",
+    "Eingefrorene Evidence und Record-Snapshot ueber eine modulprivate WeakMap binden",
+    "Vertrags-, Fehler-, Forgery- und Persistence-Negativtests ergaenzen"
+  ],
+  "non_goals": [
+    "Kein P3 Signature Store oder Persistence-Code",
+    "Keine DB-, Schema-, P1-, P2-, P2-L- oder P2-LI-Aenderung",
+    "Keine Rotation, Backup-/Restore- oder Trusted-Checkpoint-Persistence",
+    "Keine UI- oder Visual-World-Aenderung",
+    "Kein I08- oder I10-REOPEN"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Bestehende I12-A/B-, P1-, P2-, P2-L- und P2-LI-APIs bleiben unveraendert; der neue Application-Baustein konsumiert ihre eingefrorenen Capabilities.",
+  "security": "Nur exakte erfolgreiche Verifikation gegen den per record.key_id aus P2 gelesenen Public Key stellt Evidence aus; WeakMap-Issuance verhindert gefaelschte, kopierte oder serialisierte Proofs.",
+  "test_plan": [
+    "Gezielte P2-LV Positiv-, Trace-, Fehler- und Proof-Forgery-Tests",
+    "Negativtest fuer Persistence- und Signing-Surfaces",
+    "Repository Quality und Evidence-Fingerprint",
+    "Finaler Scope- und Diff-Check"
+  ],
+  "rollback": "Neue P2-LV Application-/Testdatei und diesen Implementierungsnachweis entfernen; der eingefrorene P2-LV-Vertrag bleibt bestehen.",
+  "evidence": [
+    "app/application/verified-local-signature-evidence.js",
+    "tests/test_i12_verified_local_signature_evidence.py",
+    "docs/I12_C_P2_LV_VERIFIED_LOCAL_SIGNATURE_EVIDENCE_CONTRACT.md"
+  ],
+  "result": "GREEN"
+}
