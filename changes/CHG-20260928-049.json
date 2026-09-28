@@ -1,0 +1,40 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260928-049",
+  "checkpoint": "I12",
+  "title": "P3 detached signature persistence contract gate",
+  "purpose": "Den kleinsten sicheren P3-Vertrag fuer die browserlokale Persistenz ausschliesslich echter P2-LV-verifizierter detached Signature Records vor jeder Implementierung einfrieren.",
+  "scope": [
+    "P2-LV-Evidence als einzige zulaessige lokale Schreibgrundlage festlegen",
+    "Minimale Application- und Store-APIs sowie zusammengesetzte Record-Identitaet einfrieren",
+    "No-Clobber-, Idempotenz-, Commit- und Readback-Regeln definieren",
+    "Fehlerkategorien und verpflichtende Contract-/Chromium-Negativtests planen"
+  ],
+  "non_goals": [
+    "Keine P3-Implementierung, DB-Version oder Store-Anlage",
+    "Keine Aenderung an P1, P2 oder den P2-L Application-Barrieren",
+    "Keine Rotation, Export-, Trusted-Checkpoint- oder Backup-Persistence",
+    "Keine UI-, Visual-World-, I08- oder I10-Aenderung"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Alle bestehenden I12-A/B/P1/P2/P2-L/P2-LI/P2-LV-APIs und persistierten Daten bleiben unveraendert; dieser Gate fuegt nur den spaeteren P3-Vertrag hinzu.",
+  "security": "Nur der durch echte prozesslokale P2-LV-Evidence gebundene Record darf den spaeteren No-Clobber-Write erreichen; freie Records, Boolean-Trust und Teilwrite-Erfolg sind verboten.",
+  "test_plan": [
+    "Change-Record- und Repository-Quality-Validierung",
+    "Governed Fingerprint nach finalem Scope binden",
+    "Finaler Diff- und Produktcode-Abwesenheitscheck"
+  ],
+  "rollback": "P3-Contract-Dokument, Masterplan-Ergaenzung und diesen Nachweis entfernen; der gruene P2-LV-Implementierungsstand bleibt unveraendert.",
+  "evidence": [
+    "docs/I12_C_P3_DETACHED_SIGNATURE_PERSISTENCE_CONTRACT.md",
+    "docs/I12_SIGNATURES_KEYS_AUTHENTICITY.md"
+  ],
+  "result": "GREEN"
+}

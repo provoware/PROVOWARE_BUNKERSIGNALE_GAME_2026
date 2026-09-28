@@ -2,37 +2,37 @@
   "checkpoint": "I12",
   "generated_at_utc": "2026-09-28T00:00:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "288c27b049b3aba86e821beda70e910a2e4f91ff17c5b869d2fba7513245bdfd",
+  "fingerprint_sha256": "cda4e0f4ac7eb7b2afb58e73211b3ae80ea54fb1c83294d5f4a580e7aac8745e",
   "checks": [
     {
-      "name": "p2_lv_application",
+      "name": "p3_application_barrier",
       "status": "PASS",
-      "detail": "P2-LV liest den validierten P2-Record per readById, importiert dessen 32 public_key_bytes und nutzt die bestehende verifyEventDetached-Grenze."
+      "detail": "Echte P2-LV-Evidence ist die einzige Schreibquelle; Forgery erreicht den Store nicht und Capability-Surfaces sind exakt."
     },
     {
-      "name": "proof_boundary",
+      "name": "p3_no_clobber_store",
       "status": "PASS",
-      "detail": "Modulprivate WeakMap-Issuance bindet echte eingefrorene Evidence an den exakten eingefrorenen Record-Snapshot; Kopien und Serialisierung sind ungueltig."
+      "detail": "DB v3 nutzt [world_id,event_id,key_id]; identische Duplicates sind idempotent, Konflikte und Write-Aborts fail-closed."
     },
     {
-      "name": "failure_policy",
+      "name": "p3_readback",
       "status": "PASS",
-      "detail": "Key fehlt, Importfehler, falscher Key, manipulierte Daten, ungueltige I11-Bindung und jedes nicht exakt wahre Verify-Ergebnis schlagen fail-closed fehl."
+      "detail": "Readback ist nach key_id deterministisch, liefert defensive Kopien und lehnt ungueltige IDs sowie korrupte Records ab."
     },
     {
-      "name": "persistence_lock",
+      "name": "p3_upgrade",
       "status": "PASS",
-      "detail": "P2-LV enthaelt weder Signature-Persistence noch Signing-Capabilities; P3-Implementierung ist nicht gestartet."
+      "detail": "Der reale Chromium-Upgradepfad von I12 DB v2 auf v3 erhaelt vorhandene P1-Signing-Keys und P2-Public-Keys."
     },
     {
-      "name": "targeted_tests",
+      "name": "p3_chromium",
       "status": "PASS",
-      "detail": "Vier gezielte Python/Node-Vertragstests decken reale P2-Record-Rueckgabe, Erfolg, Call-Trace, stabile Fehler, exakte Surfaces und Proof-Forgery ab."
+      "detail": "Realer Chrome-154-Smoke prueft API, Upgrade, Duplicate, Konflikt, Sortierung, defensive Kopien, Korruption und injizierten Write-Fehler."
     },
     {
       "name": "scope_guard",
       "status": "PASS",
-      "detail": "Keine DB-, Schema-, P1-, P2-, P2-L-, P2-LI-, UI- oder Visual-World-Aenderung; I08/I10 bleiben geschlossen."
+      "detail": "Keine UI-, Bootstrap-, Rotation-, Export-, Trusted-Checkpoint-, I08-, I09-, I10- oder I11-Aenderung."
     }
   ],
   "file_hashes": {
@@ -67,34 +67,36 @@
     "changes/CHG-20260921-045.json": "236d46ec1b1fa5c6a3dc1d1c03091549a6ace07d7da275f093647ac74a3e9b28",
     "changes/CHG-20260921-046.json": "e14f88d462ca1db1d4a69319505ff2bd988286a95d8e4d8922c058e37141c162",
     "changes/CHG-20260921-047.json": "07c11a8f7027636116512c19d8a675e5bfd2ac4695cd8a5627ba73a8b5f25c36",
-    "changes/CHG-20260928-048.json": "7d3b1d58b832612c1d95576691c705462cb1169e08f84f391ca66e5899e71bb3"
+    "changes/CHG-20260928-048.json": "7d3b1d58b832612c1d95576691c705462cb1169e08f84f391ca66e5899e71bb3",
+    "changes/CHG-20260928-049.json": "bbe225b1db2f558f61d62eda9501062b8af22b3d865da32a6270df3635df7f41",
+    "changes/CHG-20260928-050.json": "2ca54e8e89d481092cf49d3d74c839567c12daba478cb67c40a760bef4fd5be4"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-LV Application ist der einzige fachliche Scope; P3 bleibt auf einen separaten Contract Gate begrenzt."
+      "evidence": "P3 Application, Store und gezielte Tests sind der einzige fachliche Scope; Rotation und Folgethemen bleiben gesperrt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Application nutzt bestehende I12-A-Verifikation und P2-Key-Wahrheit ohne Infrastructure- oder Persistence-Rueckimport."
+      "evidence": "Application konsumiert ausschliesslich echte P2-LV-Evidence; Browser-Infrastructure bleibt im separaten I12-Datenbankbereich."
     },
     {
       "role": "data_schema_auditor",
       "status": "PASS",
-      "evidence": "UNCHANGED; keine Daten-, Store-, Schema- oder Migrationaenderung."
+      "evidence": "Additives DB-v3-Upgrade erhaelt P1/P2 und bindet den Signature Store an [world_id,event_id,key_id]."
     },
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Gezielte P2-LV Tests binden die reale P2-Record-Rueckgabe sowie Positiv-, Fehler-, Trace- und Proof-Forgery-Pfade."
+      "evidence": "Gezielte Node- und reale Chromium-Pruefungen decken Forgery, No-Clobber, Sortierung, Korruption, Upgrade und Write-Abort ab."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "P2-only Key-Lookup, Exact-true-Verify und modulprivate WeakMap-Issuance sind fail-closed gebunden."
+      "evidence": "Nur echte P2-LV-Evidence erreicht putIfAbsent; freie Records, Boolean-Trust, Konflikt-Clobber und Erfolg vor Commit sind gesperrt."
     },
     {
       "role": "ux_accessibility",
@@ -109,7 +111,7 @@
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "CHG-048 und korrigierter governed Fingerprint 288c27b049b3aba86e821beda70e910a2e4f91ff17c5b869d2fba7513245bdfd gebunden."
+      "evidence": "CHG-050 und governed Fingerprint cda4e0f4ac7eb7b2afb58e73211b3ae80ea54fb1c83294d5f4a580e7aac8745e gebunden."
     }
   ]
 }

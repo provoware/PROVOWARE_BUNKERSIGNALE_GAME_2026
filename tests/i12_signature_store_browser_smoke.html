@@ -1,0 +1,113 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>I12 P3 Detached Signature Store Smoke</title>
+<output id="result" data-result="RUNNING">RUNNING</output>
+<script type="module">
+import {
+  SIGNATURE_STORE_ERROR,
+  createIndexedDbSignatureStore,
+} from "../app/infrastructure/browser/indexeddb-signature-store.js";
+
+const result = document.querySelector("#result");
+const keepAlive = setInterval(() => {}, 50);
+const DB_NAME = "i12-p3-signature-store-smoke";
+const requestResult = request => new Promise((resolve, reject) => {
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+const transactionDone = transaction => new Promise((resolve, reject) => {
+  transaction.oncomplete = resolve;
+  transaction.onabort = () => reject(transaction.error ?? new Error("transaction aborted"));
+  transaction.onerror = () => reject(transaction.error ?? new Error("transaction failed"));
+});
+const deleteDb = () => new Promise((resolve, reject) => {
+  const request = indexedDB.deleteDatabase(DB_NAME);
+  request.onsuccess = resolve;
+  request.onerror = () => reject(request.error);
+  request.onblocked = () => reject(new Error("database deletion blocked"));
+});
+const expectCode = async (operation, code) => {
+  try { await operation(); }
+  catch (error) { if (error?.code === code) return; throw error; }
+  throw new Error("expected error " + code);
+};
+const worldId = "world:" + "1".repeat(24);
+const eventId = "event:" + "2".repeat(24);
+const record = (key, signature = "A".repeat(86)) => ({
+  format:"ssi-event-signature", format_version:1, world_id:worldId,
+  event_id:eventId, author_id:"actor:"+"3".repeat(24),
+  key_id:"key:sha256:"+key.repeat(64), algorithm:"Ed25519", signature,
+});
+
+try {
+  await deleteDb();
+
+  const pair = await crypto.subtle.generateKey({name:"Ed25519"}, false, ["sign","verify"]);
+  const legacyRequest = indexedDB.open(DB_NAME, 2);
+  legacyRequest.onupgradeneeded = () => {
+    const db = legacyRequest.result;
+    db.createObjectStore("signing_keys", {keyPath:"slot"});
+    db.createObjectStore("public_keys", {keyPath:"key_id"});
+  };
+  const legacyDb = await requestResult(legacyRequest);
+  const legacyTx = legacyDb.transaction(["signing_keys","public_keys"], "readwrite");
+  legacyTx.objectStore("signing_keys").add({slot:"active",key_id:record("4").key_id,private_key:pair.privateKey,public_key:pair.publicKey});
+  legacyTx.objectStore("public_keys").add({key_id:record("4").key_id,algorithm:"Ed25519",public_key_bytes:new Uint8Array(32)});
+  await transactionDone(legacyTx);
+  legacyDb.close();
+
+  const store = createIndexedDbSignatureStore({indexedDB,dbName:DB_NAME});
+  if (Object.keys(store).sort().join(",") !== "putIfAbsent,readByEvent") throw new Error("unexpected P3 API surface");
+  if ((await store.readByEvent(worldId,eventId)).length !== 0) throw new Error("missing records were not empty");
+  await expectCode(()=>store.readByEvent("world:bad",eventId),SIGNATURE_STORE_ERROR.INVALID_RECORD);
+  await expectCode(()=>store.putIfAbsent({...record("4"),verified:true}),SIGNATURE_STORE_ERROR.INVALID_RECORD);
+
+  await store.putIfAbsent(record("5"));
+  await store.putIfAbsent(record("4"));
+  await store.putIfAbsent({...record("4")});
+  const first = await store.readByEvent(worldId,eventId);
+  if (first.map(item=>item.key_id).join(",") !== [record("4").key_id,record("5").key_id].join(",")) throw new Error("readback order mismatch");
+  first[0].signature = "g".repeat(86);
+  if ((await store.readByEvent(worldId,eventId))[0].signature !== "A".repeat(86)) throw new Error("readback was not defensive");
+  await expectCode(()=>store.putIfAbsent(record("4","g".repeat(86))),SIGNATURE_STORE_ERROR.CONFLICT);
+  if ((await store.readByEvent(worldId,eventId))[0].signature !== "A".repeat(86)) throw new Error("conflict clobbered record");
+
+  const upgradedDb = await requestResult(indexedDB.open(DB_NAME,3));
+  if (!["event_signatures","public_keys","signing_keys"].every(name=>upgradedDb.objectStoreNames.contains(name))) throw new Error("upgrade lost store");
+  const preservedTx = upgradedDb.transaction(["signing_keys","public_keys"],"readonly");
+  const oldPrivate = await requestResult(preservedTx.objectStore("signing_keys").get("active"));
+  const oldPublic = await requestResult(preservedTx.objectStore("public_keys").get(record("4").key_id));
+  await transactionDone(preservedTx);
+  upgradedDb.close();
+  if (!oldPrivate || !oldPublic || oldPrivate.private_key.extractable) throw new Error("P1/P2 upgrade preservation failed");
+
+  const corruptDb = await requestResult(indexedDB.open(DB_NAME,3));
+  const corruptTx = corruptDb.transaction("event_signatures","readwrite");
+  corruptTx.objectStore("event_signatures").put({...record("6"),signature:"invalid"});
+  await transactionDone(corruptTx);
+  corruptDb.close();
+  await expectCode(()=>store.readByEvent(worldId,eventId),SIGNATURE_STORE_ERROR.INVALID_RECORD);
+
+  const queued = value => {
+    const request = new EventTarget(); request.result=value;
+    queueMicrotask(()=>request.dispatchEvent(new Event("success"))); return request;
+  };
+  const fakeTransaction = new EventTarget();
+  fakeTransaction.error=null;
+  fakeTransaction.abort=()=>queueMicrotask(()=>fakeTransaction.dispatchEvent(new Event("abort")));
+  fakeTransaction.objectStore=()=>({get:()=>queued(undefined),add:()=>{throw new DOMException("injected queue failure","DataCloneError");}});
+  const fakeDb={transaction:()=>fakeTransaction,close(){}};
+  const failingIndexedDB={open(){const request=new EventTarget();request.result=fakeDb;queueMicrotask(()=>request.dispatchEvent(new Event("success")));return request;}};
+  const failingStore=createIndexedDbSignatureStore({indexedDB:failingIndexedDB,dbName:"unused"});
+  await expectCode(()=>failingStore.putIfAbsent(record("7")),SIGNATURE_STORE_ERROR.WRITE_FAILED);
+
+  await deleteDb();
+  Object.assign(result.dataset,{result:"PASS",identity:"world-event-key",idempotent:"true",conflict:"closed",sorted:"true",corruption:"closed",upgrade:"preserved",writeFailure:"closed",api:"minimal"});
+  result.textContent="PASS";
+} catch (error) {
+  result.dataset.result="FAIL";
+  result.textContent=`FAIL ${error.message}`;
+} finally {
+  clearInterval(keepAlive);
+}
+</script>
