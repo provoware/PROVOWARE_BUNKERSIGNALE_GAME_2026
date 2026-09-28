@@ -1,43 +1,38 @@
 {
   "checkpoint": "I12",
-  "generated_at_utc": "2026-09-21T07:59:00Z",
+  "generated_at_utc": "2026-09-28T00:00:00Z",
   "status": "GREEN",
-  "fingerprint_sha256": "b3e48f47992bda53fd0859f1b7e9486414676216d296813afa659d2118b1f122",
+  "fingerprint_sha256": "288c27b049b3aba86e821beda70e910a2e4f91ff17c5b869d2fba7513245bdfd",
   "checks": [
     {
-      "name": "p2_lv_contract",
+      "name": "p2_lv_application",
       "status": "PASS",
-      "detail": "P2-LV Verified Local Signature Evidence Contract friert exakte Verify-/Proof-API, P2-only Key-Quelle, bestehenden verifyEventDetached-Pfad, stabile Fehlercodes und Persistence-Verbot ein."
+      "detail": "P2-LV liest den validierten P2-Record per readById, importiert dessen 32 public_key_bytes und nutzt die bestehende verifyEventDetached-Grenze."
     },
     {
       "name": "proof_boundary",
       "status": "PASS",
-      "detail": "Freies verified:Boolean ist verboten; der spaetere Proof muss prozesslokal, nicht serialisierbar, nicht faelschbar und an exakt den verifizierten Record-Snapshot gebunden sein."
+      "detail": "Modulprivate WeakMap-Issuance bindet echte eingefrorene Evidence an den exakten eingefrorenen Record-Snapshot; Kopien und Serialisierung sind ungueltig."
     },
     {
-      "name": "public_key_truth",
+      "name": "failure_policy",
       "status": "PASS",
-      "detail": "Historischer Public Key darf ausschliesslich ueber P2 publicKeyStore.readById(record.key_id) aufgeloest werden; P1/Caller/Netzwerk/Backup sind ausgeschlossen."
+      "detail": "Key fehlt, Importfehler, falscher Key, manipulierte Daten, ungueltige I11-Bindung und jedes nicht exakt wahre Verify-Ergebnis schlagen fail-closed fehl."
     },
     {
       "name": "persistence_lock",
       "status": "PASS",
-      "detail": "Kein P2-LV-Write und kein P3-Store/Contract; P3 bleibt bis zum gruenen P2-LV-Implementierungs-Freeze gesperrt."
+      "detail": "P2-LV enthaelt weder Signature-Persistence noch Signing-Capabilities; P3-Implementierung ist nicht gestartet."
     },
     {
-      "name": "green_first_exception",
+      "name": "targeted_tests",
       "status": "PASS",
-      "detail": "Lokaler Voll-Checkout/Fingerprint war in der aktuellen Automation nicht reproduzierbar; Remote Quality #713 wurde gemaess dokumentierter Ausnahme ausschliesslich zur Fingerprint-Ermittlung genutzt. Keine semantische Aenderung danach."
-    },
-    {
-      "name": "targeted_ci",
-      "status": "PASS",
-      "detail": "Fuer den Contract-Head wurde ausschliesslich Quality #713 ausgeloest; keine fachfremden I01/I11/Ed25519-Smokes."
+      "detail": "Vier gezielte Python/Node-Vertragstests decken reale P2-Record-Rueckgabe, Erfolg, Call-Trace, stabile Fehler, exakte Surfaces und Proof-Forgery ab."
     },
     {
       "name": "scope_guard",
       "status": "PASS",
-      "detail": "Contract-only: keine Produkt-, Test-, DB-, Schema-, UI- oder Visual-World-Aenderung; I08/I10 bleiben geschlossen."
+      "detail": "Keine DB-, Schema-, P1-, P2-, P2-L-, P2-LI-, UI- oder Visual-World-Aenderung; I08/I10 bleiben geschlossen."
     }
   ],
   "file_hashes": {
@@ -71,19 +66,20 @@
     "changes/CHG-20260921-044.json": "5065e9cea953dc3610e6093c92a964d69b83b344395ceb2602dffaf4a6271909",
     "changes/CHG-20260921-045.json": "236d46ec1b1fa5c6a3dc1d1c03091549a6ace07d7da275f093647ac74a3e9b28",
     "changes/CHG-20260921-046.json": "e14f88d462ca1db1d4a69319505ff2bd988286a95d8e4d8922c058e37141c162",
-    "changes/CHG-20260921-047.json": "07c11a8f7027636116512c19d8a675e5bfd2ac4695cd8a5627ba73a8b5f25c36"
+    "changes/CHG-20260921-047.json": "07c11a8f7027636116512c19d8a675e5bfd2ac4695cd8a5627ba73a8b5f25c36",
+    "changes/CHG-20260928-048.json": "7d3b1d58b832612c1d95576691c705462cb1169e08f84f391ca66e5899e71bb3"
   },
   "review_mode": "sequential_role_review_no_parallel_agent_runtime",
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-LV Contract Gate bleibt der einzige fachliche Scope; Evidence-Bindung ist der einzige Folgewrite."
+      "evidence": "P2-LV Application ist der einzige fachliche Scope; P3 bleibt auf einen separaten Contract Gate begrenzt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Application verifiziert; P3 bleibt Persistence-only; bestehende I12-A/B/P2-Schichten werden nur referenziert."
+      "evidence": "Application nutzt bestehende I12-A-Verifikation und P2-Key-Wahrheit ohne Infrastructure- oder Persistence-Rueckimport."
     },
     {
       "role": "data_schema_auditor",
@@ -93,27 +89,27 @@
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Contract-only; Quality #713 zeigte ausschliesslich erwartete Evidence-Neubindung."
+      "evidence": "Gezielte P2-LV Tests binden die reale P2-Record-Rueckgabe sowie Positiv-, Fehler-, Trace- und Proof-Forgery-Pfade."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Nicht faelschbarer Proof, P2-only Key-Wahrheit und fail-closed Verify-Grenze sind vertraglich eingefroren."
+      "evidence": "P2-only Key-Lookup, Exact-true-Verify und modulprivate WeakMap-Issuance sind fail-closed gebunden."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "UNCHANGED; keine sichtbare UI-/Interaktionsaenderung."
+      "evidence": "UNCHANGED; keine sichtbare UI- oder Interaktionsaenderung."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "UNCHANGED; keine Story-/Content-/Visual-World-Aenderung."
+      "evidence": "UNCHANGED; keine Story-, Content- oder Visual-World-Aenderung."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "CHG-047 und governed Fingerprint b3e48f47992bda53fd0859f1b7e9486414676216d296813afa659d2118b1f122 gebunden."
+      "evidence": "CHG-048 und korrigierter governed Fingerprint 288c27b049b3aba86e821beda70e910a2e4f91ff17c5b869d2fba7513245bdfd gebunden."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "checkpoint": "I12",
   "product_version": "0.1.0-alpha.0",
-  "generated_at_utc": "2026-09-21T07:59:00Z",
+  "generated_at_utc": "2026-09-28T00:00:00Z",
   "overall_status": "GREEN",
   "gates": {
     "G0": "GREEN",
@@ -9,14 +9,14 @@
     "G6": "GREEN",
     "G8": "GREEN"
   },
-  "fingerprint_sha256": "b3e48f47992bda53fd0859f1b7e9486414676216d296813afa659d2118b1f122",
+  "fingerprint_sha256": "288c27b049b3aba86e821beda70e910a2e4f91ff17c5b869d2fba7513245bdfd",
   "tests": {
     "i12_ab_exit_gates_14_of_14": "PASS",
     "i12_c_decision_gate": "DOCUMENTED",
     "i12_p1_signing_key_store": "PASS",
     "i12_c_p2_sequence_decision": "DOCUMENTED",
-    "next_i12_c_block": "P2_LV_IMPLEMENTATION_VERIFIED_LOCAL_SIGNATURE_EVIDENCE",
-    "p3_detached_signature_persistence": "BLOCKED_UNTIL_P2_LV_IMPLEMENTATION_GREEN",
+    "next_i12_c_block": "P3_DETACHED_SIGNATURE_PERSISTENCE_CONTRACT_GATE",
+    "p3_detached_signature_persistence": "CONTRACT_GATE_ALLOWED_IMPLEMENTATION_NOT_STARTED",
     "product_persistence": "P1_ACTIVE_KEY_PLUS_P2_HISTORICAL_PUBLIC_KEYS",
     "i08_reopen": "NO",
     "i10_reopen": "NO",
@@ -97,18 +97,23 @@
     "p2_lv_verified_boolean": "FORBIDDEN",
     "p2_lv_signature_persistence": "ABSENT",
     "green_first_exception": "REMOTE_FINGERPRINT_ONLY_LOCAL_CHECKOUT_UNAVAILABLE",
-    "targeted_ci": "QUALITY_ONLY"
+    "targeted_ci": "QUALITY_ONLY",
+    "i12_c_p2_lv_application": "PASS",
+    "p2_lv_p2_key_lookup": "READ_BY_ID_ONLY",
+    "p2_lv_verification_result": "EXACT_TRUE_REQUIRED",
+    "p2_lv_evidence_forgery": "FAIL_CLOSED",
+    "p2_lv_record_snapshot": "FROZEN_EXACT_FIELDS"
   },
   "reviews": [
     {
       "role": "orchestrator",
       "status": "PASS",
-      "evidence": "P2-LV Contract Gate bleibt der einzige fachliche Scope; Evidence-Bindung ist der einzige Folgewrite."
+      "evidence": "P2-LV Application ist der einzige fachliche Scope; P3 bleibt auf einen separaten Contract Gate begrenzt."
     },
     {
       "role": "architecture_guardian",
       "status": "PASS",
-      "evidence": "Application verifiziert; P3 bleibt Persistence-only; bestehende I12-A/B/P2-Schichten werden nur referenziert."
+      "evidence": "Application nutzt bestehende I12-A-Verifikation und P2-Key-Wahrheit ohne Infrastructure- oder Persistence-Rueckimport."
     },
     {
       "role": "data_schema_auditor",
@@ -118,27 +123,27 @@
     {
       "role": "qa_regression",
       "status": "PASS",
-      "evidence": "Contract-only; Quality #713 zeigte ausschliesslich erwartete Evidence-Neubindung."
+      "evidence": "Gezielte P2-LV Tests binden die reale P2-Record-Rueckgabe sowie Positiv-, Fehler-, Trace- und Proof-Forgery-Pfade."
     },
     {
       "role": "security_integrity",
       "status": "PASS",
-      "evidence": "Nicht faelschbarer Proof, P2-only Key-Wahrheit und fail-closed Verify-Grenze sind vertraglich eingefroren."
+      "evidence": "P2-only Key-Lookup, Exact-true-Verify und modulprivate WeakMap-Issuance sind fail-closed gebunden."
     },
     {
       "role": "ux_accessibility",
       "status": "PASS",
-      "evidence": "UNCHANGED; keine sichtbare UI-/Interaktionsaenderung."
+      "evidence": "UNCHANGED; keine sichtbare UI- oder Interaktionsaenderung."
     },
     {
       "role": "content_canon",
       "status": "PASS",
-      "evidence": "UNCHANGED; keine Story-/Content-/Visual-World-Aenderung."
+      "evidence": "UNCHANGED; keine Story-, Content- oder Visual-World-Aenderung."
     },
     {
       "role": "release_evidence",
       "status": "PASS",
-      "evidence": "CHG-047 und governed Fingerprint b3e48f47992bda53fd0859f1b7e9486414676216d296813afa659d2118b1f122 gebunden."
+      "evidence": "CHG-048 und korrigierter governed Fingerprint 288c27b049b3aba86e821beda70e910a2e4f91ff17c5b869d2fba7513245bdfd gebunden."
     }
   ],
   "review_mode": "sequential_role_review_no_parallel_agent_runtime"
