@@ -1,0 +1,43 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20260928-050",
+  "checkpoint": "I12",
+  "title": "P3 detached signature persistence implementation",
+  "purpose": "Ausschliesslich echte P2-LV-verifizierte detached Signature Records browserlokal, no-clobber und atomar persistieren sowie deterministisch fail-closed lesen.",
+  "scope": [
+    "Minimale Application-Barriere fuer echte P2-LV-Evidence implementieren",
+    "Additiven I12-IndexedDB-v3-Signature-Store mit zusammengesetzter Identitaet implementieren",
+    "Idempotenz, Konflikt, Commit-vor-Erfolg, Readback, Korruption und Upgrade-Erhalt testen",
+    "Realen Chromium-P3-Smoke als gezielten Workflow ergaenzen"
+  ],
+  "non_goals": [
+    "Keine Aenderung an P1, P2, P2-L, P2-LI oder P2-LV",
+    "Keine Rotation, Actor-Key-Trust-, Export- oder Trusted-Checkpoint-Persistence",
+    "Kein Backup-/Restore-, I08- oder I10-REOPEN",
+    "Keine UI-, Bootstrap- oder Visual-World-Aenderung"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "data_schema_auditor",
+    "qa_regression",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Das additive I12-DB-v3-Upgrade erhaelt bestehende P1-Signing-Key- und P2-Public-Key-Records; bestehende APIs bleiben unveraendert.",
+  "security": "Nur ein durch die modulprivate P2-LV-Issuance gebundener Record erreicht den Store; zusammengesetzter No-Clobber-Key, exakte Validierung und Commit-vor-Erfolg verhindern Forgery, Ueberschreiben und Teilwrite-Erfolg.",
+  "test_plan": [
+    "Gezielte Application-Tests fuer echte Evidence, Forgery, exakte Capabilities und Write-Fehler",
+    "Realer Chromium-Smoke fuer DB-v3-Upgrade, No-Clobber, Sortierung, defensive Kopien, Korruption und injizierten Write-Abort",
+    "Repository Quality, Evidence-Fingerprint und finaler Scope-Diff"
+  ],
+  "rollback": "P3-Application-/Store-Module, gezielte Tests, Workflow, Masterplan-Ergaenzung und diesen Nachweis entfernen; bestehende DB-v3-Instanzen duerfen den ungenutzten additiven Store behalten.",
+  "evidence": [
+    "app/application/persist-verified-signature.js",
+    "app/infrastructure/browser/indexeddb-signature-store.js",
+    "tests/test_i12_signature_persistence.py",
+    "tests/i12_signature_store_browser_smoke.html",
+    ".github/workflows/i12-signature-store-smoke.yml"
+  ],
+  "result": "GREEN"
+}
