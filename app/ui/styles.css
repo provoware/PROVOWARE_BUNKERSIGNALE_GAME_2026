@@ -68,7 +68,7 @@ h1 { margin: 0.25rem 0 0; }
 .ssi-game-action:disabled { cursor: not-allowed; opacity: 0.75; }
 [hidden] { display: none !important; }
 
-@media (max-width: 42rem) {
+@media (max-width: 48rem) {
   .ssi-app { width: min(100% - 1rem, 70rem); padding-top: 1rem; }
   .ssi-meta { grid-template-columns: 1fr; }
   .ssi-meta dd { margin-bottom: 0.4rem; }
