@@ -44,7 +44,7 @@ class I10GameUiRegressionShellTests(unittest.TestCase):
         self.assertIn(".ssi-game-grid", source)
         self.assertIn("grid-template-columns:", source)
         self.assertIn(".ssi-scene-card { border-top: 0.2rem solid var(--ssi-accent);", source)
-        self.assertIn("@media (max-width: 42rem)", source)
+        self.assertIn("@media (max-width: 48rem)", source)
 
     def test_i10_is_frozen_without_game_shell_scope_creep(self) -> None:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
