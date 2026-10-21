@@ -1,0 +1,366 @@
+{
+  "schema_version": "1.0.0",
+  "project": "provoware/PROVOWARE_BUNKERSIGNALE_GAME_2026",
+  "baseline_sha": "f36d36c8051db98e69a869646d8d6bae6db074ef",
+  "candidate_sha": null,
+  "technical_ready": false,
+  "release_ready": false,
+  "release_approved": false,
+  "baseline_checked_at": "2026-10-22",
+  "baseline_evidence": [
+    "https://github.com/provoware/PROVOWARE_BUNKERSIGNALE_GAME_2026/actions/runs/36486229838",
+    "https://github.com/provoware/PROVOWARE_BUNKERSIGNALE_GAME_2026/actions/runs/36486229720"
+  ],
+  "items": [
+    {
+      "id": "SCOPE-01",
+      "category": "scope",
+      "phase": "technical",
+      "requirement": "AGENTS-Vertrag, Einzelschreiber, Branch-/SHA- und Freeze-Grenzen nachweisen.",
+      "status": "OPEN",
+      "next_action": "Aktuelle Branch-Regeln, Scope, Owner und Schreibsperren gegen PRs auditieren."
+    },
+    {
+      "id": "SCOPE-02",
+      "category": "scope",
+      "phase": "technical",
+      "requirement": "Jede geplante Spielkomponente besitzt Owner, Eingaben, Ausgaben, Fehlerpfad, Test und Abnahmekriterium.",
+      "status": "OPEN",
+      "next_action": "Aus Architektur, Checkpoints und Storyplan Komponentenregister erstellen."
+    },
+    {
+      "id": "CONTENT-01",
+      "category": "content",
+      "phase": "technical",
+      "requirement": "Bunkerwelt mit Vordergrund, Vorfeld, Eingang, Wegen und sechs freigehaltenen Ausbauzonen als versioniertes Contentpaket.",
+      "status": "OPEN",
+      "next_action": "VW-001 bis VW-006 in Content-Verträge abbilden; keine I16-Vorwegnahme."
+    },
+    {
+      "id": "CONTENT-02",
+      "category": "content",
+      "phase": "technical",
+      "requirement": "Figuren Funkerin, Beobachter und Kontakt 03 mit eindeutigen IDs, Rollen und Interaktionsmöglichkeiten.",
+      "status": "OPEN",
+      "next_action": "Aus I10-Fixture echte Figurenmodelle erst im vorgesehenen Checkpoint ableiten."
+    },
+    {
+      "id": "CONTENT-03",
+      "category": "content",
+      "phase": "technical",
+      "requirement": "Story, Hinweise, Dialoge und Funksignale sind vollständig, konsistent und reproduzierbar verknüpft.",
+      "status": "OPEN",
+      "next_action": "Storygraph, Verzweigungen und Erreichbarkeit später mit Fixtures prüfen."
+    },
+    {
+      "id": "GAME-01",
+      "category": "gameplay",
+      "phase": "technical",
+      "requirement": "Untersuchen löst gültige Regeln und nachvollziehbare Folgen aus.",
+      "status": "OPEN",
+      "next_action": "Command-/Event-Vertrag und Reducer mit Positiv- und Negativtests implementieren."
+    },
+    {
+      "id": "GAME-02",
+      "category": "gameplay",
+      "phase": "technical",
+      "requirement": "Reden aktiviert Dialogauswahl und gültige Folgen ohne verlorene Entscheidungen.",
+      "status": "OPEN",
+      "next_action": "Dialoggraph mit Zustandsübergängen und Replay-Tests implementieren."
+    },
+    {
+      "id": "GAME-03",
+      "category": "gameplay",
+      "phase": "technical",
+      "requirement": "Inventar kann Objekte aufnehmen, prüfen und verwenden.",
+      "status": "OPEN",
+      "next_action": "Inventar-Invarianten und Aktionen im vorgesehenen Gameplay-Checkpoint implementieren."
+    },
+    {
+      "id": "GAME-04",
+      "category": "gameplay",
+      "phase": "technical",
+      "requirement": "Weiter führt zwischen erreichbaren Sektoren ohne unzulässige Zustände.",
+      "status": "OPEN",
+      "next_action": "Ortsgraph, Zugangsregeln und Rückweg-Tests implementieren."
+    },
+    {
+      "id": "GAME-05",
+      "category": "gameplay",
+      "phase": "technical",
+      "requirement": "Spielstart, Pause, Fortsetzung, Fortschritt und Abschluss sind spielbar.",
+      "status": "OPEN",
+      "next_action": "Lebenszyklus-Vertrag und echte Integrationstests ergänzen."
+    },
+    {
+      "id": "BAL-01",
+      "category": "balance",
+      "phase": "technical",
+      "requirement": "Ressourcen-, Risiko- und Fortschrittsregeln verhindern Sackgassen und unbeabsichtigte Endlosschleifen.",
+      "status": "OPEN",
+      "next_action": "Grenzwerte definieren, simulierte Durchläufe mit unterschiedlichen Entscheidungen prüfen."
+    },
+    {
+      "id": "BAL-02",
+      "category": "balance",
+      "phase": "technical",
+      "requirement": "Mehrere Entscheidungen erzeugen nachvollziehbare Unterschiede ohne triviale Dominanz.",
+      "status": "OPEN",
+      "next_action": "Wirkungsmodell und reproduzierbare Vergleichsszenarien entwickeln."
+    },
+    {
+      "id": "RUN-01",
+      "category": "full_run",
+      "phase": "technical",
+      "requirement": "Neues Spiel bis zum vorgesehenen Ende vollständig automatisch durchspielen.",
+      "status": "OPEN",
+      "next_action": "Deterministischen End-to-End-Spielverlauf mit Assertions bauen."
+    },
+    {
+      "id": "RUN-02",
+      "category": "full_run",
+      "phase": "technical",
+      "requirement": "Alternativer Verlauf einschließlich Fehlschlag und Wiederaufnahme funktioniert.",
+      "status": "OPEN",
+      "next_action": "Zweiten vollständigen Pfad samt Recovery und Endzustand automatisieren."
+    },
+    {
+      "id": "NEG-01",
+      "category": "negative",
+      "phase": "technical",
+      "requirement": "Ungültige Kommandos, fehlende Objekte, Doppelaktionen und kaputte Contentreferenzen werden sicher abgewiesen.",
+      "status": "OPEN",
+      "next_action": "Grenzfall-Fuzzing und fehlerfreie Rückgabe ohne Teilmutation prüfen."
+    },
+    {
+      "id": "NEG-02",
+      "category": "negative",
+      "phase": "technical",
+      "requirement": "Unterbrechung, parallele Writes und wiederholte Requests erzeugen keine doppelten Events.",
+      "status": "OPEN",
+      "next_action": "Crash-/Race-/Idempotenz-Negativtests über echte Store-Schnittstellen ausführen."
+    },
+    {
+      "id": "PERSIST-01",
+      "category": "persistence",
+      "phase": "technical",
+      "requirement": "Eventlog ist autoritativ; Snapshot-Verlust führt zu identischem Replay.",
+      "status": "OPEN",
+      "next_action": "I08/I09-Regression auf Kandidaten-SHA mit realen Browserdaten wiederholen."
+    },
+    {
+      "id": "PERSIST-02",
+      "category": "persistence",
+      "phase": "technical",
+      "requirement": "Export, Restore, No-Clobber und atomarer Rollback funktionieren im Vollspiel.",
+      "status": "OPEN",
+      "next_action": "I10-Backup- und Restore-Vertrag im kompletten Spielverlauf testen."
+    },
+    {
+      "id": "PERSIST-03",
+      "category": "persistence",
+      "phase": "technical",
+      "requirement": "Weltwechsel und Neustart erhalten exakt denselben Zustand und die korrekte Version.",
+      "status": "OPEN",
+      "next_action": "Neustart- und Migrationstests mit mehreren Welten ausführen."
+    },
+    {
+      "id": "SEC-01",
+      "category": "security",
+      "phase": "technical",
+      "requirement": "Signatur-Speicher P3 besteht realen Chromium-Smoke auf der Basisrevision.",
+      "status": "PASS",
+      "verified_sha": "f36d36c8051db98e69a869646d8d6bae6db074ef",
+      "evidence": [
+        "https://github.com/provoware/PROVOWARE_BUNKERSIGNALE_GAME_2026/actions/runs/36486229720"
+      ]
+    },
+    {
+      "id": "SEC-02",
+      "category": "security",
+      "phase": "technical",
+      "requirement": "Manipulierte Events, ungültige Signaturen und falsche Schlüssel werden fail-closed abgewiesen.",
+      "status": "OPEN",
+      "next_action": "I11/I12-Integritäts- und Forgery-Tests über den integrierten Spielpfad ausführen."
+    },
+    {
+      "id": "SEC-03",
+      "category": "security",
+      "phase": "technical",
+      "requirement": "Kein Import, Restore oder Fehlerpfad überschreibt bestehende Nutzerdaten.",
+      "status": "OPEN",
+      "next_action": "Isolierte No-Clobber- und Abort-Injektion mit echtem Browser ausführen."
+    },
+    {
+      "id": "GRAPH-01",
+      "category": "graphics",
+      "phase": "technical",
+      "requirement": "Bunkerfront, Material, Licht und Landmarken sind als nutzbare, lesbare Spielwelt umgesetzt.",
+      "status": "OPEN",
+      "next_action": "VW-006 abschließen und genau ein freigegebenes visuelles Delta integrieren."
+    },
+    {
+      "id": "GRAPH-02",
+      "category": "graphics",
+      "phase": "technical",
+      "requirement": "Grafik/Assets funktionieren offline und innerhalb des festgelegten Budgets.",
+      "status": "OPEN",
+      "next_action": "Asset- und Netzwerkfreiheitsprüfung samt Performanceprofil ergänzen."
+    },
+    {
+      "id": "UX-01",
+      "category": "ux",
+      "phase": "technical",
+      "requirement": "Übersicht, Spiel, Diagnose und Ereignisse sind konsistent und eindeutig bedienbar.",
+      "status": "OPEN",
+      "next_action": "Kompletten Navigationsablauf im Browser prüfen; UI-Status sichtbar machen."
+    },
+    {
+      "id": "UX-02",
+      "category": "ux",
+      "phase": "technical",
+      "requirement": "800×600 und CSS-Viewport 400×300 als Näherung für 200% ohne horizontales Scrollen.",
+      "status": "OPEN",
+      "next_action": "Neuen Chromium-Workflow ausführen; reale OS-Skalierung getrennt dokumentieren."
+    },
+    {
+      "id": "A11Y-01",
+      "category": "accessibility",
+      "phase": "technical",
+      "requirement": "Tab-Reihenfolge, Enter-Aktivierung und sichtbarer Tastaturfokus sind funktionsfähig.",
+      "status": "OPEN",
+      "next_action": "Neuen echten Chromium-Tastaturtest ausführen; alle Spielansichten ergänzen."
+    },
+    {
+      "id": "A11Y-02",
+      "category": "accessibility",
+      "phase": "technical",
+      "requirement": "Textskalierung, Kontrast, Screenreader-Semantik und Bewegungsreduktion erfüllen Ziel WCAG 2.2 AA.",
+      "status": "OPEN",
+      "next_action": "Kontrast/ARIA/Zoom/Motion-Regressionen und manuelle technische Prüfung durchführen."
+    },
+    {
+      "id": "PERF-01",
+      "category": "performance",
+      "phase": "technical",
+      "requirement": "1000-Event-Replay und große Welten erfüllen dokumentierte Zeit-/Speicherbudgets.",
+      "status": "OPEN",
+      "next_action": "Wiederholtes Benchmarkprofil auf Kandidaten-SHA mit Messwerten ausführen."
+    },
+    {
+      "id": "PERF-02",
+      "category": "performance",
+      "phase": "technical",
+      "requirement": "Darstellung und Aktionen bleiben auch bei langen Logs und großer Figurenliste flüssig.",
+      "status": "OPEN",
+      "next_action": "Großwelt-UI-Lastprofil im Chromium erfassen und Engpässe beheben."
+    },
+    {
+      "id": "STAB-01",
+      "category": "stability",
+      "phase": "technical",
+      "requirement": "Startfehler, fehlende APIs, Offlinebetrieb und beschädigte Daten führen zu sicherem Zustand.",
+      "status": "OPEN",
+      "next_action": "Fehlerpfade mit absichtlich deaktivierten Browserfähigkeiten prüfen."
+    },
+    {
+      "id": "STAB-02",
+      "category": "stability",
+      "phase": "technical",
+      "requirement": "Wiederholte Langzeitläufe zeigen keine wachsenden Ressourcen oder Datenverluste.",
+      "status": "OPEN",
+      "next_action": "Mehrstündige Testsequenzen mit Neustart/Unterbrechung simulieren."
+    },
+    {
+      "id": "INSTALL-01",
+      "category": "installation",
+      "phase": "technical",
+      "requirement": "Start ohne Build und ohne Paketmanager über lokalen HTTP-Server ist reproduzierbar.",
+      "status": "OPEN",
+      "next_action": "Frischen Linux-Checkout und Browserstart auf Kandidaten-SHA prüfen."
+    },
+    {
+      "id": "INSTALL-02",
+      "category": "installation",
+      "phase": "technical",
+      "requirement": "Offline-Paket, Versionsanzeige und Installationsanleitung sind vollständig.",
+      "status": "OPEN",
+      "next_action": "Paketmanifest, Startanleitung und Rückkehr zur Altversion testen."
+    },
+    {
+      "id": "AUTO-01",
+      "category": "automation",
+      "phase": "technical",
+      "requirement": "Basis-Qualitätslauf ist auf der Basisrevision grün.",
+      "status": "PASS",
+      "verified_sha": "f36d36c8051db98e69a869646d8d6bae6db074ef",
+      "evidence": [
+        "https://github.com/provoware/PROVOWARE_BUNKERSIGNALE_GAME_2026/actions/runs/36486229838"
+      ]
+    },
+    {
+      "id": "AUTO-02",
+      "category": "automation",
+      "phase": "technical",
+      "requirement": "Neue Matrix- und Negativtests verhindern falsche READY-Angaben.",
+      "status": "OPEN",
+      "next_action": "CI auf neuem Branch und manipulierte Negativfixtures ausführen."
+    },
+    {
+      "id": "AUTO-03",
+      "category": "automation",
+      "phase": "technical",
+      "requirement": "Echte Chromium-Prüfungen für 800×600, Skalierungsnäherung und Tastatur laufen auf Kandidaten-SHA.",
+      "status": "OPEN",
+      "next_action": "PR-Workflow auswerten, ggf. gefundene UI-Fehler getrennt beheben."
+    },
+    {
+      "id": "DOC-01",
+      "category": "documentation",
+      "phase": "technical",
+      "requirement": "AGENTS, README, Checkpoints und Roadmap stimmen mit tatsächlich vorhandenem Code überein.",
+      "status": "OPEN",
+      "next_action": "I12-Status und veraltete README-Aussagen fachlich abgleichen."
+    },
+    {
+      "id": "DOC-02",
+      "category": "documentation",
+      "phase": "technical",
+      "requirement": "Alle Pflichtnachweise sind mit SHA, Testausgang, CI-Link und Restarbeit dokumentiert.",
+      "status": "OPEN",
+      "next_action": "PR-Evidence nach grünem CI aktualisieren und Kandidaten-SHA binden."
+    },
+    {
+      "id": "DOC-03",
+      "category": "documentation",
+      "phase": "technical",
+      "requirement": "Vollständige Release-Notizen, Rollback, Datenmigration und offene Risiken sind freigegeben.",
+      "status": "OPEN",
+      "next_action": "Release-Dokumente nach Abschluss technischer Gates erstellen."
+    },
+    {
+      "id": "APPROVAL-01",
+      "category": "approval",
+      "phase": "personal",
+      "requirement": "Persönliche Sichtprüfung sämtlicher fertiger Spielansichten nach technischem Freeze.",
+      "status": "DEFERRED",
+      "next_action": "Erst nach vollständig grünen technischen Gates gemeinsam abnehmen."
+    },
+    {
+      "id": "APPROVAL-02",
+      "category": "approval",
+      "phase": "personal",
+      "requirement": "Persönlicher Kubuntu-Praxistest unmittelbar vor Release.",
+      "status": "DEFERRED",
+      "next_action": "Nach eingefrorenem Release-Kandidaten gesammelt durchführen."
+    },
+    {
+      "id": "APPROVAL-03",
+      "category": "approval",
+      "phase": "personal",
+      "requirement": "Ausdrückliche Nutzerfreigabe für den Release liegt vor.",
+      "status": "DEFERRED",
+      "next_action": "Nutzerfreigabe nach allen Abnahmen einholen; kein automatischer Release."
+    }
+  ]
+}

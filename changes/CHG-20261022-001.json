@@ -1,0 +1,40 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261022-001",
+  "checkpoint": "I12",
+  "title": "Independent prerelease obligation matrix and fail-closed gate audit",
+  "purpose": "Vorrelease-Pflichten des Spielprototyps nachweisbar erfassen und falsche READY-Zustaende mit automatisierten Negativtests verweigern.",
+  "scope": [
+    "docs/PRERELEASE_MATRIX.md und docs/prerelease_matrix.json als separate, nicht freigebende Pflichtliste",
+    "tools/prerelease_gate.py und tests/test_prerelease_matrix.py mit Negativtests",
+    "Gezielter PR-Workflow fuer Matrix- und Gate-Audit"
+  ],
+  "non_goals": [
+    "Keine Aenderung an I10-frozen UI, Bootstrap, Spielstand, Eventlog, I12-Signaturen oder PR #76",
+    "Keine Aktivierung deaktivierter Spielaktionen, keine Content-Erweiterung",
+    "Keine Behauptung echter Browser-Tastaturtests; diese bleiben in der Matrix offen",
+    "Kein Merge, Release oder persoenlicher Kubuntu-Endtest"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "qa_regression",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "Ausschliesslich additive Dokumentations-, Test- und Workflowdateien. Bestehende Runtime und Speichervertraege bleiben unveraendert.",
+  "security": "Der Gate-Validator verweigert unbewiesene READY-Werte und PASS ohne SHA/GitHub-Evidence. I12-Evidence-Fingerprint muss auf den neuen governed Tree gebunden werden. Der offene PR #76 ist alleiniger Writer fuer evidence/I12_EVIDENCE.json und status/I12_STATUS.json; diese Dateien bleiben unveraendert.",
+  "test_plan": [
+    "python3 -m unittest discover -s tests -p test_prerelease_matrix.py -v",
+    "python3 tools/prerelease_gate.py; Negativtest --require-technical-ready muss Exit 2 liefern",
+    "Remote quality und prerelease-matrix-audit auf identischem PR-HEAD, danach I12-Fingerprint/Status pruefen",
+    "Remote-Quality darf wegen der noch nicht konfliktfrei gebundenen I12-Evidence rot sein; nicht als PASS deklarieren."
+  ],
+  "rollback": "Den additiven Vorrelease-Block als ganzen Commit revertieren; keine produktiven Daten, keine eingefrorenen Checkpointdateien ohne begruendeten Evidence-Abgleich anfassen.",
+  "evidence": [
+    "docs/prerelease_matrix.json",
+    "tools/prerelease_gate.py",
+    "tests/test_prerelease_matrix.py",
+    ".github/workflows/prerelease-matrix-audit.yml"
+  ],
+  "result": "RED"
+}
