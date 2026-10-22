@@ -1,0 +1,39 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261023-001",
+  "checkpoint": "I12",
+  "title": "Vorrelease-Browserregression im bestehenden Chromium-Gate ausfuehren",
+  "purpose": "Die bereits vorhandene Vorrelease-Pruefung fuer 800x600, 400x300, Tastatur und Read-only-Aktionen im echten Chromium auf jedem betroffenen PR-Stand ausfuehren statt sie nur statisch vorzuhalten.",
+  "scope": [
+    "Bestehenden I10-Chromium-Workflow um den Vorrelease-Smoke und passende Pfadtrigger erweitern",
+    "Negativ-/Vertragstest zur verpflichtenden CI-Einbindung ergaenzen",
+    "Vorrelease-UI-Nachweisstand und verbleibende Blockaden aktualisieren"
+  ],
+  "non_goals": [
+    "Keine Spiel- oder Speicherdaten veraendern",
+    "Keine I10-Runtime, keine I12-Signaturfunktion, keine eingefrorene Evidence still ueberschreiben",
+    "Kein Merge, kein Release, keine persoenliche Endabnahme"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "qa_regression",
+    "ux_accessibility",
+    "security_integrity",
+    "release_evidence"
+  ],
+  "compatibility": "Nur zusaetzliche Tests im bestehenden Chromium-Gate, ohne Runtime- oder Abhaengigkeitsaenderung.",
+  "security": "Die Read-only- und Fokus-Invarianten werden ausschliesslich in einem lokalen Chromium-Testprofil kontrolliert; keine produktive Datenmutation.",
+  "test_plan": [
+    "Python-Unit-Test fuer CI-Einbindung und Syntax der Browserpruefung",
+    "Echter Chromium-Lauf im bestehenden I10-Workflow auf PR-HEAD",
+    "Vollstaendige Repository-Quality getrennt auswerten und I12-Fingerprint-Konflikt ohne Schutzumgehung behandeln"
+  ],
+  "rollback": "Diesen Change Record sowie den zusaetzlichen Workflow-Aufruf, die Trigger, den Vertragstest und die Dokumentationsaenderung zuruecknehmen.",
+  "evidence": [
+    ".github/workflows/i10-game-ui-shell-smoke.yml",
+    "tests/prerelease_ui_smoke.mjs",
+    "tests/test_prerelease_ui_contract.py",
+    "docs/PRERELEASE_UI_CHECK_2026-10-22.md"
+  ],
+  "result": "RED"
+}

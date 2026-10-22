@@ -30,6 +30,12 @@ class PrereleaseUiContractTests(unittest.TestCase):
             with self.subTest(marker=marker):
                 self.assertIn(marker, script)
 
+    def test_ci_runs_prerelease_chromium_gate(self):
+        workflow = (ROOT / ".github/workflows/i10-game-ui-shell-smoke.yml").read_text(encoding="utf-8")
+        self.assertIn("node tests/prerelease_ui_smoke.mjs", workflow)
+        self.assertIn("'tests/prerelease_ui_smoke.mjs'", workflow)
+        self.assertIn("'tests/test_prerelease_ui_contract.py'", workflow)
+
     def test_runtime_keeps_actions_disabled(self):
         source = (ROOT / "app/ui/app.js").read_text(encoding="utf-8")
         self.assertIn('button.disabled = true', source)

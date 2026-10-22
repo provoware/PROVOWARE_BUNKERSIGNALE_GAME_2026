@@ -8,6 +8,8 @@ on:
       - 'app/bootstrap/main.js'
       - 'app/ui/**'
       - 'tests/test_i10_ui_shell.py'
+      - 'tests/prerelease_ui_smoke.mjs'
+      - 'tests/test_prerelease_ui_contract.py'
       - '.github/workflows/i10-game-ui-shell-smoke.yml'
       - 'docs/I10_GAME_UI_REGRESSION_SHELL.md'
       - 'manifests/project.manifest.json'
@@ -117,3 +119,4 @@ jobs:
           console.log('I10 Game UI shell smoke: PASS', JSON.stringify({desktop:d,narrow:n}));
           ws.close();
           NODE
+          node tests/prerelease_ui_smoke.mjs

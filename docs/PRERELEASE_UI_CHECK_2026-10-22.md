@@ -24,8 +24,8 @@
 
 ## Aktuelle Blockade und Freigaberegel
 
-Der neue Chromium-Test wurde auf dem Entwicklungszweig gespeichert. Die Erstellung einer **neuen GitHub-Workflow-Datei** wurde durch die Schreibschnittstelle blockiert; diese Datei wurde nicht angelegt. Deshalb ist ein automatischer Browserlauf fuer den neuen Test noch **nicht** nachgewiesen. Ein statischer Vertragstest ist kein Ersatz fuer einen echten Chromium-Lauf.
+Der vorhandene Chromium-Workflow `i10-game-ui-shell-smoke.yml` startet nun zusaetzlich `node tests/prerelease_ui_smoke.mjs`, ohne eine neue Workflow-Datei anzulegen. Der statische Vertragstest erzwingt diese Einbindung. **Ein PASS ist erst nach tatsaechlich erfolgreichem GitHub-Browserlauf fuer den konkreten HEAD zulaessig.** Die Vorrelease-Pflichten UX-02, A11Y-01 und AUTO-03 bleiben bis dahin OPEN. Die allgemeine Quality-CI kann unabhaengig wegen des noch nicht neu gebundenen I12-Fingerprints scheitern; das ist kein bestandener Gate.
 
 `UX-02`, `A11Y-01` und `AUTO-03` bleiben in der Pflichtmatrix OPEN. Sie duerfen erst nach einem erfolgreichen, SHA-gebundenen echten Browserlauf und den zusaetzlich erforderlichen Pruefungen auf PASS gesetzt werden.
 
-**Naechste Implementation:** Browserpruefung regulaer in CI integrieren, fehlgeschlagene Browserfaelle auf einem getrennten, sicheren Arbeitspaket beheben, anschliessend Story-/Command-Vertraege fuer GAME-01 bis GAME-04 spezifizieren. Keine Zusammenfuehrung, keine Freigabe, kein Release.
+**Naechste Implementation:** Echten Chromium-Prueflauf auswerten, fehlgeschlagene Browserfaelle auf einem getrennten, sicheren Arbeitspaket beheben, anschliessend Story-/Command-Vertraege fuer GAME-01 bis GAME-04 spezifizieren. Keine Zusammenfuehrung, keine Freigabe, kein Release.
