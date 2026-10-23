@@ -1,0 +1,41 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261023-006",
+  "checkpoint": "I12",
+  "title": "Deterministic in-memory gameplay projection for GAME-01..04",
+  "purpose": "Preview command sequences without mutating inputs, emitting authoritative events or persisting state; reject partial replay on failure.",
+  "scope": [
+    "app/domain/gameplay-projection.mjs: pure in-memory single-command and batch preview",
+    "tests/gameplay_projection.test.mjs: eleven deterministic positive/negative regression groups",
+    ".github/workflows/prerelease-gameplay-projection.yml: dedicated GitHub checks",
+    "docs/PRERELEASE_GAMEPLAY_PROJECTION_20261023.md: contract, limitations, next step"
+  ],
+  "non_goals": [
+    "No authoritative I06 event allocation, I07 reducer or I08 transactional append",
+    "No I10 UI activation or frozen I12 evidence/status mutation",
+    "No prerelease PASS promotion, merge, release or personal acceptance"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "release_evidence"
+  ],
+  "compatibility": "Additive pure domain module not imported by the production UI or bootstrap. Existing persistence and event contracts unchanged.",
+  "security": "Revalidates commands against each projected snapshot, rejects stale/duplicate IDs and sequence overflow, returns no partial state on batch failure. Persistent concurrency safety remains explicitly unimplemented.",
+  "test_plan": [
+    "node --check app/domain/gameplay-projection.mjs",
+    "node --test tests/gameplay_command.test.mjs tests/gameplay_projection.test.mjs",
+    "python3 -m unittest discover -s tests -p test_i10_ui_shell.py -v",
+    "python3 tools/prerelease_gate.py",
+    "Review GitHub projection and quality workflows; preserve SSI-INT-0001 FAIL until proper I12 rebind"
+  ],
+  "rollback": "Revert additive branch; no storage schema or user data changed.",
+  "evidence": [
+    "app/domain/gameplay-projection.mjs",
+    "tests/gameplay_projection.test.mjs",
+    ".github/workflows/prerelease-gameplay-projection.yml",
+    "docs/PRERELEASE_GAMEPLAY_PROJECTION_20261023.md"
+  ],
+  "result": "RED"
+}
