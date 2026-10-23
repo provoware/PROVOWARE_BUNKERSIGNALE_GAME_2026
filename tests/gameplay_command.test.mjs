@@ -8,13 +8,13 @@ const world = id("world", 1), request = id("req", 1);
 function state() {
   return {
     world_id: world, ruleset_version: "1.0.0", sequence: 3,
-    current_sector: "sector-null", active_actor_id: actor,
+    current_sector: "sector:null", active_actor_id: actor,
     actors: [
-      { id: actor, sector: "sector-null", dialogue_options: [] },
-      { id: contact, sector: "sector-null", dialogue_options: ["dialogue-ask".replace("-", ":")] },
+      { id: actor, sector: "sector:null", dialogue_options: [] },
+      { id: contact, sector: "sector:null", dialogue_options: ["dialogue-ask".replace("-", ":")] },
     ],
-    objects: [{ id: object, sector: "sector-null", inspectable: true, portable: true, used: false }],
-    routes: [{ from: "sector-null", to: "sector-entry", unlocked: true }],
+    objects: [{ id: object, sector: "sector:null", inspectable: true, portable: true, used: false }],
+    routes: [{ from: "sector:null", to: "sector:entry", unlocked: true }],
     inventory: [], inventory_capacity: 1, processed_request_ids: [],
   };
 }
@@ -48,9 +48,9 @@ test("GAME-03 take checks capacity and ownership", () => {
   const owned=state();owned.inventory=[object];fails(cmd("take"),owned,"NOT_ALLOWED");
 });
 test("GAME-04 move requires existing unlocked route", () => {
-  assert.equal(decide(cmd("move","sector-entry"),state()).proposal.event_type,"game.sector_entered");
-  fails(cmd("move","sector-unknown"),state(),"UNKNOWN_ROUTE");
-  const s=state();s.routes[0].unlocked=false;fails(cmd("move","sector-entry"),s,"LOCKED_ROUTE");
+  assert.equal(decide(cmd("move","sector:entry"),state()).proposal.event_type,"game.sector_entered");
+  fails(cmd("move","sector:unknown"),state(),"UNKNOWN_ROUTE");
+  const s=state();s.routes[0].unlocked=false;fails(cmd("move","sector:entry"),s,"LOCKED_ROUTE");
 });
 test("unknown action and missing/extra fields rejected", () => {
   const c=cmd();c.action="delete";fails(c,state(),"INVALID_COMMAND");
@@ -80,8 +80,8 @@ test("invalid snapshot, ambiguous IDs and malformed collections rejected", () =>
     {...state(),processed_request_ids:[request,request]}]) fails(cmd(),s,"INVALID_SNAPSHOT");
 });
 test("unreachable objects, actors, nonportable and used objects rejected", () => {
-  const s=state();s.objects[0].sector="sector-entry";fails(cmd(),s,"NOT_REACHABLE");
-  const t=state();t.actors[1].sector="sector-entry";fails(cmd("talk",contact),t,"NOT_REACHABLE");
+  const s=state();s.objects[0].sector="sector:entry";fails(cmd(),s,"NOT_REACHABLE");
+  const t=state();t.actors[1].sector="sector:entry";fails(cmd("talk",contact),t,"NOT_REACHABLE");
   const u=state();u.objects[0].portable=false;fails(cmd("take"),u,"NOT_ALLOWED");
   const v=state();v.objects[0].used=true;fails(cmd("take"),v,"NOT_ALLOWED");
   fails(cmd("inspect",id("object",99)),state(),"UNKNOWN_TARGET");
