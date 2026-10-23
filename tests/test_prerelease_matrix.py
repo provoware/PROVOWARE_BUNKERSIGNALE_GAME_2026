@@ -8,7 +8,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from prerelease_gate import audit
+from prerelease_gate import audit, REQUIRED_IDS
 
 
 class PrereleaseGateTests(unittest.TestCase):
@@ -60,6 +60,37 @@ class PrereleaseGateTests(unittest.TestCase):
         row = next(r for r in matrix["items"] if r["status"] == "OPEN")
         row["next_action"] = ""
         self.assertTrue(audit(matrix)[0])
+
+
+    def test_mandatory_ids_cannot_disappear(self):
+        self.assertEqual(len(REQUIRED_IDS), 43)
+        self.assertTrue(REQUIRED_IDS.keys() <= {row["id"] for row in self.matrix["items"]})
+        for ident in REQUIRED_IDS:
+            with self.subTest(id=ident):
+                matrix = deepcopy(self.matrix)
+                matrix["items"] = [row for row in matrix["items"] if row["id"] != ident]
+                self.assertTrue(any("Pflichtkennungen fehlen" in p for p in audit(matrix)[0]))
+
+    def test_mandatory_category_and_phase_cannot_change(self):
+        for ident, category in REQUIRED_IDS.items():
+            with self.subTest(id=ident):
+                matrix = deepcopy(self.matrix)
+                row = next(item for item in matrix["items"] if item["id"] == ident)
+                row["category"] = "ux" if category != "ux" else "scope"
+                self.assertTrue(any("Pflichtkategorie" in p for p in audit(matrix)[0]))
+                matrix = deepcopy(self.matrix)
+                row = next(item for item in matrix["items"] if item["id"] == ident)
+                row["phase"] = "technical" if row["phase"] == "personal" else "personal"
+                self.assertTrue(any("Pflichtphase" in p for p in audit(matrix)[0]))
+
+    def test_new_requirements_are_allowed(self):
+        matrix = deepcopy(self.matrix)
+        matrix["items"].append({
+            "id": "GAME-06", "category": "gameplay", "phase": "technical",
+            "requirement": "Neue Spielpflicht", "status": "OPEN",
+            "next_action": "Implementieren",
+        })
+        self.assertEqual(audit(matrix)[0], [])
 
 
 if __name__ == "__main__":

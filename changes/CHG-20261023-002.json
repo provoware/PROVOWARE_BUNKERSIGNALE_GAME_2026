@@ -1,0 +1,33 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261023-002",
+  "checkpoint": "I12",
+  "title": "Vorrelease-Pflichtkennungen gegen stilles Entfernen und Umdeuten absichern",
+  "purpose": "Bestehendes Gate erkennt bisher nicht, wenn eine einzelne von 43 Pflichten verschwindet, solange ihre Kategorie noch vertreten ist. Die Mindest-IDs sowie deren Kategorie/Phase werden unveraenderlich geprueft; zusaetzliche Pflichten bleiben erlaubt.",
+  "scope": [
+    "tools/prerelease_gate.py: Mindest-IDs und Kategorie-/Phasenbindung",
+    "tests/test_prerelease_matrix.py: 43 Entfernen-, 43 Kategorie- und 43 Phasen-Negativfaelle sowie zusaetzliche Pflicht"
+  ],
+  "non_goals": [
+    "Keine Runtime-, Speicher-, I12-Signatur- oder eingefrorenen Evidence-Dateien aendern",
+    "Keine persoenliche Endabnahme, kein Merge, kein Release"
+  ],
+  "affected_owners": [
+    "qa_regression",
+    "release_evidence",
+    "security_integrity"
+  ],
+  "compatibility": "Bestehende 43-teilige Matrix bleibt unveraendert; neue IDs koennen weiterhin hinzugefuegt werden.",
+  "security": "Unbemerkter Verlust und Umdeutung einer bestehenden Release-Pflicht wird fail-closed verweigert.",
+  "test_plan": [
+    "Lokale Reproduktion des bisherigen Fehlers: Entfernen von GAME-02, A11Y-01, PERSIST-03, APPROVAL-02 ergibt vor Korrektur keine Fehler",
+    "Isolierter Python-Regressionstest: 43 fehlende IDs, 43 falsche Kategorien, 43 falsche Phasen, 1 zusaetzliche Pflicht PASS mit Korrektur (synthetische 43er-Fixture)",
+    "Vollstaendige Repo-Quality und CI am neuen GitHub-HEAD weiterhin ausstehend; I12-Fingerprint-Konflikt getrennt pruefen"
+  ],
+  "rollback": "Commit mit Gate- und Testaenderungen zuruecknehmen, keine Nutzerdaten betroffen.",
+  "evidence": [
+    "tools/prerelease_gate.py",
+    "tests/test_prerelease_matrix.py"
+  ],
+  "result": "RED"
+}

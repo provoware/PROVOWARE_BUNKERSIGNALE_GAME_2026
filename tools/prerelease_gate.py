@@ -16,6 +16,23 @@ CATEGORIES = {
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 ID = re.compile(r"[A-Z][A-Z0-9]*-[0-9]{2}\Z")
 STATES = {"PASS", "FAIL", "BLOCKED", "OPEN", "DEFERRED"}
+# Mindestkatalog der 43 urspruenglichen Vorrelease-Pflichten; Erweiterungen erlaubt.
+REQUIRED_PREFIXES = {
+    "SCOPE": ("scope", 2), "CONTENT": ("content", 3),
+    "GAME": ("gameplay", 5), "BAL": ("balance", 2),
+    "RUN": ("full_run", 2), "NEG": ("negative", 2),
+    "PERSIST": ("persistence", 3), "SEC": ("security", 3),
+    "GRAPH": ("graphics", 2), "UX": ("ux", 2),
+    "A11Y": ("accessibility", 2), "PERF": ("performance", 2),
+    "STAB": ("stability", 2), "INSTALL": ("installation", 2),
+    "AUTO": ("automation", 3), "DOC": ("documentation", 3),
+    "APPROVAL": ("approval", 3),
+}
+REQUIRED_IDS = {
+    f"{prefix}-{number:02}": category
+    for prefix, (category, count) in REQUIRED_PREFIXES.items()
+    for number in range(1, count + 1)
+}
 
 
 def audit(matrix: dict) -> tuple[list[str], bool, bool]:
@@ -44,11 +61,17 @@ def audit(matrix: dict) -> tuple[list[str], bool, bool]:
         if isinstance(ident, str):
             seen.add(ident)
         category = row.get("category")
+        if ident in REQUIRED_IDS and category != REQUIRED_IDS[ident]:
+            problems.append(f"{ident}: Pflichtkategorie wurde geaendert")
         if category not in CATEGORIES:
             problems.append(f"{ident}: unbekannte Kategorie")
         else:
             categories.add(category)
         phase = row.get("phase")
+        if ident in REQUIRED_IDS:
+            expected_phase = "personal" if ident.startswith("APPROVAL-") else "technical"
+            if phase != expected_phase:
+                problems.append(f"{ident}: Pflichtphase wurde geaendert")
         state = row.get("status")
         if phase not in ("technical", "personal") or state not in STATES:
             problems.append(f"{ident}: Phase/Status ungueltig")
@@ -75,6 +98,9 @@ def audit(matrix: dict) -> tuple[list[str], bool, bool]:
                 personal_ready = False
             if state == "DEFERRED" and phase != "personal":
                 problems.append(f"{ident}: DEFERRED nur fuer persoenliche Endabnahme")
+    missing = REQUIRED_IDS.keys() - seen
+    if missing:
+        problems.append("Pflichtkennungen fehlen: " + ", ".join(sorted(missing)))
     if categories != CATEGORIES:
         problems.append("Kategorien unvollstaendig: " + ", ".join(sorted(CATEGORIES - categories)))
     if not any(row.get("phase") == "personal" for row in items if isinstance(row, dict)):
