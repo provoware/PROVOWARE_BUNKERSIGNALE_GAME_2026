@@ -1,0 +1,41 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261023-005",
+  "checkpoint": "I12",
+  "title": "Pure gameplay command preflight for GAME-01 to GAME-04",
+  "purpose": "Fail-closed and deterministic validation of four gameplay commands without enabling frozen UI or mutating authoritative events.",
+  "scope": [
+    "app/domain/gameplay-command.mjs: pure inspect/talk/take/move preflight",
+    "tests/gameplay_command.test.mjs: deterministic positive and negative tests",
+    ".github/workflows/prerelease-gameplay-command.yml: dedicated PR tests",
+    "docs/PRERELEASE_GAMEPLAY_COMMANDS_20261023.md: scope and follow-up"
+  ],
+  "non_goals": [
+    "No UI enablement, no I10 REOPEN, no event persistence or I06 envelope allocation",
+    "No I07/I08/I12 modifications, no frozen evidence or status rewrites",
+    "No PASS promotion in prerelease matrix, no merge, release or user acceptance"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "release_evidence"
+  ],
+  "compatibility": "Additive domain module not imported by runtime; no existing contracts or save formats changed.",
+  "security": "Strict command fields, stable ID syntax, explicit sequence/ruleset, reachability and duplicate-request checks. Store must recheck atomically before append.",
+  "test_plan": [
+    "node --check app/domain/gameplay-command.mjs",
+    "node --test tests/gameplay_command.test.mjs",
+    "python3 -m unittest discover -s tests -p test_i10_ui_shell.py -v",
+    "python3 tools/prerelease_gate.py",
+    "Review separate GitHub quality status; SSI-INT-0001 must not be bypassed"
+  ],
+  "rollback": "Revert this additive isolated feature branch; no runtime state, storage or frozen evidence affected.",
+  "evidence": [
+    "app/domain/gameplay-command.mjs",
+    "tests/gameplay_command.test.mjs",
+    ".github/workflows/prerelease-gameplay-command.yml",
+    "docs/PRERELEASE_GAMEPLAY_COMMANDS_20261023.md"
+  ],
+  "result": "RED"
+}
