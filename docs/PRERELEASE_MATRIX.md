@@ -25,3 +25,18 @@ Die echten Browserprüfungen für 800×600, Tastatur-Tabfolge, sichtbaren Fokus 
 Die aktuell offenen Kernblöcke sind echte Spielaktionen, Story-/Ortsgraph, Figuren-/Inventarzustände, vollständige Spielverläufe, Save/Restore im Vollspiel, Weltgrafik, 800×600/Zoom- und Tastaturprüfung, Performance, Paketierung und Dokumentation. Der nächste fachliche Entwicklungsschritt ist **GAME-01 bis GAME-04**: zunächst einen versionsgebundenen Command-/Event-Vertrag für die vier heute deaktivierten Spielaktionen und dazu deterministische Negativ-/Replay-Tests spezifizieren; die I10-Read-only-Oberfläche erst nach einem ausdrücklich dokumentierten REOPEN und grünem Regressionstest verändern.
 
 **Bekannte Integrationsblockade:** Der noch offene PR #76 schreibt ebenfalls `evidence/I12_EVIDENCE.json` und `status/I12_STATUS.json`. Diese Dateien bleiben in diesem Branch bewusst unangetastet (Single Writer). Wegen des SHA-gebundenen I12-Fingerprints ist die allgemeine Quality-CI bis zur konfliktfreien Evidence-Bindung erwartbar rot; ein roter Gate wird nicht abgeschwächt. Da hier kein vollständiger lokaler Git-Checkout möglich ist, wird die exakte Fingerprint-Abweichung erst aus den Remote-Gates ausgewertet.\n\n**Schutzgrenzen:** kein Merge, kein Release, kein Schutz-Bypass, kein Überschreiben von Nutzerdaten. PR #76 bearbeitet I12-P3; dieser Vorrelease-Block greift dort nicht ein. Persönliche Sichtprüfung, Kubuntu-Test und finale Freigabe folgen ausschließlich gesammelt nach technischem Freeze.
+
+## 23.10.2026 – Schutz der Pflichttexte (nicht release-freigebend)
+
+Die 43 ursprünglichen Pflichttexte sind zusätzlich zu ID, Kategorie und Phase
+als lesbarer Referenzkatalog in `tools/prerelease_requirements.py` hinterlegt.
+Eine stille Abschwächung oder Umformulierung in der JSON-Matrix wird als FAIL
+abgewiesen. Bewusst geänderte Anforderungen müssen mit nachvollziehbarer
+Begründung in einem gesondert geprüften Änderungsnachweis und beiden Dateien
+gleichzeitig geändert werden. Zusätzliche Pflichten bleiben möglich.
+Negativtests verändern jede der 43 Anforderungen einzeln und prüfen außerdem
+ungültige JSON-Datentypen (fail-closed, ohne ungefangenen Programmfehler).
+
+Dies ist ausschließlich eine Absicherung der Release-Prüfung: Die 43 Pflichten
+sind dadurch nicht fachlich erfüllt. I12-Fingerprint/Quality, echte
+Chromium-Läufe, Gameplay und Endabnahme bleiben separat offen.

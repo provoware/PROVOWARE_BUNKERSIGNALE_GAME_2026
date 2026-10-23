@@ -9,6 +9,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 from prerelease_gate import audit, REQUIRED_IDS
+from prerelease_requirements import REQUIRED_REQUIREMENTS
 
 
 class PrereleaseGateTests(unittest.TestCase):
@@ -91,6 +92,36 @@ class PrereleaseGateTests(unittest.TestCase):
             "next_action": "Implementieren",
         })
         self.assertEqual(audit(matrix)[0], [])
+
+
+    def test_mandatory_requirement_text_cannot_be_weakened(self):
+        self.assertEqual(set(REQUIRED_REQUIREMENTS), set(REQUIRED_IDS))
+        for ident in REQUIRED_IDS:
+            with self.subTest(id=ident):
+                matrix = deepcopy(self.matrix)
+                row = next(item for item in matrix["items"] if item["id"] == ident)
+                row["requirement"] = "Nur ein Platzhalter statt der urspruenglichen Pflicht."
+                problems, technical, release = audit(matrix)
+                self.assertTrue(any("Pflichttext wurde geaendert" in p for p in problems))
+                self.assertFalse(technical)
+                self.assertFalse(release)
+
+    def test_malformed_matrix_types_fail_closed_without_exception(self):
+        problems, technical, release = audit([])
+        self.assertTrue(problems)
+        self.assertFalse(technical)
+        self.assertFalse(release)
+        for field, invalid in (("id", []), ("category", {}), ("phase", []), ("status", {})):
+            with self.subTest(field=field):
+                matrix = deepcopy(self.matrix)
+                matrix["items"][0][field] = invalid
+                problems, technical, release = audit(matrix)
+                self.assertTrue(problems)
+                self.assertFalse(technical)
+                self.assertFalse(release)
+        matrix = deepcopy(self.matrix)
+        matrix["items"] = {"not": "a list"}
+        self.assertTrue(audit(matrix)[0])
 
 
 if __name__ == "__main__":

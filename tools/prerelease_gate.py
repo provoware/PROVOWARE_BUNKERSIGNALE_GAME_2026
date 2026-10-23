@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 import re
 
+from prerelease_requirements import REQUIRED_REQUIREMENTS
+
 MATRIX = Path(__file__).resolve().parents[1] / "docs/prerelease_matrix.json"
 CATEGORIES = {
     "scope", "content", "gameplay", "balance", "full_run", "negative",
@@ -37,6 +39,8 @@ REQUIRED_IDS = {
 
 def audit(matrix: dict) -> tuple[list[str], bool, bool]:
     problems: list[str] = []
+    if not isinstance(matrix, dict):
+        return ["Matrix muss ein Objekt sein"], False, False
     items = matrix.get("items")
     if not isinstance(items, list) or not items:
         return ["items fehlt oder ist leer"], False, False
@@ -61,19 +65,22 @@ def audit(matrix: dict) -> tuple[list[str], bool, bool]:
         if isinstance(ident, str):
             seen.add(ident)
         category = row.get("category")
-        if ident in REQUIRED_IDS and category != REQUIRED_IDS[ident]:
+        if isinstance(ident, str) and ident in REQUIRED_IDS and category != REQUIRED_IDS[ident]:
             problems.append(f"{ident}: Pflichtkategorie wurde geaendert")
-        if category not in CATEGORIES:
+        if not isinstance(category, str) or category not in CATEGORIES:
             problems.append(f"{ident}: unbekannte Kategorie")
         else:
             categories.add(category)
         phase = row.get("phase")
-        if ident in REQUIRED_IDS:
+        if isinstance(ident, str) and ident in REQUIRED_IDS:
             expected_phase = "personal" if ident.startswith("APPROVAL-") else "technical"
             if phase != expected_phase:
                 problems.append(f"{ident}: Pflichtphase wurde geaendert")
+            if row.get("requirement") != REQUIRED_REQUIREMENTS[ident]:
+                problems.append(f"{ident}: Pflichttext wurde geaendert")
         state = row.get("status")
-        if phase not in ("technical", "personal") or state not in STATES:
+        if (not isinstance(phase, str) or phase not in ("technical", "personal") or
+                not isinstance(state, str) or state not in STATES):
             problems.append(f"{ident}: Phase/Status ungueltig")
         if not isinstance(row.get("requirement"), str) or not row["requirement"].strip():
             problems.append(f"{ident}: Pflichttext fehlt")

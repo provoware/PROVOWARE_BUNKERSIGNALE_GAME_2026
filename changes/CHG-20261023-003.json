@@ -1,0 +1,38 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261023-003",
+  "checkpoint": "I12",
+  "title": "Unveraenderliche Vorrelease-Pflichttexte und robuste Typpruefung",
+  "purpose": "Neben ID/Kategorie/Phase duerfen die 43 konkreten Release-Anforderungen nicht unbemerkt abgeschwaecht werden. Ungueltige JSON-Typen werden kontrolliert abgelehnt statt einen ungefangenen Fehler auszulösen.",
+  "scope": [
+    "tools/prerelease_requirements.py: Referenzkatalog der 43 Originalpflichttexte",
+    "tools/prerelease_gate.py: Pflichttextbindung und robuste Eingabepruefung",
+    "tests/test_prerelease_matrix.py: 43 Text-Negativfaelle und ungueltige Typen",
+    "docs/PRERELEASE_MATRIX.md: Aenderungsprozess und offene Blocker"
+  ],
+  "non_goals": [
+    "Keine Runtime- oder I12-Signatur-Aenderungen",
+    "Keine Aenderung an eingefrorenen I12-Evidence-Dateien",
+    "Kein Merge, Release oder persoenlicher Endtest"
+  ],
+  "affected_owners": [
+    "qa_regression",
+    "release_evidence",
+    "security_integrity"
+  ],
+  "compatibility": "Alle 43 vorhandenen Texte bleiben unveraendert; neue Pflichten bleiben zulaessig. Explizite inhaltliche Aenderungen erfordern dokumentierte Anpassung der Referenz.",
+  "security": "Stille Abschwaechung einer Release-Pflicht wird fail-closed erkannt; unhashbare Felder fuehren nicht zum Abbruch des Auditors.",
+  "test_plan": [
+    "python3 -m unittest discover -s tests -p test_prerelease_matrix.py -v",
+    "python3 tools/prerelease_gate.py",
+    "python3 tools/prerelease_gate.py --require-technical-ready (erwartet Exit 2)",
+    "GitHub-PR-CI und I12-Integritaetsblocker getrennt dokumentieren"
+  ],
+  "rollback": "Diesen isolierten Referenz-/Gate-/Test-Commit revertieren; keine Nutzerdaten betroffen.",
+  "evidence": [
+    "tools/prerelease_requirements.py",
+    "tools/prerelease_gate.py",
+    "tests/test_prerelease_matrix.py"
+  ],
+  "result": "RED"
+}
