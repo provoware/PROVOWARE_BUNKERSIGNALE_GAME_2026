@@ -1,0 +1,51 @@
+"""Verbindliche Originaltexte der 43 Vorrelease-Pflichten (Baseline 2026-10-22).
+
+Änderungen an bestehenden Pflichten erfordern eine ausdrücklich begründete
+Änderung dieses Referenzkatalogs und der Matrix im selben geprüften PR.
+Neue Pflichten dürfen ohne Änderung bestehender Einträge hinzukommen.
+"""
+REQUIRED_REQUIREMENTS = {
+  "SCOPE-01": "AGENTS-Vertrag, Einzelschreiber, Branch-/SHA- und Freeze-Grenzen nachweisen.",
+  "SCOPE-02": "Jede geplante Spielkomponente besitzt Owner, Eingaben, Ausgaben, Fehlerpfad, Test und Abnahmekriterium.",
+  "CONTENT-01": "Bunkerwelt mit Vordergrund, Vorfeld, Eingang, Wegen und sechs freigehaltenen Ausbauzonen als versioniertes Contentpaket.",
+  "CONTENT-02": "Figuren Funkerin, Beobachter und Kontakt 03 mit eindeutigen IDs, Rollen und Interaktionsmöglichkeiten.",
+  "CONTENT-03": "Story, Hinweise, Dialoge und Funksignale sind vollständig, konsistent und reproduzierbar verknüpft.",
+  "GAME-01": "Untersuchen löst gültige Regeln und nachvollziehbare Folgen aus.",
+  "GAME-02": "Reden aktiviert Dialogauswahl und gültige Folgen ohne verlorene Entscheidungen.",
+  "GAME-03": "Inventar kann Objekte aufnehmen, prüfen und verwenden.",
+  "GAME-04": "Weiter führt zwischen erreichbaren Sektoren ohne unzulässige Zustände.",
+  "GAME-05": "Spielstart, Pause, Fortsetzung, Fortschritt und Abschluss sind spielbar.",
+  "BAL-01": "Ressourcen-, Risiko- und Fortschrittsregeln verhindern Sackgassen und unbeabsichtigte Endlosschleifen.",
+  "BAL-02": "Mehrere Entscheidungen erzeugen nachvollziehbare Unterschiede ohne triviale Dominanz.",
+  "RUN-01": "Neues Spiel bis zum vorgesehenen Ende vollständig automatisch durchspielen.",
+  "RUN-02": "Alternativer Verlauf einschließlich Fehlschlag und Wiederaufnahme funktioniert.",
+  "NEG-01": "Ungültige Kommandos, fehlende Objekte, Doppelaktionen und kaputte Contentreferenzen werden sicher abgewiesen.",
+  "NEG-02": "Unterbrechung, parallele Writes und wiederholte Requests erzeugen keine doppelten Events.",
+  "PERSIST-01": "Eventlog ist autoritativ; Snapshot-Verlust führt zu identischem Replay.",
+  "PERSIST-02": "Export, Restore, No-Clobber und atomarer Rollback funktionieren im Vollspiel.",
+  "PERSIST-03": "Weltwechsel und Neustart erhalten exakt denselben Zustand und die korrekte Version.",
+  "SEC-01": "Signatur-Speicher P3 besteht realen Chromium-Smoke auf der Basisrevision.",
+  "SEC-02": "Manipulierte Events, ungültige Signaturen und falsche Schlüssel werden fail-closed abgewiesen.",
+  "SEC-03": "Kein Import, Restore oder Fehlerpfad überschreibt bestehende Nutzerdaten.",
+  "GRAPH-01": "Bunkerfront, Material, Licht und Landmarken sind als nutzbare, lesbare Spielwelt umgesetzt.",
+  "GRAPH-02": "Grafik/Assets funktionieren offline und innerhalb des festgelegten Budgets.",
+  "UX-01": "Übersicht, Spiel, Diagnose und Ereignisse sind konsistent und eindeutig bedienbar.",
+  "UX-02": "800×600 und CSS-Viewport 400×300 als Näherung für 200% ohne horizontales Scrollen.",
+  "A11Y-01": "Tab-Reihenfolge, Enter-Aktivierung und sichtbarer Tastaturfokus sind funktionsfähig.",
+  "A11Y-02": "Textskalierung, Kontrast, Screenreader-Semantik und Bewegungsreduktion erfüllen Ziel WCAG 2.2 AA.",
+  "PERF-01": "1000-Event-Replay und große Welten erfüllen dokumentierte Zeit-/Speicherbudgets.",
+  "PERF-02": "Darstellung und Aktionen bleiben auch bei langen Logs und großer Figurenliste flüssig.",
+  "STAB-01": "Startfehler, fehlende APIs, Offlinebetrieb und beschädigte Daten führen zu sicherem Zustand.",
+  "STAB-02": "Wiederholte Langzeitläufe zeigen keine wachsenden Ressourcen oder Datenverluste.",
+  "INSTALL-01": "Start ohne Build und ohne Paketmanager über lokalen HTTP-Server ist reproduzierbar.",
+  "INSTALL-02": "Offline-Paket, Versionsanzeige und Installationsanleitung sind vollständig.",
+  "AUTO-01": "Basis-Qualitätslauf ist auf der Basisrevision grün.",
+  "AUTO-02": "Neue Matrix- und Negativtests verhindern falsche READY-Angaben.",
+  "AUTO-03": "Echte Chromium-Prüfungen für 800×600, Skalierungsnäherung und Tastatur laufen auf Kandidaten-SHA.",
+  "DOC-01": "AGENTS, README, Checkpoints und Roadmap stimmen mit tatsächlich vorhandenem Code überein.",
+  "DOC-02": "Alle Pflichtnachweise sind mit SHA, Testausgang, CI-Link und Restarbeit dokumentiert.",
+  "DOC-03": "Vollständige Release-Notizen, Rollback, Datenmigration und offene Risiken sind freigegeben.",
+  "APPROVAL-01": "Persönliche Sichtprüfung sämtlicher fertiger Spielansichten nach technischem Freeze.",
+  "APPROVAL-02": "Persönlicher Kubuntu-Praxistest unmittelbar vor Release.",
+  "APPROVAL-03": "Ausdrückliche Nutzerfreigabe für den Release liegt vor."
+}

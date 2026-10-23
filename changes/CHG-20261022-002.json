@@ -1,0 +1,34 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261022-002",
+  "checkpoint": "I12",
+  "title": "Prerelease GAME-01..04 command contract and verified CI blocker",
+  "purpose": "Spielaktionen als fail-closed Command/Event-Pfad mit deterministischen Negativ- und Replay-Kriterien konkretisieren, ohne I10-Freeze oder I12-Evidence zu verändern.",
+  "scope": [
+    "docs/PRERELEASE_GAMEPLAY_COMMANDS_20261022.md: Spielbefehle, Invarianten, Testvektoren, Implementierungsfolge und verifizierter Quality-CI-Befund"
+  ],
+  "non_goals": [
+    "Keine Runtime-, Event-Store-, I07-, I10-, I12- oder Workflow-Änderung",
+    "Keine Aktivierung von Spielaktionen oder Mutation produktiver Spielstände",
+    "Keine Freigabe oder persönliche Endabnahme"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "qa_regression",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "Nur additive technische Planungsdokumentation; bestehende API-, Event- und Speicherverträge unverändert.",
+  "security": "Befehle und Events getrennt; ungültige Aktionen fail-closed vor Persistenz; doppelte requests und veraltete Sequenzen explizit als Negativtests vorgesehen. PR #76 bleibt alleiniger Writer für I12-Evidence und Status.",
+  "test_plan": [
+    "Validierung gegen schemas/change-record.schema.json und Repository-Quality auf demselben HEAD",
+    "Vier Action-Szenarien plus Null-Event, Duplicate, falsches Ruleset, fehlgeschlagener Append und deterministischer Replay erst in späterem Gameplay-Checkpoint ausführen",
+    "Quality-CI wegen offenem I12-Fingerprintkonflikt voraussichtlich FAIL; kein PASS ohne neuen echten Lauf"
+  ],
+  "rollback": "Die Dokumentationsdatei und diesen Change Record gemeinsam rückgängig machen; keine Runtime-Daten betroffen.",
+  "evidence": [
+    "docs/PRERELEASE_GAMEPLAY_COMMANDS_20261022.md",
+    "https://github.com/provoware/PROVOWARE_BUNKERSIGNALE_GAME_2026/actions/runs/39749047373"
+  ],
+  "result": "RED"
+}

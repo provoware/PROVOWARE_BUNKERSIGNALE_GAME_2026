@@ -1,0 +1,32 @@
+name: prerelease-matrix-audit
+
+on:
+  pull_request:
+    paths:
+      - 'docs/prerelease_matrix.json'
+      - 'docs/PRERELEASE_MATRIX.md'
+      - 'tools/prerelease_gate.py'
+      - 'tests/test_prerelease_matrix.py'
+      - '.github/workflows/prerelease-matrix-audit.yml'
+
+concurrency:
+  group: prerelease-matrix-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  matrix-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m unittest discover -s tests -p test_prerelease_matrix.py -v
+      - run: python3 tools/prerelease_gate.py
+      - name: Unfertige Kandidaten muessen abgelehnt werden
+        shell: bash
+        run: |
+          set +e
+          python3 tools/prerelease_gate.py --require-technical-ready
+          code=$?
+          test "$code" -eq 2
