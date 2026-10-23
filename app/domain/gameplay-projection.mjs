@@ -20,6 +20,8 @@ export function projectGameplayCommand(snapshot, command) {
   if (!decision.ok) return decision;
   if (snapshot.sequence === Number.MAX_SAFE_INTEGER) return failure("SEQUENCE_EXHAUSTED");
 
+  // Defensive boundary: even unusual accessor-backed input cannot leak an exception.
+  try {
   // Copy only the validated projection contract; no caller object is mutated.
   const next = {
     world_id: snapshot.world_id,
@@ -46,6 +48,9 @@ export function projectGameplayCommand(snapshot, command) {
     next.inventory.push(command.target_id);
   }
   return { ok: true, next_state: next, proposal: decision.proposal };
+  } catch {
+    return failure("INVALID_SNAPSHOT");
+  }
 }
 
 /** All-or-nothing in-memory replay preview; never publishes partial progress. */
