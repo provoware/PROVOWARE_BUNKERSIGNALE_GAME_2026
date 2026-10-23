@@ -97,3 +97,13 @@ test("invalid snapshot and invalid command fail closed", () => {
   assert.deepEqual(project(state(), { ...cmd("inspect", object), target_id: "../bad" }),
     { ok: false, code: "INVALID_COMMAND" });
 });
+
+test("hostile accessor that changes after validation fails closed", () => {
+  const s = state();
+  let reads = 0;
+  Object.defineProperty(s.actors[1], "sector", { enumerable: true, get() {
+    if (++reads > 1) throw new Error("hostile getter");
+    return "sector:entry";
+  } });
+  assert.deepEqual(project(s, cmd("inspect", object)), { ok: false, code: "INVALID_SNAPSHOT" });
+});
