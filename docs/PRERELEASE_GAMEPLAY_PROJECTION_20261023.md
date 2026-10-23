@@ -26,7 +26,7 @@ node --test tests/gameplay_command.test.mjs tests/gameplay_projection.test.mjs
 python3 tools/prerelease_gate.py
 ```
 
-Die neuen zehn Testgruppen decken Determinismus, vier Aktionen, keine Mutation, Replay, Duplikate, veraltete Sequenzen, Überlauf und Fehler ohne Teilzustand ab. GitHub führt die Tests im eigenen Workflow `prerelease-gameplay-projection` zusätzlich zur unveränderten Quality-Prüfung aus.
+Die neuen elf Testgruppen decken Determinismus, vier Aktionen, keine Mutation, Replay, Duplikate, veraltete Sequenzen, Überlauf und Fehler ohne Teilzustand ab. GitHub führt die Tests im eigenen Workflow `prerelease-gameplay-projection` zusätzlich zur unveränderten Quality-Prüfung aus.
 
 **Vorrelease:** GAME-01 bis GAME-04 bleiben OPEN; die maschinenlesbare 43-Pflichten-Matrix wird nicht auf PASS gesetzt. Auch die übrigen Pflichten (Content-/Storygraph, echte Ereignisse, Persistenz/Recovery, Browser- und Tastaturtests, Performance, Startbarkeit und Release-Nachweise) sind weiterhin eigenständig zu erfüllen. Die bekannte I12-Fingerprint-Störung `SSI-INT-0001` bleibt ein rotes Qualitätsgate und darf nicht umgangen werden.
 
