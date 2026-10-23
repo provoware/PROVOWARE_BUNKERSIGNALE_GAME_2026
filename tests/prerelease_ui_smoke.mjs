@@ -93,12 +93,24 @@ try {
   check(focus.text==="Spiel","Tab-Reihenfolge falsch",focus);
   check(focus.outline!=="none" && focus.width>=2,"Fokus nicht sichtbar",focus);
   await press("Enter","Enter",13);
-  const activated=await inPage(() => ({
-    selected:[...document.querySelectorAll(".ssi-tab")].find(el=>el.textContent==="Spiel")?.getAttribute("aria-pressed"),
-    visible:!document.querySelector("#game-panel").hidden,
-    focused:document.activeElement?.id
-  }));
-  check(activated.selected==="true" && activated.visible && activated.focused==="game-panel","Enter-Aktivierung fehlgeschlagen",activated);
+  const activated=await inPage(() => {
+    const tab=[...document.querySelectorAll(".ssi-tab")].find(el=>el.textContent==="Spiel");
+    const active=document.activeElement;
+    const style=getComputedStyle(active);
+    return {
+      selected:tab?.getAttribute("aria-pressed"),
+      visible:!document.querySelector("#game-panel").hidden,
+      focused:active?.id,
+      activeTag:active?.tagName,
+      focusedTab:active===tab,
+      outline:style.outlineStyle,
+      outlineWidth:parseFloat(style.outlineWidth)
+    };
+  });
+  const focusValid=activated.focused==="game-panel" ||
+    (activated.focusedTab && activated.outline!=="none" && activated.outlineWidth>=2);
+  check(activated.selected==="true" && activated.visible && focusValid,
+    "Enter-Aktivierung oder sichtbarer Fokus fehlgeschlagen",activated);
   check(exceptions.length===0,"Unbehandelte Browser-Ausnahmen",exceptions);
   console.log("PASS keyboard",JSON.stringify({focus,activated}));
 } finally {

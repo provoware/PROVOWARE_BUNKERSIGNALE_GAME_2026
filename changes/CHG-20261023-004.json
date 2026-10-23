@@ -1,0 +1,34 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261023-004",
+  "checkpoint": "I12",
+  "title": "Chromium-Tastaturtest: sichtbaren Tab-Fokus statt alleiniger Panel-ID pruefen",
+  "purpose": "Echter GitHub-Browsertest meldete Enter-Aktivierung mit korrekt ausgewähltem Panel, aber ohne Panel-Fokus-ID. Der Test soll beide zugaenglichen Fokusziele mit sichtbar kontrolliertem Fokus unterscheiden und Body-Fokus weiterhin ablehnen.",
+  "scope": [
+    "tests/prerelease_ui_smoke.mjs: aktives Element und Fokusrahmen nach Enter protokollieren und absichern",
+    "docs/PRERELEASE_UI_CHECK_2026-10-22.md: SHA-gebundenen FAIL und Folgetest dokumentieren"
+  ],
+  "non_goals": [
+    "Keine Runtime-/CSS-/I12-Evidence-Aenderung",
+    "Kein Entfernen der Tastatur-, Viewport- oder Read-only-Gates",
+    "Keine persoenliche Endabnahme oder Release"
+  ],
+  "affected_owners": [
+    "qa_regression",
+    "ux_accessibility",
+    "release_evidence"
+  ],
+  "compatibility": "Bestehende Tastatur- und Viewportpruefung bleibt aktiv; Fokus auf falschem Element bleibt Fehler.",
+  "security": "Vier Spielaktionen bleiben deaktiviert, keine Welt-/Nutzerdatenmutation.",
+  "test_plan": [
+    "node --check tests/prerelease_ui_smoke.mjs",
+    "Echter Chromium-Lauf in i10-game-ui-shell-smoke.yml am neuen HEAD",
+    "Quality-CI und I12-Fingerprint separat auswerten"
+  ],
+  "rollback": "Gezielten Test- und Dokumentations-Commit revertieren; Runtime unberuehrt.",
+  "evidence": [
+    "https://github.com/provoware/PROVOWARE_BUNKERSIGNALE_GAME_2026/actions/runs/39932929080",
+    "tests/prerelease_ui_smoke.mjs"
+  ],
+  "result": "RED"
+}

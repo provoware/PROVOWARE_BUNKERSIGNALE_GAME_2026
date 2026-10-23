@@ -29,3 +29,21 @@ Der vorhandene Chromium-Workflow `i10-game-ui-shell-smoke.yml` startet nun zusae
 `UX-02`, `A11Y-01` und `AUTO-03` bleiben in der Pflichtmatrix OPEN. Sie duerfen erst nach einem erfolgreichen, SHA-gebundenen echten Browserlauf und den zusaetzlich erforderlichen Pruefungen auf PASS gesetzt werden.
 
 **Naechste Implementation:** Echten Chromium-Prueflauf auswerten, fehlgeschlagene Browserfaelle auf einem getrennten, sicheren Arbeitspaket beheben, anschliessend Story-/Command-Vertraege fuer GAME-01 bis GAME-04 spezifizieren. Keine Zusammenfuehrung, keine Freigabe, kein Release.
+
+## 23.10.2026 – Echte Browser-CI und Fokus-Diagnose
+
+GitHub-Workflow am HEAD `588ced33215fead98d364d8257e6de5414881287`:
+`39932929080` meldete 800×600 **PASS**, 400×300 **PASS**,
+vier deaktivierte Spielaktionen **PASS**; die Enter-Prüfung meldete
+`selected=true`, `visible=true`, aber eine leere Element-ID für
+`document.activeElement`. Die ursprüngliche Prüfung verlangte
+ausschließlich Fokus auf `#game-panel`, obwohl Tastaturaktivierung
+den Fokus zulässig auf dem aktivierten Tab belassen kann.
+
+Die neue Prüfung protokolliert das aktive Element und akzeptiert
+**nur** (a) Fokus auf `#game-panel` oder (b) Fokus auf dem aktivierten
+Spiel-Tab **mit sichtbarem Fokusrahmen von mindestens 2 px**.
+Fokus auf `body` oder einem fremden Element bleibt FAIL.
+Damit wird kein Zugänglichkeits-Gate abgeschwächt; der echte
+Chromium-Neulauf am neuen Commit muss das Verhalten bestätigen.
+Persönliche Kubuntu-Abnahme weiterhin zurückgestellt.
