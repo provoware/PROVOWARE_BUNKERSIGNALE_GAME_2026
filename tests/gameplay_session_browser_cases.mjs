@@ -120,7 +120,7 @@ export async function runGameplaySessionSmoke() {
         initialState: initial(tamperedWorld) });
       await rejected(() => guarded.submitBatch([
         command("inspect", object, 1, 106, tamperedWorld),
-      ], [evt(106)]), "REPLAY_RULE_REJECTED");
+      ], [evt(106)]), "GAMEPLAY_HISTORY_CHANGED");
       check((await store.readWorld(tamperedWorld)).length === 1, "Tampered world changed");
     });
 
