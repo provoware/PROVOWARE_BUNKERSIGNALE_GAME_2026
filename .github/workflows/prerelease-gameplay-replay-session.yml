@@ -13,7 +13,9 @@ on:
       - 'tests/gameplay_session_cdp.mjs'
       - '.github/workflows/prerelease-gameplay-replay-session.yml'
       - 'docs/PRERELEASE_GAMEPLAY_REPLAY_SESSION_20261024.md'
+      - 'docs/PRERELEASE_GAMEPLAY_TRANSACTION_REPLAY_20261024.md'
       - 'changes/CHG-20261024-003.json'
+      - 'changes/CHG-20261024-004.json'
 
 permissions:
   contents: read
@@ -31,6 +33,7 @@ jobs:
         run: |
           node --check app/domain/gameplay-event-replay.mjs
           node --check app/application/gameplay-session.mjs
+          node --check tests/gameplay_transaction_replay.test.mjs
           node --check tests/gameplay_session_browser_cases.mjs
           node --check tests/gameplay_session_cdp.mjs
           node --test tests/gameplay_replay_session.test.mjs tests/gameplay_transaction_replay.test.mjs
