@@ -97,8 +97,12 @@ export function createGameplayAtomicAppender({ indexedDB, dbName = "provoware-bu
   }
   async function append(worldId, inputEvents, options) {
     if (typeof worldId !== "string" || !WORLD.test(worldId) ||
-        !dataOnly(options, ["expected_sequence", "previous_lamport"]) ||
-        !safe(options.expected_sequence) || !safe(options.previous_lamport)) throw failure("INVALID_GAMEPLAY_APPEND");
+        !(dataOnly(options, ["expected_sequence", "previous_lamport"]) ||
+          dataOnly(options, ["expected_sequence", "previous_lamport", "verify_history"])) ||
+        !safe(options.expected_sequence) || !safe(options.previous_lamport) ||
+        (Object.hasOwn(options, "verify_history") && typeof options.verify_history !== "function")) {
+      throw failure("INVALID_GAMEPLAY_APPEND");
+    }
     const events = cloneEvents(inputEvents);
     if (events.length > Number.MAX_SAFE_INTEGER - options.expected_sequence ||
         events.length > Number.MAX_SAFE_INTEGER - options.previous_lamport) throw failure("SEQUENCE_EXHAUSTED");
@@ -121,6 +125,16 @@ export function createGameplayAtomicAppender({ indexedDB, dbName = "provoware-bu
           request.addEventListener("success", () => {
             try {
               verifyAppend(request.result, worldId, events, options.expected_sequence, options.previous_lamport);
+              // The replay guard runs synchronously *inside* the readwrite transaction,
+              // after its authoritative history read and before any write is queued.
+              // Pass copies: even a hostile validator cannot alter the committed events.
+              if (Object.hasOwn(options, "verify_history")) {
+                const history = request.result.map(record => structuredClone(record.event || record));
+                const proposed = events.map(event => structuredClone(event));
+                if (options.verify_history(history, proposed) !== true) {
+                  throw failure("GAMEPLAY_REPLAY_REJECTED");
+                }
+              }
               events.forEach((event, i) => {
                 store.add({ world_id: worldId, event_id: event.event_id, lamport: event.lamport, event });
                 faultInjector?.({ phase: "after-write-queued", writeCount: i + 1, transaction: tx });
