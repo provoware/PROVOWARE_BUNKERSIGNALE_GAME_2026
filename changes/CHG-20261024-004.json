@@ -11,7 +11,8 @@
     "tests/gameplay_replay_session.test.mjs: assert verifier is passed",
     "tests/gameplay_session_browser_cases.mjs: real IndexedDB tamper/async/copy isolation tests",
     ".github/workflows/prerelease-gameplay-replay-session.yml: expanded gate",
-    "docs/PRERELEASE_GAMEPLAY_TRANSACTION_REPLAY_20261024.md: scope and open blockers"
+    "docs/PRERELEASE_GAMEPLAY_TRANSACTION_REPLAY_20261024.md: scope and open blockers",
+    ".github/workflows/prerelease-gameplay-atomic-append.yml: isolated Chromium profile and boot diagnostics after reproduced port failure"
   ],
   "non_goals": [
     "No I07/I08/I10/I12 frozen runtime/evidence/status/schema mutation",
@@ -29,7 +30,8 @@
   "test_plan": [
     "node --test tests/gameplay_transaction_replay.test.mjs tests/gameplay_replay_session.test.mjs",
     "real Chromium session save/replay/race/rollback/tamper/async/copy-isolation cases",
-    "I08/I10 frozen regressions and prerelease matrix; known I12 Quality fingerprint blocker remains"
+    "I08/I10 frozen regressions and prerelease matrix; known I12 Quality fingerprint blocker remains",
+    "Chromium atomic append workflow must pass on final HEAD with dedicated browser profile"
   ],
   "rollback": "Revert isolated development branch. No saved user worlds or frozen evidence are modified.",
   "evidence": [
