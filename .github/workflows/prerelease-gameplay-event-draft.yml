@@ -1,0 +1,41 @@
+name: prerelease-gameplay-event-draft
+
+on:
+  pull_request:
+    paths:
+      - 'app/domain/gameplay-command.mjs'
+      - 'app/domain/gameplay-projection.mjs'
+      - 'app/domain/gameplay-event-draft.mjs'
+      - 'tests/gameplay_command.test.mjs'
+      - 'tests/gameplay_projection.test.mjs'
+      - 'tests/gameplay_event_draft.test.mjs'
+      - 'docs/PRERELEASE_GAMEPLAY_EVENT_DRAFT_20261024.md'
+      - '.github/workflows/prerelease-gameplay-event-draft.yml'
+      - 'changes/CHG-20261024-001.json'
+
+permissions:
+  contents: read
+
+jobs:
+  gameplay-event-draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: |
+          node --check app/domain/gameplay-command.mjs
+          node --check app/domain/gameplay-projection.mjs
+          node --check app/domain/gameplay-event-draft.mjs
+          node --check tests/gameplay_event_draft.test.mjs
+      - name: Command, projection and event draft regressions
+        run: node --test tests/gameplay_command.test.mjs tests/gameplay_projection.test.mjs tests/gameplay_event_draft.test.mjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: I10 frozen UI shell unchanged
+        run: python3 -m unittest discover -s tests -p test_i10_ui_shell.py -v
+      - name: Prerelease matrix must remain fail-closed
+        run: python3 tools/prerelease_gate.py
