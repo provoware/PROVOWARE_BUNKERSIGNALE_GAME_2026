@@ -105,6 +105,50 @@ export async function runGameplaySessionSmoke() {
       check((await other.read()).state.sequence === 0, "World isolation broken");
       check((await session.read()).state.sequence === 5, "Original world changed");
     });
+    await verify("transaction replay catches tampering after a clean pre-read", async () => {
+      const tamperedWorld = id("world", 5);
+      const good = { event_id: evt(105), event_type: "game.object_inspected",
+        payload: { object_id: object }, author_id: actor, sequence: 1, lamport: 1,
+        ruleset_version: "1.0.0", metadata: {}, command_id: req(105) };
+      const bad = structuredClone(good);
+      bad.payload.object_id = id("object", 99);
+      await store.append(tamperedWorld, [bad]);
+      // A stale or dishonest read adapter supplies the earlier, valid view.
+      // The writer must independently validate the real data in its transaction.
+      const staleStore = { async readWorld() { return [structuredClone(good)]; } };
+      const guarded = createGameplaySession({ eventStore: staleStore, appender: writer,
+        initialState: initial(tamperedWorld) });
+      await rejected(() => guarded.submitBatch([
+        command("inspect", object, 1, 106, tamperedWorld),
+      ], [evt(106)]), "REPLAY_RULE_REJECTED");
+      check((await store.readWorld(tamperedWorld)).length === 1, "Tampered world changed");
+    });
+    await verify("async replay validator is rejected without a write", async () => {
+      const target = id("world", 6);
+      const event = { event_id: evt(107), event_type: "game.object_inspected",
+        payload: { object_id: object }, author_id: actor, sequence: 1, lamport: 1,
+        ruleset_version: "1.0.0", metadata: {}, command_id: req(107) };
+      await rejected(() => writer.append(target, [event], {
+        expected_sequence: 0, previous_lamport: 0, verify_history: async () => true,
+      }), "GAMEPLAY_REPLAY_REJECTED");
+      check((await store.readWorld(target)).length === 0, "Async validator committed");
+    });
+    await verify("validator cannot alter committed event through its copies", async () => {
+      const target = id("world", 7);
+      const event = { event_id: evt(108), event_type: "game.object_inspected",
+        payload: { object_id: object }, author_id: actor, sequence: 1, lamport: 1,
+        ruleset_version: "1.0.0", metadata: {}, command_id: req(108) };
+      await writer.append(target, [event], {
+        expected_sequence: 0, previous_lamport: 0,
+        verify_history(history, proposed) {
+          check(history.length === 0, "Unexpected history");
+          proposed[0].payload.object_id = id("object", 99);
+          return true;
+        },
+      });
+      check((await store.readWorld(target))[0].payload.object_id === object,
+        "Validator mutated committed event");
+    });
     return { passed, finalWorldEvents: (await store.readWorld(world)).length };
   } finally {
     indexedDB.deleteDatabase(dbName);
