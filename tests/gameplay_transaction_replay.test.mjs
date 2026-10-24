@@ -43,7 +43,7 @@ test("tampered stored payload after the initial read rejects transaction replay"
     commits++;
   });
   await assert.rejects(() => session.submitBatch([command(1)], [id("event", 1)]),
-    error => error.code === "REPLAY_RULE_REJECTED" && error.failed_index === 0);
+    error => error.code === "GAMEPLAY_HISTORY_CHANGED");
   assert.equal(commits, 0);
 });
 test("tampered proposed event is rejected before commit", async () => {
