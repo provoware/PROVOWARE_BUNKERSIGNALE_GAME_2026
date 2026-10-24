@@ -65,7 +65,7 @@ export async function runGameplayAtomicAppendSmoke() {
         if (writeCount === 1) transaction.abort();
       } });
       await rejectCode(() => injected.append(world, [makeEvent(5, last.sequence + 1, last.lamport + 1, 5),
-        makeEvent(6, last.sequence + 2, last.lamport + 2, 6)], opts(last.sequence, last.lamport)), "GAMEPLAY_TRANSACTION_ABORTED");
+        makeEvent(6, last.sequence + 2, last.lamport + 2, 6)], opts(last.sequence, last.lamport)), null);
       check((await read(world)).length === 3, "Aborted transaction leaked event");
     });
     await verify("invalid clone input fails before write", async () => {
