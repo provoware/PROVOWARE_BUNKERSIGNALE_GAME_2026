@@ -75,7 +75,8 @@ export function replayGameplayEvents(initialState, rawEvents) {
     const eventIds = new Set();
     for (let index = 0; index < rawEvents.length; index++) {
       const event = rawEvents[index];
-      if (!dataOnly(event, FIELDS) || !EVENT_ID.test(event.event_id) ||
+      if (!dataOnly(event, FIELDS) || typeof event.event_id !== "string" ||
+          !EVENT_ID.test(event.event_id) || typeof event.command_id !== "string" ||
           !REQUEST_ID.test(event.command_id) || !safeTree(event) ||
           !Number.isSafeInteger(event.sequence) || event.sequence !== state.sequence + 1 ||
           !Number.isSafeInteger(event.lamport) || event.lamport !== lastLamport + 1 ||
@@ -88,7 +89,7 @@ export function replayGameplayEvents(initialState, rawEvents) {
       if (!projected.ok) return fail("REPLAY_RULE_REJECTED", index);
       const expected = projected.proposal;
       if (event.event_type !== expected.event_type ||
-          JSON.stringify(event.payload) !== JSON.stringify(expected.payload)) {
+          Object.keys(expected.payload).some(key => event.payload[key] !== expected.payload[key])) {
         return fail("FORGED_GAMEPLAY_EFFECT", index);
       }
       eventIds.add(event.event_id);
