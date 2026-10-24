@@ -68,6 +68,12 @@ test("invalid allocation fails closed, including extras and unsafe numbers", () 
     assert.equal(prepare(state(), cmd("inspect", object), a).code, "INVALID_EVENT_ALLOCATION");
   }
 });
+test("hostile event allocation accessors cannot swap validated IDs", () => {
+  const a = { previous_lamport: 0 };
+  Object.defineProperty(a, "event_id", { enumerable: true, get() { return evt(1); } });
+  assert.deepEqual(prepare(state(), cmd("inspect", object), a),
+    { ok: false, code: "INVALID_EVENT_ALLOCATION" });
+});
 test("lamport overflow is rejected before any event draft is published", () => {
   assert.deepEqual(prepare(state(), cmd("inspect", object), alloc(1, Number.MAX_SAFE_INTEGER)),
     { ok: false, code: "LAMPORT_EXHAUSTED" });
