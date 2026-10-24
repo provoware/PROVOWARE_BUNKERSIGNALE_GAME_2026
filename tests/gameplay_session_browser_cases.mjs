@@ -61,7 +61,7 @@ export async function runGameplaySessionSmoke() {
         state.state.inventory[0] === object && state.state.current_sector === "sector:bunker", "Replay mismatch");
     });
     await verify("duplicate request after restart rejected", async () => {
-      await rejected(() => session.submitBatch([command("inspect", object, 4, 1)], [evt(5)]), "REPLAY_RULE_REJECTED" === "DUPLICATE_REQUEST" ? "REPLAY_RULE_REJECTED" : "DUPLICATE_REQUEST");
+      await rejected(() => session.submitBatch([command("inspect", object, 4, 1)], [evt(5)]), "DUPLICATE_REQUEST");
       check((await store.readWorld(world)).length === 4, "Duplicate wrote event");
     });
     await verify("two concurrent submissions serialize through atomic writer", async () => {
