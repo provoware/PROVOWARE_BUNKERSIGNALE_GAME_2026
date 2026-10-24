@@ -1,0 +1,40 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261024-001",
+  "checkpoint": "I12",
+  "title": "Pure I06-shaped gameplay event drafts without persistent authority",
+  "purpose": "Bridge the existing gameplay command projection to strict I06 envelope-shaped drafts while keeping I07/I08/I10/I12 frozen and refusing partial batch output.",
+  "scope": [
+    "app/domain/gameplay-event-draft.mjs: pure single and batch event draft preparation",
+    "tests/gameplay_event_draft.test.mjs: 11 positive/negative Node regression groups",
+    ".github/workflows/prerelease-gameplay-event-draft.yml: independent CI",
+    "docs/PRERELEASE_GAMEPLAY_EVENT_DRAFT_20261024.md: scope, test contract, blockers and next work"
+  ],
+  "non_goals": [
+    "No authoritative event ID allocation, no IndexedDB transaction, no I07/I08/I10/I12 mutation",
+    "No gameplay UI activation, I12 evidence/status fingerprint update, release promotion or merge"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "release_evidence"
+  ],
+  "compatibility": "Additive pure domain module, not imported by UI/bootstrap; existing I06 schema, I07 reducer and I08 IndexedDB store unchanged.",
+  "security": "Strict event ID format, safe Lamport clock, per-batch duplicate ID and overflow checks, no partial output on failure. Global uniqueness, concurrency and replay remain the responsibility of a future transactional store owner.",
+  "test_plan": [
+    "node --check app/domain/gameplay-event-draft.mjs",
+    "node --test tests/gameplay_command.test.mjs tests/gameplay_projection.test.mjs tests/gameplay_event_draft.test.mjs",
+    "python3 -m unittest discover -s tests -p test_i10_ui_shell.py -v",
+    "python3 tools/prerelease_gate.py",
+    "GitHub CI must show exact head SHA; repository Quality remains red until authorized I12 checkpoint rebind"
+  ],
+  "rollback": "Revert this additive branch; no database schema, game saves, UI or frozen checkpoint evidence changed.",
+  "evidence": [
+    "app/domain/gameplay-event-draft.mjs",
+    "tests/gameplay_event_draft.test.mjs",
+    ".github/workflows/prerelease-gameplay-event-draft.yml",
+    "docs/PRERELEASE_GAMEPLAY_EVENT_DRAFT_20261024.md"
+  ],
+  "result": "RED"
+}
