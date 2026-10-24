@@ -19,15 +19,21 @@ export function createGameplaySession({ eventStore, appender, initialState } = {
   const initial = structuredClone(initialState);
   const worldId = initial.world_id;
 
-  async function read() {
+  // Keep the exact verified pre-read private. A second valid but different
+  // history with the same sequence/Lamport must not silently replace it.
+  async function load() {
     const events = await eventStore.readWorld(worldId);
     const result = replayGameplayEvents(initial, events);
     if (!result.ok) throw failure(result.code, result.failed_index ?? null);
-    return result;
+    return { result, observedHistory: JSON.stringify(events) };
+  }
+
+  async function read() {
+    return (await load()).result;
   }
 
   async function submitBatch(commands, eventIds) {
-    const current = await read();
+    const { result: current, observedHistory } = await load();
     const prepared = prepareGameplayEventBatch(current.state, commands, {
       event_ids: eventIds, previous_lamport: current.last_lamport,
     });
@@ -38,8 +44,14 @@ export function createGameplaySession({ eventStore, appender, initialState } = {
       // keeping its sequence/Lamport unchanged. The atomic appender invokes this
       // synchronously against the history read in its own write transaction.
       verify_history(history, proposed) {
+        // Replay validity alone is insufficient: another writer could swap a
+        // *valid* old event while preserving sequence and Lamport. Reject it.
+        if (JSON.stringify(history) !== observedHistory) throw failure("GAMEPLAY_HISTORY_CHANGED");
         const verified = replayGameplayEvents(initial, [...history, ...proposed]);
         if (!verified.ok) throw failure(verified.code, verified.failed_index ?? null);
+        if (JSON.stringify(verified.state) !== JSON.stringify(prepared.next_state)) {
+          throw failure("GAMEPLAY_RESULT_CHANGED");
+        }
         return true;
       },
     });

@@ -43,7 +43,7 @@ test("tampered stored payload after the initial read rejects transaction replay"
     commits++;
   });
   await assert.rejects(() => session.submitBatch([command(1)], [id("event", 1)]),
-    error => error.code === "REPLAY_RULE_REJECTED" && error.failed_index === 0);
+    error => error.code === "GAMEPLAY_HISTORY_CHANGED");
   assert.equal(commits, 0);
 });
 test("tampered proposed event is rejected before commit", async () => {
@@ -57,6 +57,42 @@ test("tampered proposed event is rejected before commit", async () => {
   await assert.rejects(() => session.submitBatch([command(1)], [id("event", 1)]),
     error => error.code === "REPLAY_RULE_REJECTED" && error.failed_index === 0);
   assert.equal(commits, 0);
+});
+
+test("valid same-sequence history replacement is rejected before commit", async () => {
+  const good = { event_id: id("event", 11), event_type: "game.object_inspected",
+    payload: { object_id: object }, author_id: actor, sequence: 1, lamport: 1,
+    ruleset_version: "1.0.0", metadata: {}, command_id: id("req", 11) };
+  const replaced = structuredClone(good);
+  replaced.command_id = id("req", 12); // Still valid gameplay, but a different past.
+  let commits = 0;
+  const session = createGameplaySession({ initialState: initial(),
+    eventStore: { async readWorld() { return [structuredClone(good)]; } },
+    appender: { async append(_, events, options) {
+      options.verify_history([structuredClone(replaced)], events);
+      commits++;
+    } } });
+  await assert.rejects(() => session.submitBatch([
+    { ...command(13), expected_sequence: 1 },
+  ], [id("event", 13)]), error => error.code === "GAMEPLAY_HISTORY_CHANGED");
+  assert.equal(commits, 0);
+});
+test("identical history copies still pass the transaction replay check", async () => {
+  const good = { event_id: id("event", 21), event_type: "game.object_inspected",
+    payload: { object_id: object }, author_id: actor, sequence: 1, lamport: 1,
+    ruleset_version: "1.0.0", metadata: {}, command_id: id("req", 21) };
+  let commits = 0;
+  const session = createGameplaySession({ initialState: initial(),
+    eventStore: { async readWorld() { return [structuredClone(good)]; } },
+    appender: { async append(_, events, options) {
+      assert.equal(options.verify_history([structuredClone(good)], events), true);
+      commits++;
+    } } });
+  const result = await session.submitBatch([
+    { ...command(22), expected_sequence: 1 },
+  ], [id("event", 22)]);
+  assert.equal(result.state.sequence, 2);
+  assert.equal(commits, 1);
 });
 test("missing, nonfunction and hostile verifier values fail before database access", async () => {
   let opened = 0;
