@@ -40,3 +40,9 @@ ungültige JSON-Datentypen (fail-closed, ohne ungefangenen Programmfehler).
 Dies ist ausschließlich eine Absicherung der Release-Prüfung: Die 43 Pflichten
 sind dadurch nicht fachlich erfüllt. I12-Fingerprint/Quality, echte
 Chromium-Läufe, Gameplay und Endabnahme bleiben separat offen.
+
+## 24.10.2026 – transaktionaler Gameplay-Replay-Schutz (CHG-20261024-004)
+
+Die optionale Gameplay-Session verifiziert den echten Ereignisstrom jetzt **innerhalb** der IndexedDB-Schreibtransaktion, statt ausschließlich vor dem Schreiben. Fachlich gefälschte Ereignisse mit unveränderter Sequenz/Lamport-Uhr, asynchrone Prüffunktionen und manipulierte Schreibvorschläge werden abgewiesen. Nachweise und verbleibende Grenzen: [Transaktions-Replay-Prüfvertrag](PRERELEASE_GAMEPLAY_TRANSACTION_REPLAY_20261024.md).
+
+**Release-Zählung bleibt 0/43** (38 OPEN, 2 nur historische PASS, 3 persönliche DEFERRED). Die generische I08-Schreibschnittstelle ist weiterhin unabhängig erreichbar, daher bleibt `SCOPE-01`/Single Writer offen. I12-Integritätsbindung und Gesamt-Quality sind weiterhin rot, bis die zuständige formale Checkpoint-Arbeit abgeschlossen ist. Keine Produktfreigabe oder persönliche Endabnahme.
