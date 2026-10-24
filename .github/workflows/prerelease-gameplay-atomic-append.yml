@@ -1,0 +1,60 @@
+name: prerelease-gameplay-atomic-append
+
+on:
+  pull_request:
+    paths:
+      - 'app/infrastructure/browser/gameplay-atomic-append.mjs'
+      - 'tests/gameplay_atomic_append_contract.test.mjs'
+      - 'tests/gameplay_atomic_append_browser_cases.mjs'
+      - 'tests/gameplay_atomic_append_cdp.mjs'
+      - '.github/workflows/prerelease-gameplay-atomic-append.yml'
+      - 'docs/PRERELEASE_GAMEPLAY_ATOMIC_APPEND_20261024.md'
+      - 'changes/CHG-20261024-002.json'
+
+permissions:
+  contents: read
+
+jobs:
+  gameplay-atomic-append:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and Node negative regressions
+        run: |
+          node --check app/infrastructure/browser/gameplay-atomic-append.mjs
+          node --check tests/gameplay_atomic_append_browser_cases.mjs
+          node --check tests/gameplay_atomic_append_cdp.mjs
+          node --test tests/gameplay_atomic_append_contract.test.mjs
+      - name: Existing gameplay regressions
+        run: node --test tests/gameplay_command.test.mjs tests/gameplay_projection.test.mjs tests/gameplay_event_draft.test.mjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Frozen I08/I10 and release matrix contracts
+        run: |
+          python3 -m unittest discover -s tests -p test_i08.py -v
+          python3 -m unittest discover -s tests -p test_i10_ui_shell.py -v
+          python3 tools/prerelease_gate.py
+      - name: Real Chromium IndexedDB race, abort, replay and reopen
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          browser="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$browser"
+          python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/gameplay-http.log" 2>&1 &
+          server_pid=$!
+          "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --remote-debugging-address=127.0.0.1 --remote-debugging-port=9222 about:blank \
+            >"$RUNNER_TEMP/gameplay-chromium.log" 2>&1 &
+          browser_pid=$!
+          trap 'kill "$server_pid" "$browser_pid" 2>/dev/null || true' EXIT
+          for _ in {1..80}; do
+            if curl -fsS http://127.0.0.1:9222/json/version >/dev/null 2>&1 && \
+               curl -fsS http://127.0.0.1:8765/index.html >/dev/null 2>&1; then break; fi
+            sleep 0.1
+          done
+          node tests/gameplay_atomic_append_cdp.mjs
