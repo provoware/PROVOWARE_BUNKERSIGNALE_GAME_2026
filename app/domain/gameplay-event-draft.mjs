@@ -6,6 +6,12 @@ const error = (code, failed_index = null) => Object.freeze(
 );
 const plain = value => value !== null && typeof value === "object" && !Array.isArray(value) &&
   (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
+const dataFields = (value, names) => {
+  if (!plain(value) || Object.keys(value).length !== names.length) return null;
+  const descriptors = names.map(name => Object.getOwnPropertyDescriptor(value, name));
+  if (descriptors.some(descriptor => !descriptor || !Object.hasOwn(descriptor, "value"))) return null;
+  return descriptors.map(descriptor => descriptor.value);
+};
 
 /**
  * Prepare a schema-shaped I06 envelope without assigning authority or writing it.
@@ -13,14 +19,16 @@ const plain = value => value !== null && typeof value === "object" && !Array.isA
  * sequence, Lamport clock, request ID and event ID in one write transaction.
  */
 export function prepareGameplayEvent(snapshot, command, allocation) {
+  let eventId, previousLamport;
   try {
-    if (!plain(allocation) || Object.keys(allocation).length !== 2 ||
-        !Object.hasOwn(allocation, "event_id") || !Object.hasOwn(allocation, "previous_lamport") ||
-        typeof allocation.event_id !== "string" || !EVENT_ID.test(allocation.event_id) ||
-        !Number.isSafeInteger(allocation.previous_lamport) || allocation.previous_lamport < 0) {
+    const fields = dataFields(allocation, ["event_id", "previous_lamport"]);
+    if (!fields) return error("INVALID_EVENT_ALLOCATION");
+    [eventId, previousLamport] = fields;
+    if (typeof eventId !== "string" || !EVENT_ID.test(eventId) ||
+        !Number.isSafeInteger(previousLamport) || previousLamport < 0) {
       return error("INVALID_EVENT_ALLOCATION");
     }
-    if (allocation.previous_lamport === Number.MAX_SAFE_INTEGER) return error("LAMPORT_EXHAUSTED");
+    if (previousLamport === Number.MAX_SAFE_INTEGER) return error("LAMPORT_EXHAUSTED");
   } catch {
     return error("INVALID_EVENT_ALLOCATION");
   }
@@ -30,12 +38,12 @@ export function prepareGameplayEvent(snapshot, command, allocation) {
   try {
     const proposal = projected.proposal;
     const event = Object.freeze({
-      event_id: allocation.event_id,
+      event_id: eventId,
       event_type: proposal.event_type,
       payload: Object.freeze({ ...proposal.payload }),
       author_id: proposal.author_id,
       sequence: projected.next_state.sequence,
-      lamport: allocation.previous_lamport + 1,
+      lamport: previousLamport + 1,
       ruleset_version: proposal.ruleset_version,
       metadata: Object.freeze({}),
       command_id: proposal.command_id,
@@ -52,26 +60,30 @@ export function prepareGameplayEvent(snapshot, command, allocation) {
  */
 export function prepareGameplayEventBatch(snapshot, commands, allocation) {
   try {
-    if (!Array.isArray(commands) || commands.length === 0 || !plain(allocation) ||
-        Object.keys(allocation).length !== 2 || !Object.hasOwn(allocation, "event_ids") ||
-        !Object.hasOwn(allocation, "previous_lamport") || !Array.isArray(allocation.event_ids) ||
-        allocation.event_ids.length !== commands.length ||
-        !Number.isSafeInteger(allocation.previous_lamport) || allocation.previous_lamport < 0) {
+    const fields = dataFields(allocation, ["event_ids", "previous_lamport"]);
+    if (!Array.isArray(commands) || !fields || !Array.isArray(fields[0]) ||
+        !Number.isSafeInteger(fields[1]) || fields[1] < 0) {
       return error("INVALID_EVENT_BATCH");
     }
-    const ids = allocation.event_ids;
+    // Snapshot each collection once: accessors cannot swap values after validation.
+    const commandList = [...commands];
+    const ids = [...fields[0]];
+    const previousLamport = fields[1];
+    if (commandList.length === 0 || ids.length !== commandList.length) {
+      return error("INVALID_EVENT_BATCH");
+    }
     if (!ids.every(id => typeof id === "string" && EVENT_ID.test(id))) {
       return error("INVALID_EVENT_BATCH");
     }
     if (new Set(ids).size !== ids.length) return error("DUPLICATE_EVENT_ID");
-    if (commands.length > Number.MAX_SAFE_INTEGER - allocation.previous_lamport) {
+    if (commandList.length > Number.MAX_SAFE_INTEGER - previousLamport) {
       return error("LAMPORT_EXHAUSTED");
     }
     let current = snapshot;
-    let lamport = allocation.previous_lamport;
+    let lamport = previousLamport;
     const events = [];
-    for (let index = 0; index < commands.length; index++) {
-      const result = prepareGameplayEvent(current, commands[index], {
+    for (let index = 0; index < commandList.length; index++) {
+      const result = prepareGameplayEvent(current, commandList[index], {
         event_id: ids[index], previous_lamport: lamport,
       });
       if (!result.ok) return error(result.code, index);
