@@ -1,0 +1,45 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261024-005",
+  "checkpoint": "I12",
+  "title": "Reject valid same-sequence history swaps between gameplay pre-read and atomic commit",
+  "purpose": "Ensure the committed gameplay transaction still refers to exactly the validated pre-read history, not merely any valid same-clock replacement.",
+  "scope": [
+    "app/application/gameplay-session.mjs: private pre-read history binding and exact post-replay state check",
+    "tests/gameplay_transaction_replay.test.mjs: valid-swap rejection and unchanged-history acceptance",
+    "tests/gameplay_session_browser_cases.mjs: real IndexedDB same-clock valid-swap no-write regression",
+    "tests/gameplay_session_cdp.mjs: 16-case Chromium contract",
+    ".github/workflows/prerelease-gameplay-replay-session.yml: scoped trigger",
+    "docs/PRERELEASE_GAMEPLAY_STALE_HISTORY_20261024.md: evidence contract and limitations",
+    "docs/PRERELEASE_MATRIX.md: preserve all 43 release duties"
+  ],
+  "non_goals": [
+    "No changes to frozen I07/I08/I10/I12 runtime, evidence, status, schemas or read-only UI",
+    "No exclusive writer claim or gameplay activation",
+    "No user data mutation, merge, release or personal acceptance"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "release_evidence"
+  ],
+  "compatibility": "Public session.read() return value and IndexedDB schema remain unchanged; only opt-in gameplay session writes gain a fail-closed history-swap check.",
+  "security": "Rejects a valid but replaced historical event with identical sequence and Lamport within the authoritative write transaction, and rejects mismatched projected post-commit state. Generic I08 append remains an independent bypass and requires controlled REOPEN.",
+  "test_plan": [
+    "node --test tests/gameplay_transaction_replay.test.mjs tests/gameplay_replay_session.test.mjs",
+    "node --test tests/gameplay_command.test.mjs tests/gameplay_projection.test.mjs tests/gameplay_event_draft.test.mjs tests/gameplay_atomic_append_contract.test.mjs",
+    "real Chromium 16-case session regression including valid same-clock swap and zero mutation",
+    "frozen I08/I10 and prerelease matrix regression; I12 fingerprint remains a known blocker"
+  ],
+  "rollback": "Revert this isolated development commit. No user worlds, schemas or frozen checkpoint evidence were changed.",
+  "evidence": [
+    "app/application/gameplay-session.mjs",
+    "tests/gameplay_transaction_replay.test.mjs",
+    "tests/gameplay_session_browser_cases.mjs",
+    "tests/gameplay_session_cdp.mjs",
+    ".github/workflows/prerelease-gameplay-replay-session.yml",
+    "docs/PRERELEASE_GAMEPLAY_STALE_HISTORY_20261024.md"
+  ],
+  "result": "RED"
+}

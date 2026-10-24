@@ -46,3 +46,9 @@ Chromium-Läufe, Gameplay und Endabnahme bleiben separat offen.
 Die optionale Gameplay-Session verifiziert den echten Ereignisstrom jetzt **innerhalb** der IndexedDB-Schreibtransaktion, statt ausschließlich vor dem Schreiben. Fachlich gefälschte Ereignisse mit unveränderter Sequenz/Lamport-Uhr, asynchrone Prüffunktionen und manipulierte Schreibvorschläge werden abgewiesen. Nachweise und verbleibende Grenzen: [Transaktions-Replay-Prüfvertrag](PRERELEASE_GAMEPLAY_TRANSACTION_REPLAY_20261024.md).
 
 **Release-Zählung bleibt 0/43** (38 OPEN, 2 nur historische PASS, 3 persönliche DEFERRED). Die generische I08-Schreibschnittstelle ist weiterhin unabhängig erreichbar, daher bleibt `SCOPE-01`/Single Writer offen. I12-Integritätsbindung und Gesamt-Quality sind weiterhin rot, bis die zuständige formale Checkpoint-Arbeit abgeschlossen ist. Keine Produktfreigabe oder persönliche Endabnahme.
+
+## 24.10.2026 – gültiger, aber ausgetauschter Weltverlauf (CHG-20261024-005)
+
+Die Gameplay-Session bindet die transaktionale Replay-Prüfung jetzt an **genau den vorher gelesenen und erfolgreich validierten Ereignisverlauf**. Auch wenn ein anderer Schreiber einen fachlich gültigen Eintrag mit identischer Sequenz und Lamport-Uhr austauscht, darf die Session nicht mit einem veralteten Ergebnis fortfahren. Der neue Prüfvertrag ist in [PRERELEASE_GAMEPLAY_STALE_HISTORY_20261024.md](PRERELEASE_GAMEPLAY_STALE_HISTORY_20261024.md) dokumentiert.
+
+Die 43 Pflichten bleiben unverändert: 38 OPEN, 2 nur historisch PASS, 3 DEFERRED, Kandidat **0/43**. Der generische I08-Schreiber ist weiterhin separat erreichbar, daher besteht **keine** exklusive Schreibhoheit. I12-Fingerprint/Quality bleibt bis zum formal zuständigen Checkpoint gesperrt. Keine persönliche Abnahme, kein Merge, kein Release.

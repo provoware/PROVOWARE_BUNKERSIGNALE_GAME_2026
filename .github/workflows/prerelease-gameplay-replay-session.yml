@@ -16,6 +16,8 @@ on:
       - 'docs/PRERELEASE_GAMEPLAY_TRANSACTION_REPLAY_20261024.md'
       - 'changes/CHG-20261024-003.json'
       - 'changes/CHG-20261024-004.json'
+      - 'changes/CHG-20261024-005.json'
+      - 'docs/PRERELEASE_GAMEPLAY_STALE_HISTORY_20261024.md'
 
 permissions:
   contents: read

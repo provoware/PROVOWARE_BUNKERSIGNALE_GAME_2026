@@ -123,6 +123,25 @@ export async function runGameplaySessionSmoke() {
       ], [evt(106)]), "REPLAY_RULE_REJECTED");
       check((await store.readWorld(tamperedWorld)).length === 1, "Tampered world changed");
     });
+
+    await verify("valid same-clock history replacement cannot silently commit", async () => {
+      const target = id("world", 8);
+      const good = { event_id: evt(109), event_type: "game.object_inspected",
+        payload: { object_id: object }, author_id: actor, sequence: 1, lamport: 1,
+        ruleset_version: "1.0.0", metadata: {}, command_id: req(109) };
+      const replaced = structuredClone(good);
+      replaced.command_id = req(110); // Valid, but not the event that the session saw.
+      await store.append(target, [replaced]);
+      const staleStore = { async readWorld() { return [structuredClone(good)]; } };
+      const guarded = createGameplaySession({ eventStore: staleStore, appender: writer,
+        initialState: initial(target) });
+      await rejected(() => guarded.submitBatch([
+        command("inspect", object, 1, 111, target),
+      ], [evt(111)]), "GAMEPLAY_HISTORY_CHANGED");
+      const after = await store.readWorld(target);
+      check(after.length === 1 && after[0].command_id === replaced.command_id,
+        "Valid history swap wrote an event or modified existing data");
+    });
     await verify("async replay validator is rejected without a write", async () => {
       const target = id("world", 6);
       const event = { event_id: evt(107), event_type: "game.object_inspected",
