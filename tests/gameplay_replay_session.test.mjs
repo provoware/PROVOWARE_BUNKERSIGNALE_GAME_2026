@@ -120,6 +120,7 @@ test("session rereads the authoritative history and persists four actions", asyn
     assert.equal(w, world);
     assert.equal(options.expected_sequence, persisted.length);
     assert.equal(options.previous_lamport, persisted.length);
+    assert.equal(options.verify_history(persisted, events), true);
     persisted.push(...structuredClone(events));
   } };
   const session = createGameplaySession({ eventStore: store, appender: writer, initialState: initial() });
