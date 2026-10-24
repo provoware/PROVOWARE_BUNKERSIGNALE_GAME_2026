@@ -109,3 +109,8 @@ export function decideGameplayCommand(command, snapshot) {
     }),
   });
 }
+
+/** Read-only snapshot contract for gameplay replay, no state mutation. */
+export function isValidGameplaySnapshot(snapshot) {
+  try { return validSnapshot(snapshot); } catch { return false; }
+}
