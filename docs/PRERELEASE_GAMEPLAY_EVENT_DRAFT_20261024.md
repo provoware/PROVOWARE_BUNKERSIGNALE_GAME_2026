@@ -14,9 +14,9 @@ Das neue reine Fachmodul app/domain/gameplay-event-draft.mjs erzeugt aus den bes
 
 ## Nachprüfbare Prüfungen
 
-- Lokal Node 22.16.0: node --test tests/gameplay_event_draft.test.mjs → **11/11 PASS** (Entwicklungsprüfung mit lokal nachgebildeten unveränderten Vorstufen; GitHub-CI prüft den echten Repositorystand).
+- Lokal Node 22.16.0: node --test tests/gameplay_event_draft.test.mjs → **12/12 PASS** (Entwicklungsprüfung mit lokal nachgebildeten unveränderten Vorstufen; GitHub-CI prüft den echten Repositorystand).
 - Lokal: node --check für neues Fachmodul und Tests → **PASS**.
-- GitHub-Workflow prerelease-gameplay-event-draft prüft auf dem PR-HEAD zusätzlich bestehende 12 Befehls- und 11 Projektionsprüfungen, die 11 neuen Entwurfsprüfungen, den I10-Oberflächenfreeze und die 43-Pflichten-Matrix.
+- GitHub-Workflow prerelease-gameplay-event-draft prüft auf dem PR-HEAD zusätzlich bestehende 12 Befehls- und 11 Projektionsprüfungen, die 12 neuen Entwurfsprüfungen, den I10-Oberflächenfreeze und die 43-Pflichten-Matrix.
 - Die allgemeine Quality-CI bleibt wegen SSI-INT-0001/I12-Fingerprint **nicht freigegeben**, solange die formale Bindung fehlt. Keine Änderung an evidence/I12_EVIDENCE.json, status/I12_STATUS.json oder I12-Checkpoint.
 - GitHub-Läufe und finaler SHA werden erst nach tatsächlich beendeten Remote-Prüfungen im PR dokumentiert; kein vorweggenommenes PASS.
 
@@ -24,6 +24,6 @@ Das neue reine Fachmodul app/domain/gameplay-event-draft.mjs erzeugt aus den bes
 
 Normative 43 Einzelpflichten: docs/prerelease_matrix.json; Textschutz: tools/prerelease_requirements.py. **38 OPEN, zwei historische PASS ohne Gültigkeit für diesen HEAD, drei persönliche DEFERRED. Release-seitig 0/43 vollständig nachgewiesen.** GAME-01 bis GAME-04 bleiben OPEN. Die übrigen Pflichten (Content-/Storygraph, vollständige Spielverläufe, Save/Restore, Sicherheit, 800×600, echte Vergrößerung, Tastatur, Performance, Erscheinungsbild, Startbarkeit, Regression und Release-Dokumentation) werden nicht als erledigt markiert.
 
-**Nächster fachlicher Schritt:** getrennt autoritativen I08-Store-Owner und atomaren Welt-Sequenz-/request_id-/event_id-/Lamport-Schutz implementieren, anschließend echte Zwei-Schreiber-, Abort-, Reopen- und Replaytests. Die konkurrierende I12-Fingerprint-Bindung nur über ihren formalen Checkpoint lösen; keine stillen Evidence-Überschreibungen. Danach Story-/Dialogketten und I10-REOPEN unter eigener Freigabe.
+**Nächster fachlicher Schritt:** getrennt autoritativen I08-Store-Owner und atomaren Welt-Sequenz-/request_id-/event_id-/Lamport-Schutz implementieren, anschließend echte Zwei-Schreiber-, Abort-, Reopen- und Replaytests. Die I12-Fingerprint-Bindung nur über ihren formalen Checkpoint lösen; keine stillen Evidence-Überschreibungen. Danach Story-/Dialogketten und I10-REOPEN unter eigener Freigabe.
 
 **Kein Merge, kein Release, keine persönliche Sicht- oder Kubuntu-Endabnahme vor vollständig grünen technischen Gates und eingefrorenem Kandidaten.**
