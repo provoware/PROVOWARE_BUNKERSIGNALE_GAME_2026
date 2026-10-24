@@ -34,6 +34,14 @@ export function createGameplaySession({ eventStore, appender, initialState } = {
     if (!prepared.ok) throw failure(prepared.code, prepared.failed_index ?? null);
     await appender.append(worldId, prepared.events, {
       expected_sequence: current.state.sequence, previous_lamport: current.last_lamport,
+      // Do not trust the earlier read: another writer may replace an event while
+      // keeping its sequence/Lamport unchanged. The atomic appender invokes this
+      // synchronously against the history read in its own write transaction.
+      verify_history(history, proposed) {
+        const verified = replayGameplayEvents(initial, [...history, ...proposed]);
+        if (!verified.ok) throw failure(verified.code, verified.failed_index ?? null);
+        return true;
+      },
     });
     return { ok: true, count: prepared.events.length, state: prepared.next_state };
   }
