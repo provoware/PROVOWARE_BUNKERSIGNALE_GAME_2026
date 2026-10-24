@@ -1,0 +1,44 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261024-002",
+  "checkpoint": "I12",
+  "title": "Additive gameplay-specific IndexedDB atomic writer with request and sequence checks",
+  "purpose": "Prove one-transaction sequence, Lamport, request replay and event uniqueness for prepared gameplay events without reopening frozen I08/I10 or mutating existing saves.",
+  "scope": [
+    "app/infrastructure/browser/gameplay-atomic-append.mjs: opt-in transactional gameplay writer",
+    "tests/gameplay_atomic_append_contract.test.mjs: eight fail-closed Node contract tests",
+    "tests/gameplay_atomic_append_browser_cases.mjs: fifteen real IndexedDB cases",
+    "tests/gameplay_atomic_append_cdp.mjs: Chromium DevTools smoke driver",
+    ".github/workflows/prerelease-gameplay-atomic-append.yml: isolated CI",
+    "docs/PRERELEASE_GAMEPLAY_ATOMIC_APPEND_20261024.md: scope, limitations and next work"
+  ],
+  "non_goals": [
+    "No I08/I07/I10/I12 freeze reopen, no modifications to existing IndexedDB store or database schema",
+    "No gameplay UI activation, automatic save migration, I12 evidence/status update, merge or release"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "release_evidence"
+  ],
+  "compatibility": "Additive infrastructure module. Existing IndexedDB schema and public I08 adapter remain unchanged. No bootstrap/UI import until central writer ownership is established.",
+  "security": "Single readwrite transaction for history validation and append, global IndexedDB primary key, request replay and Lamport/sequence guards, full abort on failure, no mutation of old saves. Existing generic writer can bypass gameplay checks and is not yet retired.",
+  "test_plan": [
+    "node --check app/infrastructure/browser/gameplay-atomic-append.mjs",
+    "node --test tests/gameplay_atomic_append_contract.test.mjs",
+    "node --test tests/gameplay_command.test.mjs tests/gameplay_projection.test.mjs tests/gameplay_event_draft.test.mjs",
+    "real Chromium 15-case IndexedDB concurrency/abort/reopen smoke in GitHub CI",
+    "I08/I10 regression and prerelease matrix audit; repository Quality remains red until I12 checkpoint rebind"
+  ],
+  "rollback": "Revert this additive branch. No production data, I08 schema, I10 UI or frozen evidence were changed.",
+  "evidence": [
+    "app/infrastructure/browser/gameplay-atomic-append.mjs",
+    "tests/gameplay_atomic_append_contract.test.mjs",
+    "tests/gameplay_atomic_append_browser_cases.mjs",
+    "tests/gameplay_atomic_append_cdp.mjs",
+    ".github/workflows/prerelease-gameplay-atomic-append.yml",
+    "docs/PRERELEASE_GAMEPLAY_ATOMIC_APPEND_20261024.md"
+  ],
+  "result": "RED"
+}
