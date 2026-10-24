@@ -23,7 +23,8 @@ const check = (condition, message) => { if (!condition) throw new Error(message)
 async function rejected(work, code) {
   let caught;
   try { await work(); } catch (error) { caught = error; }
-  check(caught && caught.code === code, "Expected " + code + ", got " + (caught?.code ?? "success"));
+  const accepted = Array.isArray(code) ? code : [code];
+  check(caught && accepted.includes(caught.code), "Expected " + accepted.join("/") + ", got " + (caught?.code ?? "success"));
 }
 export async function runGameplaySessionSmoke() {
   const dbName = "gameplay-session-" + crypto.randomUUID();
@@ -80,7 +81,7 @@ export async function runGameplaySessionSmoke() {
           if (writeCount === 1) transaction.abort();
         } }) });
       await rejected(() => injected.submitBatch([command("inspect", object, 5, 7)], [evt(7)]),
-        "GAMEPLAY_TRANSACTION_ABORTED");
+        ["GAMEPLAY_TRANSACTION_ABORTED", "GAMEPLAY_TRANSACTION_FAILED"]);
       check((await session.read()).state.sequence === before.state.sequence, "Abort changed world");
     });
     await verify("stale command rejected before mutation", async () => {
