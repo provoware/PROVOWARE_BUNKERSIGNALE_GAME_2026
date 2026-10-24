@@ -48,6 +48,7 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >"$RUNNER_TEMP/gameplay-http.log" 2>&1 &
           server_pid=$!
           "$browser" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --user-data-dir="$RUNNER_TEMP/gameplay-atomic-chrome" \
             --remote-debugging-address=127.0.0.1 --remote-debugging-port=9222 about:blank \
             >"$RUNNER_TEMP/gameplay-chromium.log" 2>&1 &
           browser_pid=$!
@@ -57,4 +58,9 @@ jobs:
                curl -fsS http://127.0.0.1:8765/index.html >/dev/null 2>&1; then break; fi
             sleep 0.1
           done
+          if ! curl -fsS http://127.0.0.1:9222/json/version >/dev/null 2>&1; then
+            echo "Chromium debugging endpoint not ready after 8 seconds" >&2
+            tail -80 "$RUNNER_TEMP/gameplay-chromium.log" >&2 || true
+            exit 1
+          fi
           node tests/gameplay_atomic_append_cdp.mjs

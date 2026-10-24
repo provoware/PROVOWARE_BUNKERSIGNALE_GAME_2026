@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/change-record.schema.json",
+  "change_id": "CHG-20261024-004",
+  "checkpoint": "I12",
+  "title": "Gameplay replay validation inside the authoritative IndexedDB write transaction",
+  "purpose": "Prevent forged same-sequence gameplay history from being accepted between pre-read and atomic append.",
+  "scope": [
+    "app/infrastructure/browser/gameplay-atomic-append.mjs: optional synchronous in-transaction history verifier",
+    "app/application/gameplay-session.mjs: replay callback bound to original world",
+    "tests/gameplay_transaction_replay.test.mjs: Node regression and negative tests",
+    "tests/gameplay_replay_session.test.mjs: assert verifier is passed",
+    "tests/gameplay_session_browser_cases.mjs: real IndexedDB tamper/async/copy isolation tests",
+    ".github/workflows/prerelease-gameplay-replay-session.yml: expanded gate",
+    "docs/PRERELEASE_GAMEPLAY_TRANSACTION_REPLAY_20261024.md: scope and open blockers",
+    ".github/workflows/prerelease-gameplay-atomic-append.yml: isolated Chromium profile and boot diagnostics after reproduced port failure"
+  ],
+  "non_goals": [
+    "No I07/I08/I10/I12 frozen runtime/evidence/status/schema mutation",
+    "No exclusive writer or productive gameplay activation",
+    "No merge, release or user-data changes"
+  ],
+  "affected_owners": [
+    "orchestrator",
+    "architecture_guardian",
+    "qa_regression",
+    "release_evidence"
+  ],
+  "compatibility": "Optional callback preserves existing atomic append API; gameplay session now supplies callback. No database version or dependency changes.",
+  "security": "Read-verify-write runs in a single IndexedDB readwrite transaction; rejects forged events even with unchanged sequence and Lamport, rejects asynchronous verifiers, copies inputs to avoid validator mutation. Generic I08 append still bypasses gameplay checks.",
+  "test_plan": [
+    "node --test tests/gameplay_transaction_replay.test.mjs tests/gameplay_replay_session.test.mjs",
+    "real Chromium session save/replay/race/rollback/tamper/async/copy-isolation cases",
+    "I08/I10 frozen regressions and prerelease matrix; known I12 Quality fingerprint blocker remains",
+    "Chromium atomic append workflow must pass on final HEAD with dedicated browser profile"
+  ],
+  "rollback": "Revert isolated development branch. No saved user worlds or frozen evidence are modified.",
+  "evidence": [
+    "app/infrastructure/browser/gameplay-atomic-append.mjs",
+    "app/application/gameplay-session.mjs",
+    "tests/gameplay_transaction_replay.test.mjs",
+    "tests/gameplay_session_browser_cases.mjs",
+    ".github/workflows/prerelease-gameplay-replay-session.yml",
+    "docs/PRERELEASE_GAMEPLAY_TRANSACTION_REPLAY_20261024.md"
+  ],
+  "result": "RED"
+}
