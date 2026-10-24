@@ -41,7 +41,7 @@ try {
   });
   if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
   const value = result.result?.value;
-  if (!value || value.passed !== 12 || value.finalWorldEvents !== 5) {
+  if (!value || value.passed !== 15 || value.finalWorldEvents !== 5) {
     throw new Error("Unexpected gameplay session result: " + JSON.stringify(value));
   }
   console.log("GAMEPLAY SESSION CHROMIUM PASS", JSON.stringify(value));
